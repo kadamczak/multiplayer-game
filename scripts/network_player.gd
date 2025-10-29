@@ -9,6 +9,12 @@ var is_authority: bool:
 # the client has 1 NetworkPlayer for each player
 var owner_id: int
 
+func _ready():
+	if is_authority:
+		var camera = Camera2D.new()
+		add_child(camera)
+		camera.enabled = true
+
 func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
