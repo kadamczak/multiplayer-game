@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://bnt1b1mk5qsuk"]
+
+[ext_resource type="PackedScene" uid="uid://ctjlkt8hpen53" path="res://scenes/network_ui.tscn" id="1_dbt5r"]
+[ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/player_spawner.tscn" id="2_e13io"]
+[ext_resource type="Texture2D" uid="uid://b4vskhtyxw33g" path="res://icon.svg" id="3_e13io"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wrbqh"]
+size = Vector2(627, 77)
+
+[node name="SceneExample" type="Node2D"]
+
+[node name="NetworkUI" parent="." instance=ExtResource("1_dbt5r")]
+
+[node name="PlayerSpawner" parent="." instance=ExtResource("2_e13io")]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="Wall" type="StaticBody2D" parent="Environment"]
+position = Vector2(343, 564)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Wall"]
+position = Vector2(-4.5, 2.5)
+shape = SubResource("RectangleShape2D_wrbqh")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Wall"]
+position = Vector2(-1.0000153, 2)
+scale = Vector2(5.1171875, 0.7109375)
+texture = ExtResource("3_e13io")
+
+[node name="Wall2" type="StaticBody2D" parent="Environment"]
+position = Vector2(1002, 483)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Wall2"]
+position = Vector2(-4.5, 2.5)
+shape = SubResource("RectangleShape2D_wrbqh")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Wall2"]
+position = Vector2(-1.0000153, 2)
+scale = Vector2(5.1171875, 0.7109375)
+texture = ExtResource("3_e13io")

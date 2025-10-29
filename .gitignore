@@ -1,0 +1,12 @@
+# Godot-specific ignores
+.import/
+.godot/
+export.cfg
+export_presets.cfg
+.mono/
+data_*/
+
+# General
+*.translation
+*.import
+*.md5

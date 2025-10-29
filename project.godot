@@ -1,0 +1,26 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="MultiplayerGame"
+run/main_scene="uid://bnt1b1mk5qsuk"
+config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+NetworkHandler="*res://scripts/network_handler.gd"
+ServerNetworkGlobals="*res://scripts/server_network_globals.gd"
+ClientNetworkGlobals="*res://scripts/client_network_globals.gd"
+
+[dotnet]
+
+project/assembly_name="MultiplayerGame"
