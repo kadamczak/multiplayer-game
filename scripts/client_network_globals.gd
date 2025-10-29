@@ -4,6 +4,7 @@ signal handle_local_id_assignment(local_id: int)
 signal handle_remote_id_assignment(remote_id: int)
 signal handle_player_position(player_position: PlayerPosition)
 signal handle_player_username(player_username: PlayerUsername)
+signal handle_player_disconnect(player_id: int)
 
 var id: int = -1
 var remote_ids: Array[int]
@@ -30,6 +31,13 @@ func on_client_packet(data: PackedByteArray) -> void:
 			print("ClientNetworkGlobals received username packet - ID: ", player_username.id, " Username: ", player_username.username)
 			player_usernames[player_username.id] = player_username.username
 			handle_player_username.emit(player_username)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_DISCONNECT:
+			var player_disconnect = PlayerDisconnect.create_from_data(data)
+			print("ClientNetworkGlobals received disconnect for ID: ", player_disconnect.id)
+			remote_ids.erase(player_disconnect.id)
+			player_usernames.erase(player_disconnect.id)
+			handle_player_disconnect.emit(player_disconnect.id)
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")
 

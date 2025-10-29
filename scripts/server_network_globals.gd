@@ -24,7 +24,9 @@ func on_peer_connected(peer_id: int) -> void:
 func on_peer_disconnected(peer_id: int) -> void:
 	peer_ids.erase(peer_id)
 	peer_usernames.erase(peer_id)
-	# Create IDUnassignment to broadcast to all still connected peers
+	# Notify all clients that this player disconnected
+	print("Broadcasting disconnect for peer ", peer_id)
+	PlayerDisconnect.create(peer_id).broadcast(NetworkHandler.connection)
 	
 # Server only sends IDAssignment packets, does not receive them.	
 func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
