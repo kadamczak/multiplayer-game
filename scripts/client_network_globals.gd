@@ -3,9 +3,12 @@ extends Node
 signal handle_local_id_assignment(local_id: int)
 signal handle_remote_id_assignment(remote_id: int)
 signal handle_player_position(player_position: PlayerPosition)
+signal handle_player_username(player_username: PlayerUsername)
 
 var id: int = -1
 var remote_ids: Array[int]
+var username: String = ""
+var player_usernames: Dictionary = {} # id -> username mapping
 
 
 func _ready() -> void:
@@ -21,6 +24,12 @@ func on_client_packet(data: PackedByteArray) -> void:
 				
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(PlayerPosition.create_from_data(data))
+			
+		PacketInfo.PACKET_TYPE.PLAYER_USERNAME:
+			var player_username = PlayerUsername.create_from_data(data)
+			print("ClientNetworkGlobals received username packet - ID: ", player_username.id, " Username: ", player_username.username)
+			player_usernames[player_username.id] = player_username.username
+			handle_player_username.emit(player_username)
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")
 

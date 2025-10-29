@@ -8,21 +8,31 @@ var is_authority: bool:
 # the peer_id of some particular player
 # the client has 1 NetworkPlayer for each player
 var owner_id: int
+var player_username: String = ""
+
+@onready var label = $Label
 
 func _ready():
 	if is_authority:
 		var camera = Camera2D.new()
 		add_child(camera)
 		camera.enabled = true
+	
+	# Check if username already exists for this player
+	if ClientNetworkGlobals.player_usernames.has(owner_id):
+		player_username = ClientNetworkGlobals.player_usernames[owner_id]
+		label.text = player_username
 
 func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
+	ClientNetworkGlobals.handle_player_username.connect(client_handle_player_username)
 
 
 func _exit_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.disconnect(client_handle_player_position)
+	ClientNetworkGlobals.handle_player_username.disconnect(client_handle_player_username)
 
 # local player -> server communication
 func _physics_process(delta: float) -> void:
@@ -41,3 +51,11 @@ func server_handle_player_position(peer_id: int, player_position: PlayerPosition
 func client_handle_player_position(player_position: PlayerPosition) -> void:
 	if is_authority || owner_id != player_position.id: return
 	global_position = player_position.position
+
+# handles username updates on the client
+func client_handle_player_username(username_packet: PlayerUsername) -> void:
+	print("Player ", owner_id, " received username packet for ID ", username_packet.id, ": ", username_packet.username)
+	if owner_id != username_packet.id: return
+	player_username = username_packet.username
+	label.text = player_username
+	print("Player ", owner_id, " updated label to: ", label.text)

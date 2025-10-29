@@ -24,5 +24,12 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 	match packet_type:
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
+			
+		PacketInfo.PACKET_TYPE.PLAYER_USERNAME:
+			# Broadcast the username to all clients
+			var player_username = PlayerUsername.create_from_data(data)
+			print("Server received username from peer ", peer_id, " - ID: ", player_username.id, " Username: ", player_username.username)
+			print("Broadcasting to all clients")
+			player_username.broadcast(NetworkHandler.connection)
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")

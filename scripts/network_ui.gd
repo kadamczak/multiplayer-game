@@ -48,10 +48,15 @@ func _on_login_response(result, response_code, headers, body):
 		print("Login successful: ", json)
 		
 		# Handle successful login (e.g., store token)
-		
+		ClientNetworkGlobals.username = username_input.text
 		
 		NetworkHandler.start_client()
+		ClientNetworkGlobals.handle_local_id_assignment.connect(_on_id_assigned)
 		visible = false
 	else:
 		print("Login failed with code: ", response_code)
 		print("Response: ", body.get_string_from_utf8())
+
+func _on_id_assigned(local_id: int) -> void:
+	print("ID assigned: ", local_id, " Sending username: ", ClientNetworkGlobals.username)
+	PlayerUsername.create(local_id, ClientNetworkGlobals.username).send(NetworkHandler.server_peer)
