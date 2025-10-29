@@ -23,8 +23,7 @@ ClientNetworkGlobals="*res://scripts/client_network_globals.gd"
 
 [display]
 
-window/size/viewport_width=800
-window/size/viewport_height=450
+window/size/viewport_width=740
 window/size/initial_position_type=3
 
 [dotnet]

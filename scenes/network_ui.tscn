@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctjlkt8hpen53"]
+[gd_scene load_steps=4 format=3 uid="uid://ctjlkt8hpen53"]
 
 [ext_resource type="Script" uid="uid://7n6msicmnack" path="res://scripts/network_ui.gd" id="1_rqm01"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rqm01"]
+font_size = 38
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqm01"]
+bg_color = Color(0.3846647, 0.25553435, 0.16041034, 1)
 
 [node name="NetworkUI" type="Control"]
 layout_mode = 3
@@ -9,12 +15,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
 script = ExtResource("1_rqm01")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+offset_right = 71.0
+offset_bottom = 71.0
 
 [node name="ServerButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -23,9 +31,66 @@ theme_override_colors/font_color = Color(0.97799784, 0.87138635, 0.47573376, 1)
 theme_override_font_sizes/font_size = 20
 text = "Server"
 
-[node name="ClientButton" type="Button" parent="VBoxContainer"]
+[node name="Login" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -91.0
+offset_top = -64.0
+offset_right = 91.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameNameLabel" type="Label" parent="Login"]
 layout_mode = 2
-text = "Client"
+text = "Multiplayer Game"
+label_settings = SubResource("LabelSettings_rqm01")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UsernameInput" type="LineEdit" parent="Login"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+placeholder_text = "Username"
+max_length = 30
+
+[node name="PasswordInput" type="LineEdit" parent="Login"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+placeholder_text = "Password"
+max_length = 256
+secret = true
+
+[node name="LoginButton" type="Button" parent="Login"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Login"
+
+[node name="ErrorLabel" type="Label" parent="Login"]
+visible = false
+layout_mode = 2
+text = "Error!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel" type="Panel" parent="."]
+z_index = -2
+z_as_relative = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rqm01")
 
 [connection signal="pressed" from="VBoxContainer/ServerButton" to="." method="_on_server_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/ClientButton" to="." method="_on_client_button_pressed"]
+[connection signal="pressed" from="Login/LoginButton" to="." method="_on_login_button_pressed"]

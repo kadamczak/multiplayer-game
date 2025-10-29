@@ -1,10 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://ifha2oyc3bqr"]
+[gd_scene load_steps=5 format=3 uid="uid://ifha2oyc3bqr"]
 
 [ext_resource type="Script" uid="uid://dmw6hayj3ypqb" path="res://scripts/network_player.gd" id="1_5l5im"]
 [ext_resource type="Texture2D" uid="uid://b4vskhtyxw33g" path="res://icon.svg" id="1_27uls"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5l5im"]
 size = Vector2(117, 116)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5l5im"]
+font_color = Color(0.99999994, 0.68630767, 0.18687186, 1)
 
 [node name="NetworkPlayer" type="CharacterBody2D"]
 script = ExtResource("1_5l5im")
@@ -15,3 +18,13 @@ texture = ExtResource("1_27uls")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.5, 0)
 shape = SubResource("RectangleShape2D_5l5im")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -93.0
+offset_right = 59.0
+offset_bottom = -70.0
+text = "Player"
+label_settings = SubResource("LabelSettings_5l5im")
+horizontal_alignment = 1
+visible_characters = 6

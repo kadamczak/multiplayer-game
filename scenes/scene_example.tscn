@@ -9,8 +9,6 @@ size = Vector2(627, 77)
 
 [node name="SceneExample" type="Node2D"]
 
-[node name="NetworkUI" parent="." instance=ExtResource("1_dbt5r")]
-
 [node name="PlayerSpawner" parent="." instance=ExtResource("2_e13io")]
 
 [node name="Environment" type="Node" parent="."]
@@ -38,3 +36,7 @@ shape = SubResource("RectangleShape2D_wrbqh")
 position = Vector2(-1.0000153, 2)
 scale = Vector2(5.1171875, 0.7109375)
 texture = ExtResource("3_e13io")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="NetworkUI" parent="CanvasLayer" instance=ExtResource("1_dbt5r")]
