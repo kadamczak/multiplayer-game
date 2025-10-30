@@ -29,12 +29,14 @@ func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
 	ClientNetworkGlobals.handle_player_username.connect(client_handle_player_username)
+	ClientNetworkGlobals.handle_player_animation.connect(client_handle_player_animation)
 
 
 func _exit_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.disconnect(client_handle_player_position)
 	ClientNetworkGlobals.handle_player_username.disconnect(client_handle_player_username)
+	ClientNetworkGlobals.handle_player_animation.disconnect(client_handle_player_animation)
 
 # local player -> server communication
 func _physics_process(delta: float) -> void:
@@ -66,6 +68,7 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
+	PlayerAnimation.create(owner_id, sprite.animation, sprite.flip_h).send(NetworkHandler.server_peer)
 
 # server -> all players
 func server_handle_player_position(peer_id: int, player_position: PlayerPosition) -> void:
@@ -85,3 +88,9 @@ func client_handle_player_username(username_packet: PlayerUsername) -> void: #13
 	player_username = username_packet.username
 	label.text = player_username
 	print("Player ", owner_id, " updated label to: ", label.text)
+
+# handles animation updates on the client
+func client_handle_player_animation(anim_packet: PlayerAnimation) -> void:
+	if is_authority || owner_id != anim_packet.id: return
+	sprite.play(anim_packet.animation_name)
+	sprite.flip_h = anim_packet.flip_h

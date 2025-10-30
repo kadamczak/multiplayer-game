@@ -42,5 +42,10 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			peer_usernames[player_username.id] = player_username.username
 			print("Broadcasting to all clients")
 			player_username.broadcast(NetworkHandler.connection)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_ANIMATION:
+			# Broadcast animation state to all clients
+			var player_anim = PlayerAnimation.create_from_data(data)
+			player_anim.broadcast(NetworkHandler.connection)
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")

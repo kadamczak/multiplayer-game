@@ -5,6 +5,7 @@ signal handle_remote_id_assignment(remote_id: int)
 signal handle_player_position(player_position: PlayerPosition)
 signal handle_player_username(player_username: PlayerUsername)
 signal handle_player_disconnect(player_id: int)
+signal handle_player_animation(player_animation: PlayerAnimation)
 
 var id: int = -1
 var remote_ids: Array[int]
@@ -38,6 +39,10 @@ func on_client_packet(data: PackedByteArray) -> void:
 			remote_ids.erase(player_disconnect.id)
 			player_usernames.erase(player_disconnect.id)
 			handle_player_disconnect.emit(player_disconnect.id)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_ANIMATION:
+			var player_anim = PlayerAnimation.create_from_data(data)
+			handle_player_animation.emit(player_anim)
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")
 
