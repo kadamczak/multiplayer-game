@@ -27,7 +27,7 @@ func on_client_packet(data: PackedByteArray) -> void:
 			handle_player_position.emit(PlayerPosition.create_from_data(data))
 			
 		PacketInfo.PACKET_TYPE.PLAYER_USERNAME:
-			var player_username = PlayerUsername.create_from_data(data)
+			var player_username = PlayerUsername.create_from_data(data) #12
 			print("ClientNetworkGlobals received username packet - ID: ", player_username.id, " Username: ", player_username.username)
 			player_usernames[player_username.id] = player_username.username
 			handle_player_username.emit(player_username)
@@ -45,7 +45,7 @@ func on_client_packet(data: PackedByteArray) -> void:
 func manage_ids(id_assignment: IDAssignment) -> void:
 	if id == -1:
 		id = id_assignment.id
-		handle_local_id_assignment.emit(id_assignment.id)
+		handle_local_id_assignment.emit(id_assignment.id) #8
 		
 		remote_ids = id_assignment.remoted_ids
 		for remote_id in remote_ids:

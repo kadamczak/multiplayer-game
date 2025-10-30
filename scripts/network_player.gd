@@ -53,7 +53,7 @@ func client_handle_player_position(player_position: PlayerPosition) -> void:
 	global_position = player_position.position
 
 # handles username updates on the client
-func client_handle_player_username(username_packet: PlayerUsername) -> void:
+func client_handle_player_username(username_packet: PlayerUsername) -> void: #13
 	print("Player ", owner_id, " received username packet for ID ", username_packet.id, ": ", username_packet.username)
 	if owner_id != username_packet.id: return
 	player_username = username_packet.username

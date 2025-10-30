@@ -12,7 +12,7 @@ func _ready() -> void:
 	
 
 func on_peer_connected(peer_id: int) -> void:
-	peer_ids.append(peer_id)
+	peer_ids.append(peer_id) #7
 	IDAssignment.create(peer_id, peer_ids).broadcast(NetworkHandler.connection)
 	
 	# Send all existing usernames to the new client
@@ -35,7 +35,7 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
 			
-		PacketInfo.PACKET_TYPE.PLAYER_USERNAME:
+		PacketInfo.PACKET_TYPE.PLAYER_USERNAME: #11
 			# Store and broadcast the username to all clients
 			var player_username = PlayerUsername.create_from_data(data)
 			print("Server received username from peer ", peer_id, " - ID: ", player_username.id, " Username: ", player_username.username)

@@ -110,11 +110,11 @@ func peer_connected(peer: ENetPacketPeer) -> void:
 	peer.set_meta("id", peer_id)
 	client_peers[peer_id] = peer
 	print("Peer connected with assigned id: ", peer_id)
-	on_peer_connected.emit(peer_id)
+	on_peer_connected.emit(peer_id) #6
 
 func connected_to_server() -> void:
 	print("Succesfully connected to server")
-	on_connected_to_server.emit()
+	on_connected_to_server.emit() #5
 	
 	
 #===========================

@@ -11,7 +11,7 @@ func _ready() -> void:
 
 
 func spawn_player(id: int) -> void:
-	var player = NETWORK_PLAYER.instantiate()
+	var player = NETWORK_PLAYER.instantiate() #9
 	player.owner_id = id
 	player.name = str(id)
 	call_deferred("add_child", player)
