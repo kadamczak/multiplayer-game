@@ -8,7 +8,7 @@
 size = Vector2(1200.5, 92.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wrbqh"]
-size = Vector2(624, 225)
+size = Vector2(624, 246)
 
 [node name="SceneExample" type="Node2D"]
 
@@ -27,7 +27,7 @@ shape = SubResource("RectangleShape2D_e13io")
 position = Vector2(343, 564)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Wall"]
-position = Vector2(10, 88.5)
+position = Vector2(10, 86)
 shape = SubResource("RectangleShape2D_wrbqh")
 
 [node name="Sprite2D" type="Sprite2D" parent="Environment/Wall"]

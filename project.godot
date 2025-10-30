@@ -30,3 +30,7 @@ window/size/initial_position_type=3
 [dotnet]
 
 project/assembly_name="MultiplayerGame"
+
+[editor]
+
+movie_writer/movie_file="/home/mous/Videos/godot/adsadas.avi"

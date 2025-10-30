@@ -1,30 +1,95 @@
-[gd_scene load_steps=5 format=3 uid="uid://ifha2oyc3bqr"]
+[gd_scene load_steps=13 format=3 uid="uid://ifha2oyc3bqr"]
 
 [ext_resource type="Script" uid="uid://dmw6hayj3ypqb" path="res://scripts/network_player.gd" id="1_5l5im"]
-[ext_resource type="Texture2D" uid="uid://b4vskhtyxw33g" path="res://icon.svg" id="1_27uls"]
+[ext_resource type="Texture2D" uid="uid://cs0011278dnun" path="res://assets/playercat.png" id="2_5l5im"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5l5im"]
-size = Vector2(117, 116)
+[sub_resource type="AtlasTexture" id="AtlasTexture_dtrl1"]
+atlas = ExtResource("2_5l5im")
+region = Rect2(0, 0, 300, 125)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hc1dv"]
+atlas = ExtResource("2_5l5im")
+region = Rect2(300, 0, 300, 125)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rhx3x"]
+atlas = ExtResource("2_5l5im")
+region = Rect2(600, 0, 300, 125)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hquwp"]
+atlas = ExtResource("2_5l5im")
+region = Rect2(0, 125, 300, 125)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kfj5c"]
+atlas = ExtResource("2_5l5im")
+region = Rect2(300, 125, 300, 125)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5lknd"]
+atlas = ExtResource("2_5l5im")
+region = Rect2(600, 125, 300, 125)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_se7li"]
+atlas = ExtResource("2_5l5im")
+region = Rect2(0, 250, 300, 125)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pr72v"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dtrl1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hc1dv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rhx3x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hquwp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kfj5c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5lknd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_se7li")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ouogi"]
+radius = 43.994617
+height = 167.99973
 
 [sub_resource type="LabelSettings" id="LabelSettings_5l5im"]
 font_color = Color(0.99999994, 0.68630767, 0.18687186, 1)
 
 [node name="NetworkPlayer" type="CharacterBody2D"]
+position = Vector2(24, -64)
 script = ExtResource("1_5l5im")
 
-[node name="Icon" type="Sprite2D" parent="."]
-texture = ExtResource("1_27uls")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_pr72v")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.38214654
+speed_scale = 1.4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0.5, 0)
-shape = SubResource("RectangleShape2D_5l5im")
+position = Vector2(-30, 14)
+rotation = 1.5725678
+shape = SubResource("CapsuleShape2D_ouogi")
 
 [node name="Label" type="Label" parent="."]
-offset_left = -60.0
-offset_top = -93.0
-offset_right = 59.0
-offset_bottom = -70.0
+offset_left = -87.0
+offset_top = -94.0
+offset_right = 32.0
+offset_bottom = -71.0
 text = "Player"
 label_settings = SubResource("LabelSettings_5l5im")
 horizontal_alignment = 1
 visible_characters = 6
+metadata/_edit_use_anchors_ = true
