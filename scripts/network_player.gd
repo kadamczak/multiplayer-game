@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
-const SPEED: float = 500.0
+const SPEED: float = 300.0
+const JUMP_VELOCITY: float = -400.0
 
 var is_authority: bool:
 	get: return !NetworkHandler.is_server && owner_id == ClientNetworkGlobals.id
@@ -37,7 +38,22 @@ func _exit_tree() -> void:
 # local player -> server communication
 func _physics_process(delta: float) -> void:
 	if !is_authority: return
-	velocity = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down") * SPEED
+	
+	# Add gravity
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	
+	# Handle jump
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+	
+	# Get horizontal input (A/D keys map to ui_left/ui_right)
+	var direction := Input.get_axis("ui_left", "ui_right")
+	if direction != 0:
+		velocity.x = direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+	
 	move_and_slide()
 	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
 
