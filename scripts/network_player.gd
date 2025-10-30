@@ -12,6 +12,7 @@ var owner_id: int
 var player_username: String = ""
 
 @onready var label = $Label
+@onready var sprite = $AnimatedSprite2D
 
 func _ready():
 	if is_authority:
@@ -51,8 +52,17 @@ func _physics_process(delta: float) -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction != 0:
 		velocity.x = direction * SPEED
+		# Flip sprite based on movement direction
+		if direction > 0:
+			sprite.flip_h = true
+		elif direction < 0:
+			sprite.flip_h = false
+		# Play walk animation
+		sprite.play("walk")
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
+		# Play idle animation
+		sprite.play("idle")
 	
 	move_and_slide()
 	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
