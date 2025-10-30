@@ -19,6 +19,11 @@ func _ready():
 		var camera = Camera2D.new()
 		add_child(camera)
 		camera.enabled = true
+		# Local player renders on top
+		z_index = 1
+	else:
+		# Other players render behind
+		z_index = 0
 	
 	# Check if username already exists for this player
 	if ClientNetworkGlobals.player_usernames.has(owner_id):
@@ -52,6 +57,24 @@ func _physics_process(delta: float) -> void:
 	
 	# Get horizontal input (A/D keys map to ui_left/ui_right)
 	var direction := Input.get_axis("ui_left", "ui_right")
+	
+	# Determine which animation should play
+	var target_animation := ""
+	if not is_on_floor():
+		# In air (jumping or falling)
+		target_animation = "air"
+	elif direction != 0:
+		# Walking
+		target_animation = "walk"
+	else:
+		# Idle
+		target_animation = "idle"
+	
+	# Only play animation if it's different from current
+	if sprite.animation != target_animation:
+		sprite.play(target_animation)
+	
+	# Handle horizontal movement and sprite flipping
 	if direction != 0:
 		velocity.x = direction * SPEED
 		# Flip sprite based on movement direction
@@ -59,12 +82,8 @@ func _physics_process(delta: float) -> void:
 			sprite.flip_h = true
 		elif direction < 0:
 			sprite.flip_h = false
-		# Play walk animation
-		sprite.play("walk")
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
-		# Play idle animation
-		sprite.play("idle")
 	
 	move_and_slide()
 	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
@@ -92,5 +111,7 @@ func client_handle_player_username(username_packet: PlayerUsername) -> void: #13
 # handles animation updates on the client
 func client_handle_player_animation(anim_packet: PlayerAnimation) -> void:
 	if is_authority || owner_id != anim_packet.id: return
-	sprite.play(anim_packet.animation_name)
+	# Only play animation if it's different from current
+	if sprite.animation != anim_packet.animation_name:
+		sprite.play(anim_packet.animation_name)
 	sprite.flip_h = anim_packet.flip_h
