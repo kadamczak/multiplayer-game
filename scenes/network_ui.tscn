@@ -24,13 +24,6 @@ layout_mode = 1
 offset_right = 71.0
 offset_bottom = 71.0
 
-[node name="ServerButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-mouse_default_cursor_shape = 2
-theme_override_colors/font_color = Color(0.97799784, 0.87138635, 0.47573376, 1)
-theme_override_font_sizes/font_size = 20
-text = "Server"
-
 [node name="Login" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -92,5 +85,4 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_rqm01")
 
-[connection signal="pressed" from="VBoxContainer/ServerButton" to="." method="_on_server_button_pressed"]
 [connection signal="pressed" from="Login/LoginButton" to="." method="_on_login_button_pressed"]

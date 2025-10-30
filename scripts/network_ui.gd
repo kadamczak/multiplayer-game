@@ -1,14 +1,30 @@
 extends Control
 
+@onready var login_panel = $Login
+@onready var server_button = $ServerButton
 @onready var username_input = $Login/UsernameInput
 @onready var password_input = $Login/PasswordInput
 @onready var error_label = $Login/ErrorLabel
 @onready var http_request = HTTPRequest.new()
 
+var is_dedicated_server := false
+
 func _ready():
 	add_child(http_request)
 	http_request.request_completed.connect(_on_login_response)
 	http_request.set_tls_options(TLSOptions.client_unsafe())
+	
+	# Check command line arguments
+	var args := OS.get_cmdline_args()
+	for arg in args:
+		if arg == "--server" or arg == "--dedicated-server":
+			is_dedicated_server = true
+			break
+	
+	# Hide/show UI based on mode
+	if is_dedicated_server:
+		NetworkHandler.start_server()
+		visible = false
 
 func _on_server_button_pressed() -> void:
 	NetworkHandler.start_server()
@@ -51,6 +67,7 @@ func _on_login_response(result, response_code, headers, body):
 		
 		# Handle successful login (e.g., store token)
 		ClientNetworkGlobals.username = username_input.text #3
+
 		
 		ClientNetworkGlobals.handle_local_id_assignment.connect(_on_id_assigned)
 		NetworkHandler.start_client() #4
