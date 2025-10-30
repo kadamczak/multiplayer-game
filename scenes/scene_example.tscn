@@ -1,8 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bnt1b1mk5qsuk"]
+[gd_scene load_steps=6 format=3 uid="uid://bnt1b1mk5qsuk"]
 
 [ext_resource type="PackedScene" uid="uid://ctjlkt8hpen53" path="res://scenes/network_ui.tscn" id="1_dbt5r"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/player_spawner.tscn" id="2_e13io"]
 [ext_resource type="Texture2D" uid="uid://b4vskhtyxw33g" path="res://icon.svg" id="3_e13io"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e13io"]
+size = Vector2(1200.5, 92.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wrbqh"]
 size = Vector2(624, 225)
@@ -10,6 +13,13 @@ size = Vector2(624, 225)
 [node name="SceneExample" type="Node2D"]
 
 [node name="PlayerSpawner" parent="." instance=ExtResource("2_e13io")]
+
+[node name="Area2D" type="Area2D" parent="PlayerSpawner"]
+position = Vector2(231, 338)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Area2D"]
+position = Vector2(-230, 118)
+shape = SubResource("RectangleShape2D_e13io")
 
 [node name="Environment" type="Node" parent="."]
 
@@ -38,7 +48,7 @@ scale = Vector2(5.2460938, 2.0117188)
 texture = ExtResource("3_e13io")
 
 [node name="Wall3" type="StaticBody2D" parent="Environment"]
-position = Vector2(-262, 507)
+position = Vector2(-309, 565)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Wall3"]
 position = Vector2(10, 88.5)
@@ -57,6 +67,18 @@ position = Vector2(10, 88.5)
 shape = SubResource("RectangleShape2D_wrbqh")
 
 [node name="Sprite2D" type="Sprite2D" parent="Environment/Wall4"]
+position = Vector2(7.249982, 85.25001)
+scale = Vector2(5.2460938, 2.0117188)
+texture = ExtResource("3_e13io")
+
+[node name="Wall5" type="StaticBody2D" parent="Environment"]
+position = Vector2(-964, 516)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Wall5"]
+position = Vector2(10, 88.5)
+shape = SubResource("RectangleShape2D_wrbqh")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Wall5"]
 position = Vector2(7.249982, 85.25001)
 scale = Vector2(5.2460938, 2.0117188)
 texture = ExtResource("3_e13io")
