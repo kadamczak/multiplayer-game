@@ -26,6 +26,7 @@ GlobalWindow="*res://scripts/window.gd"
 
 window/size/viewport_width=740
 window/size/initial_position_type=3
+window/vsync/vsync_mode=0
 
 [dotnet]
 
