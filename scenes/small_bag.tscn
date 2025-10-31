@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://yg8t2bt4prdq"]
+
+[ext_resource type="Texture2D" uid="uid://bhav356oxmk17" path="res://assets/sprites/small_bag.png" id="1_let7s"]
+[ext_resource type="Script" uid="uid://cdnw8aoa4lkqg" path="res://scripts/small_bag.gd" id="2_small_bag"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_small_bag"]
+radius = 32.140316
+
+[node name="small_bag" type="Area2D"]
+script = ExtResource("2_small_bag")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_let7s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-7, 20)
+shape = SubResource("CircleShape2D_small_bag")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

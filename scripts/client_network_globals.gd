@@ -6,11 +6,16 @@ signal handle_player_position(player_position: PlayerPosition)
 signal handle_player_username(player_username: PlayerUsername)
 signal handle_player_disconnect(player_id: int)
 signal handle_player_animation(player_animation: PlayerAnimation)
+signal balance_changed(new_balance: int)
 
 var id: int = -1
 var remote_ids: Array[int]
 var username: String = ""
 var player_usernames: Dictionary = {} # id -> username mapping
+var balance: int = 0:
+	set(value):
+		balance = value
+		balance_changed.emit(balance)
 
 
 func _ready() -> void:

@@ -67,7 +67,11 @@ func _on_login_response(result, response_code, headers, body):
 		
 		# Handle successful login (e.g., store token)
 		ClientNetworkGlobals.username = username_input.text #3
-
+		
+		# Show PlayerUI
+		var player_ui = get_node("../PlayerUI")
+		if player_ui:
+			player_ui.visible = true
 		
 		ClientNetworkGlobals.handle_local_id_assignment.connect(_on_id_assigned)
 		NetworkHandler.start_client() #4
