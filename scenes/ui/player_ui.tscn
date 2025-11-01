@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cj1hcpqp0r03f"]
 
 [ext_resource type="Texture2D" uid="uid://cwy6qcljp4d6x" path="res://assets/sprites/gem.png" id="1_gem"]
-[ext_resource type="Script" uid="uid://ckmyoy5wpnnqa" path="res://scripts/player_ui.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ckmyoy5wpnnqa" path="res://scripts/ui/player_ui.gd" id="1_script"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_sk4pr"]
 font_size = 21

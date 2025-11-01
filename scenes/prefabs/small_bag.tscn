@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://yg8t2bt4prdq"]
 
 [ext_resource type="Texture2D" uid="uid://bhav356oxmk17" path="res://assets/sprites/small_bag.png" id="1_let7s"]
-[ext_resource type="Script" uid="uid://cdnw8aoa4lkqg" path="res://scripts/small_bag.gd" id="2_small_bag"]
+[ext_resource type="Script" uid="uid://cdnw8aoa4lkqg" path="res://scripts/prefabs/small_bag.gd" id="2_small_bag"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_small_bag"]
 radius = 32.140316

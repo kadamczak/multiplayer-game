@@ -17,10 +17,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-NetworkHandler="*res://scripts/network_handler.gd"
-ServerNetworkGlobals="*res://scripts/server_network_globals.gd"
-ClientNetworkGlobals="*res://scripts/client_network_globals.gd"
-GlobalWindow="*res://scripts/window.gd"
+NetworkHandler="*res://scripts/network/network_handler.gd"
+ServerNetworkGlobals="*res://scripts/network/server_network_globals.gd"
+ClientNetworkGlobals="*res://scripts/network/client_network_globals.gd"
+GlobalWindow="*res://scripts/technical/window.gd"
 
 [display]
 

@@ -1,12 +1,12 @@
 [gd_scene load_steps=11 format=4 uid="uid://bnt1b1mk5qsuk"]
 
-[ext_resource type="PackedScene" uid="uid://ctjlkt8hpen53" path="res://scenes/network_ui.tscn" id="1_dbt5r"]
-[ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/player_spawner.tscn" id="2_e13io"]
+[ext_resource type="PackedScene" uid="uid://ctjlkt8hpen53" path="res://scenes/ui/network_ui.tscn" id="1_dbt5r"]
+[ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_e13io"]
 [ext_resource type="Texture2D" uid="uid://cncc6o7djp8v2" path="res://assets/sprites/flower1.png" id="2_wrbqh"]
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="3_wrbqh"]
-[ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/player_ui.tscn" id="4_i2ssx"]
+[ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/ui/player_ui.tscn" id="4_i2ssx"]
 [ext_resource type="Texture2D" uid="uid://dpwht5l4h3vft" path="res://assets/sprites/rabbit.png" id="5_5rs17"]
-[ext_resource type="PackedScene" uid="uid://yg8t2bt4prdq" path="res://scenes/small_bag.tscn" id="7_ignxr"]
+[ext_resource type="PackedScene" uid="uid://yg8t2bt4prdq" path="res://scenes/prefabs/small_bag.tscn" id="7_ignxr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e13io"]
 size = Vector2(1200.5, 92.5)
