@@ -1,7 +1,6 @@
 extends Control
 
 @onready var login_panel = $Login
-@onready var server_button = $ServerButton
 @onready var username_input = $Login/UsernameInput
 @onready var password_input = $Login/PasswordInput
 @onready var error_label = $Login/ErrorLabel
@@ -14,20 +13,17 @@ func _ready():
 	http_request.request_completed.connect(_on_login_response)
 	http_request.set_tls_options(TLSOptions.client_unsafe())
 	
-	# Check command line arguments
+	# Check command line arguments for dedicated server mode
 	var args := OS.get_cmdline_args()
 	for arg in args:
 		if arg == "--server" or arg == "--dedicated-server":
 			is_dedicated_server = true
 			break
 	
-	# Hide/show UI based on mode
+	# If dedicated server, skip login and load hub directly
 	if is_dedicated_server:
 		NetworkHandler.start_server()
-		visible = false
-
-func _on_server_button_pressed() -> void:
-	NetworkHandler.start_server()
+		get_tree().change_scene_to_file("res://scenes/levels/hub.tscn")
 
 func _on_login_button_pressed() -> void:
 	var username = username_input.text
@@ -60,22 +56,30 @@ func _on_login_button_pressed() -> void:
 		print("Request failed with error: ", error)
 	
 	
-func _on_login_response(result, response_code, headers, body):
+func _on_login_response(_result, response_code, _headers, body):
 	if response_code == 200: #2
 		var json = JSON.parse_string(body.get_string_from_utf8())
 		print("Login successful: ", json)
 		
-		# Handle successful login (e.g., store token)
+		# Extract and store tokens securely
+		#var access_token = json.get("accessToken", "")
+		#var refresh_token = json.get("refreshToken", "")
+		#var expires_in = json.get("expiresIn", 3600)
+		
+		# if not access_token.is_empty() and not refresh_token.is_empty():
+		# 	AuthManager.store_tokens(access_token, refresh_token, expires_in)
+		# 	print("Tokens stored securely")
+		# else:
+		# 	push_warning("Login response missing tokens")
+		
+		# Store username
 		ClientNetworkGlobals.username = username_input.text #3
 		
-		# Show PlayerUI
-		var player_ui = get_node("../PlayerUI")
-		if player_ui:
-			player_ui.visible = true
-		
-		ClientNetworkGlobals.handle_local_id_assignment.connect(_on_id_assigned)
+		# Start client connection
 		NetworkHandler.start_client() #4
-		visible = false
+		
+		# Switch to hub scene
+		get_tree().change_scene_to_file("res://scenes/levels/hub.tscn")
 	else:
 		print("Login failed with code: ", response_code)
 		print("Response: ", body.get_string_from_utf8())
@@ -95,11 +99,6 @@ func _on_login_response(result, response_code, headers, body):
 			error_label.text = "Login failed: " + response_text
 		
 		error_label.visible = true
-
-
-func _on_id_assigned(local_id: int) -> void:
-	print("ID assigned: ", local_id, " Sending username: ", ClientNetworkGlobals.username) #10
-	PlayerUsername.create(local_id, ClientNetworkGlobals.username).send(NetworkHandler.server_peer)
 
 
 # start_client -> server connection

@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=4 uid="uid://bnt1b1mk5qsuk"]
 
-[ext_resource type="PackedScene" uid="uid://ctjlkt8hpen53" path="res://scenes/ui/network_ui.tscn" id="1_dbt5r"]
+[ext_resource type="Script" path="res://scripts/levels/hub.gd" id="1_hub"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_e13io"]
 [ext_resource type="Texture2D" uid="uid://cncc6o7djp8v2" path="res://assets/sprites/flower1.png" id="2_wrbqh"]
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="3_wrbqh"]
@@ -39,6 +39,7 @@ physics_layer_0/collision_layer = 1
 sources/3 = SubResource("TileSetAtlasSource_5rs17")
 
 [node name="SceneExample" type="Node2D"]
+script = ExtResource("1_hub")
 
 [node name="PlayerSpawner" parent="." instance=ExtResource("2_e13io")]
 
@@ -91,10 +92,8 @@ texture = ExtResource("2_wrbqh")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="NetworkUI" parent="UI" instance=ExtResource("1_dbt5r")]
-
 [node name="PlayerUI" parent="UI" instance=ExtResource("4_i2ssx")]
-visible = false
+visible = true
 mouse_filter = 2
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]

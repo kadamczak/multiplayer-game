@@ -1,28 +1,21 @@
-[gd_scene load_steps=4 format=3 uid="uid://ctjlkt8hpen53"]
+[gd_scene load_steps=4 format=3 uid="uid://b7xj3qm5k8rwy"]
 
-[ext_resource type="Script" uid="uid://7n6msicmnack" path="res://scripts/ui/network_ui.gd" id="1_rqm01"]
+[ext_resource type="Script" uid="uid://7n6msicmnack" path="res://scripts/ui/network_ui.gd" id="1_login"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_rqm01"]
+[sub_resource type="LabelSettings" id="LabelSettings_login"]
 font_size = 38
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqm01"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_login"]
 bg_color = Color(0.3846647, 0.25553435, 0.16041034, 1)
 
-[node name="NetworkUI" type="Control"]
+[node name="LoginScene" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 6
-script = ExtResource("1_rqm01")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-offset_right = 71.0
-offset_bottom = 71.0
+script = ExtResource("1_login")
 
 [node name="Login" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -41,7 +34,7 @@ grow_vertical = 2
 [node name="GameNameLabel" type="Label" parent="Login"]
 layout_mode = 2
 text = "Multiplayer Game"
-label_settings = SubResource("LabelSettings_rqm01")
+label_settings = SubResource("LabelSettings_login")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -83,6 +76,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rqm01")
+theme_override_styles/panel = SubResource("StyleBoxFlat_login")
 
 [connection signal="pressed" from="Login/LoginButton" to="." method="_on_login_button_pressed"]

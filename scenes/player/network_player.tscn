@@ -207,5 +207,6 @@ offset_bottom = -71.0
 text = "Player"
 label_settings = SubResource("LabelSettings_5l5im")
 horizontal_alignment = 1
-visible_characters = 6
+visible_characters = 30
+visible_ratio = 5.0
 metadata/_edit_use_anchors_ = true
