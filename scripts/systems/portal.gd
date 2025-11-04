@@ -19,6 +19,11 @@ func _travel_to_destination(player: Node2D) -> void:
 	var player_id = player.owner_id
 	print("Player ", player_id, " is traveling to ", destination_scene)
 	
+	# Store the current scene as the previous scene BEFORE changing
+	var current_scene_path = get_tree().current_scene.scene_file_path
+	ClientNetworkGlobals.previous_scene = current_scene_path
+	print("Storing previous scene: ", current_scene_path)
+	
 	# Notify server and other clients about scene change
 	if NetworkHandler.server_peer != null:
 		PlayerSceneChange.create(player_id, destination_scene).send(NetworkHandler.server_peer)

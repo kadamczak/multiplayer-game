@@ -1,9 +1,10 @@
 extends Node2D
 
 func _ready() -> void:
-	# Update current scene tracking
+	# Update current scene tracking (previous_scene is set by portal before scene change)
 	var scene_path = get_tree().current_scene.scene_file_path
 	ClientNetworkGlobals.current_scene = scene_path
+	print("Hub: Current scene: ", scene_path, ", Previous scene: ", ClientNetworkGlobals.previous_scene)
 	
 	# Connect to ID assignment if not already connected
 	if not ClientNetworkGlobals.handle_local_id_assignment.is_connected(_on_local_id_assigned):

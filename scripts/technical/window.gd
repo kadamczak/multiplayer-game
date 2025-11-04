@@ -37,5 +37,7 @@ func _ready() -> void:
 	var pos := Vector2i(col * cell_w + PADDING, row * cell_h + PADDING)
 
 	# set window position (Godot 4)
+	# Defer to next frame to ensure window is fully initialized
+	await get_tree().process_frame
 	DisplayServer.window_set_position(pos)
 	print("Window positioned at index ", index, " -> ", pos)

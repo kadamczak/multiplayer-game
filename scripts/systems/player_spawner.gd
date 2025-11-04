@@ -2,10 +2,13 @@ extends Node
 
 const NETWORK_PLAYER = preload("uid://ifha2oyc3bqr")
 
-@onready var spawn_area = $Area2D
+var spawn_areas: Dictionary = {}  # label -> Area2D mapping
 
 
 func _ready() -> void:
+	# Index all spawn areas by their labels
+	_index_spawn_areas()
+	
 	NetworkHandler.on_peer_connected.connect(spawn_player)
 	ClientNetworkGlobals.handle_local_id_assignment.connect(spawn_player)
 	ClientNetworkGlobals.handle_remote_id_assignment.connect(_on_remote_id_assignment)
@@ -14,6 +17,18 @@ func _ready() -> void:
 	
 	# Clean up any existing player instances from previous scene
 	_cleanup_existing_players()
+
+
+func _index_spawn_areas() -> void:
+	# Find all Area2D children and index them by their name (label)
+	for child in get_children():
+		if child is Area2D:
+			var label = child.name
+			spawn_areas[label] = child
+			print("PlayerSpawner: Indexed spawn area '", label, "'")
+	
+	if spawn_areas.is_empty():
+		push_error("PlayerSpawner: No spawn areas (Area2D) found!")
 
 
 func _cleanup_existing_players() -> void:
@@ -48,7 +63,47 @@ func _cleanup_existing_players() -> void:
 				print("Skipping remote player with ID: ", remote_id, " (scene unknown, waiting for scene change notification)")
 
 
-func get_random_spawn_position() -> Vector2:
+func get_spawn_area_for_player(player_id: int) -> Area2D:
+	# Determine which spawn area to use based on where the player came from
+	var from_scene_name = ""
+	
+	# Check if we have a record of where this player came from
+	if player_id == ClientNetworkGlobals.id and not ClientNetworkGlobals.previous_scene.is_empty():
+		# This is the local player entering from another scene
+		var scene_file = ClientNetworkGlobals.previous_scene.get_file().get_basename()
+		from_scene_name = _normalize_scene_name(scene_file)
+		print("Local player ", player_id, " came from scene: ", from_scene_name)
+
+	print("Determining spawn area for player ", player_id, " (from scene: '", from_scene_name, "')")
+	
+	# Check if we have a spawn area matching the previous scene
+	if not from_scene_name.is_empty() and spawn_areas.has(from_scene_name):
+		print("Using spawn area '", from_scene_name, "' for player ", player_id)
+		return spawn_areas[from_scene_name]
+	
+	# Otherwise use "Default" spawn area
+	if spawn_areas.has("Default"):
+		print("Using default spawn area for player ", player_id)
+		return spawn_areas["Default"]
+	
+	# Fallback to first available spawn area
+	if not spawn_areas.is_empty():
+		var first_label = spawn_areas.keys()[0]
+		print("WARNING: No Default spawn area found, using '", first_label, "' for player ", player_id)
+		return spawn_areas[first_label]
+	
+	push_error("PlayerSpawner: No spawn areas available!")
+	return null
+
+
+func _normalize_scene_name(scene_file: String) -> String:
+	# Convert scene filename to spawn area label format
+	# "level1" -> "Level1", "hub" -> "Hub", etc.
+	var normalized = scene_file.capitalize().replace(" ", "")
+	return normalized
+
+
+func get_random_spawn_position(spawn_area: Area2D) -> Vector2:
 	if not spawn_area:
 		return Vector2.ZERO
 	
@@ -81,7 +136,11 @@ func spawn_player(id: int) -> void:
 	var player = NETWORK_PLAYER.instantiate() #9
 	player.owner_id = id
 	player.name = str(id)
-	player.global_position = get_random_spawn_position()
+	
+	# Get appropriate spawn area and position
+	var spawn_area = get_spawn_area_for_player(id)
+	player.global_position = get_random_spawn_position(spawn_area)
+	
 	call_deferred("add_child", player)
 	print("Spawned player ", id, " at position: ", player.global_position)
 

@@ -16,6 +16,7 @@ var username: String = ""
 var player_usernames: Dictionary = {} # id -> username mapping
 
 var current_scene: String = ""
+var previous_scene: String = ""  # Track where local player came from
 var player_scenes: Dictionary = {} # id -> scene_path mapping
 
 var balance: int = 0:

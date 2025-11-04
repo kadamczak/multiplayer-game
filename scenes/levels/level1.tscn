@@ -1,14 +1,16 @@
 [gd_scene load_steps=10 format=4 uid="uid://doq81fipgn8m"]
 
-[ext_resource type="Script" uid="uid://boauoo1bcuiel" path="res://scripts/levels/level1.gd" id="1_level1"]
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="1_x6ivy"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_spawner"]
 [ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/ui/player_ui.tscn" id="3_ui"]
 [ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="4_portal"]
 [ext_resource type="PackedScene" path="res://scenes/ui/player_list_overlay.tscn" id="5_overlay"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1seuy"]
+size = Vector2(879, 229)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_spawn"]
-size = Vector2(800, 100)
+size = Vector2(196, 116)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4tcl0"]
 texture = ExtResource("1_x6ivy")
@@ -38,15 +40,20 @@ physics_layer_0/collision_layer = 1
 sources/3 = SubResource("TileSetAtlasSource_4tcl0")
 
 [node name="Level1" type="Node2D"]
-script = ExtResource("1_level1")
 
 [node name="PlayerSpawner" parent="." instance=ExtResource("2_spawner")]
 
-[node name="Area2D" type="Area2D" parent="PlayerSpawner"]
+[node name="Default" type="Area2D" parent="PlayerSpawner"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Default"]
+position = Vector2(1118, 576)
+shape = SubResource("RectangleShape2D_1seuy")
+
+[node name="Hub" type="Area2D" parent="PlayerSpawner"]
 position = Vector2(0, 200)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Area2D"]
-position = Vector2(-92, 381)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Hub"]
+position = Vector2(-675, 436)
 shape = SubResource("RectangleShape2D_spawn")
 
 [node name="UI" type="CanvasLayer" parent="."]

@@ -1,6 +1,8 @@
 extends CharacterBody2D
 
-const SPEED: float = 300.0
+const WALK_SPEED: float = 300.0
+const RUN_SPEED: float = 700.0
+
 const JUMP_VELOCITY: float = -700.0
 
 var is_authority: bool:
@@ -10,6 +12,8 @@ var is_authority: bool:
 # The client has 1 NetworkPlayer for each player
 var owner_id: int
 var player_username: String = ""
+
+var is_running: bool = false
 
 @onready var label = $Label
 @onready var sprite = $AnimatedSprite2D
@@ -53,8 +57,16 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 	
+	# Toggle run with Shift (only when on ground)
+	if Input.is_action_just_pressed("ui_run") and is_on_floor():
+		is_running = not is_running
+		print("Run toggled: ", is_running)
+	
 	# Get horizontal input (A/D keys map to ui_left/ui_right)
 	var direction := Input.get_axis("ui_left", "ui_right")
+	
+	# Determine effective speed based on run state
+	var effective_speed := RUN_SPEED if is_running else WALK_SPEED
 	
 	# Determine which animation should play
 	var target_animation := ""
@@ -71,14 +83,14 @@ func _physics_process(delta: float) -> void:
 	
 	# Handle horizontal movement and sprite flipping
 	if direction != 0:
-		velocity.x = direction * SPEED
+		velocity.x = direction * effective_speed
 		# Flip sprite based on movement direction
 		if direction > 0:
 			sprite.flip_h = true
 		elif direction < 0:
 			sprite.flip_h = false
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, effective_speed)
 	
 	move_and_slide()
 	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
