@@ -2,28 +2,26 @@ extends CanvasLayer
 ## Player List Overlay - Shows all players in current scene when TAB is pressed
 
 @onready var panel: Panel = $Panel
-@onready var grid_container: GridContainer = $Panel/MarginContainer/GridContainer
+@onready var grid_container: GridContainer = $Panel/MarginContainer/VBoxContainer/GridContainer
 
 var is_visible_overlay: bool = false
 
 
 func _ready() -> void:
 	# Hide by default
-	visible = false
+	panel.visible = false
 	is_visible_overlay = false
-	
-	# Configure grid to flow left to right, then top to bottom
-	grid_container.columns = 3  # Adjust number of columns as needed
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_tab"):
+	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
 		toggle_overlay()
+		get_viewport().set_input_as_handled()
 
 
 func toggle_overlay() -> void:
 	is_visible_overlay = !is_visible_overlay
-	visible = is_visible_overlay
+	panel.visible = is_visible_overlay
 	
 	if is_visible_overlay:
 		update_player_list()

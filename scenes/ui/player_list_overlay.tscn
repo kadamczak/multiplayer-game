@@ -38,11 +38,10 @@ layout_mode = 2
 layout_mode = 2
 text = "Players in Scene"
 horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="Panel/MarginContainer"]
+[node name="GridContainer" type="GridContainer" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 columns = 3

@@ -6,13 +6,12 @@
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="3_wrbqh"]
 [ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/ui/player_ui.tscn" id="4_i2ssx"]
 [ext_resource type="Texture2D" uid="uid://dpwht5l4h3vft" path="res://assets/sprites/rabbit.png" id="5_5rs17"]
+[ext_resource type="PackedScene" path="res://scenes/ui/player_list_overlay.tscn" id="5_frsds"]
 [ext_resource type="PackedScene" uid="uid://yg8t2bt4prdq" path="res://scenes/prefabs/small_bag.tscn" id="7_ignxr"]
 [ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="8_portal"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e13io"]
 size = Vector2(1200.5, 92.5)
-
-[sub_resource type="LabelSettings" id="LabelSettings_t8fgl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5rs17"]
 texture = ExtResource("3_wrbqh")
@@ -98,50 +97,7 @@ texture = ExtResource("2_wrbqh")
 [node name="PlayerUI" parent="UI" instance=ExtResource("4_i2ssx")]
 mouse_filter = 2
 
-[node name="PlayerListOverlay" type="CanvasLayer" parent="."]
-layer = 100
-
-[node name="Panel" type="Panel" parent="PlayerListOverlay"]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -200.0
-offset_right = 250.0
-offset_bottom = 200.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="PlayerListOverlay/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PlayerListOverlay/Panel/MarginContainer"]
-layout_mode = 2
-
-[node name="TitleLabel" type="Label" parent="PlayerListOverlay/Panel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Players in Scene"
-label_settings = SubResource("LabelSettings_t8fgl")
-horizontal_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="PlayerListOverlay/Panel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="GridContainer" type="GridContainer" parent="PlayerListOverlay/Panel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-columns = 3
+[node name="PlayerListOverlay" parent="UI" instance=ExtResource("5_frsds")]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 position = Vector2(-24, 227)
