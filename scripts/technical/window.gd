@@ -40,4 +40,4 @@ func _ready() -> void:
 	# Defer to next frame to ensure window is fully initialized
 	await get_tree().process_frame
 	DisplayServer.window_set_position(pos)
-	print("Window positioned at index ", index, " -> ", pos)
+	DebugLogger.log("Window positioned at index " + str(index) + " -> " + str(pos))

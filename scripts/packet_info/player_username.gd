@@ -22,11 +22,11 @@ func encode() -> PackedByteArray:
 	data.resize(2)
 	data.encode_u8(1, id)
 	data.append_array(username.to_utf8_buffer())
-	print("PlayerUsername.encode() - ID: ", id, " Username: ", username, " Data size: ", data.size())
+	DebugLogger.log("PlayerUsername.encode() - ID: " + str(id) + " Username: " + username + " Data size: " + str(data.size()))
 	return data
 
 func decode(data: PackedByteArray) -> void:
 	super.decode(data)
 	id = data.decode_u8(1)
 	username = data.slice(2).get_string_from_utf8()
-	print("PlayerUsername.decode() - ID: ", id, " Username: ", username, " Data size: ", data.size())
+	DebugLogger.log("PlayerUsername.decode() - ID: " + str(id) + " Username: " + username + " Data size: " + str(data.size()))

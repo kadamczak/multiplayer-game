@@ -53,13 +53,14 @@ func _on_login_button_pressed() -> void:
 	)
 	
 	if error != OK:
-		print("Request failed with error: ", error)
-	
-	
+		DebugLogger.log("Request failed with error: " + str(error))
+		return
+
+
 func _on_login_response(_result, response_code, _headers, body):
 	if response_code == 200: #2
 		var json = JSON.parse_string(body.get_string_from_utf8())
-		print("Login successful: ", json)
+		DebugLogger.log("Login successful: " + str(json))
 		
 		# Extract and store tokens securely
 		#var access_token = json.get("accessToken", "")
@@ -68,7 +69,7 @@ func _on_login_response(_result, response_code, _headers, body):
 		
 		# if not access_token.is_empty() and not refresh_token.is_empty():
 		# 	AuthManager.store_tokens(access_token, refresh_token, expires_in)
-		# 	print("Tokens stored securely")
+		# 	DebugLogger.log("Tokens stored securely")
 		# else:
 		# 	push_warning("Login response missing tokens")
 		
@@ -81,8 +82,8 @@ func _on_login_response(_result, response_code, _headers, body):
 		# Switch to hub scene
 		get_tree().change_scene_to_file("res://scenes/levels/hub.tscn")
 	else:
-		print("Login failed with code: ", response_code)
-		print("Response: ", body.get_string_from_utf8())
+		DebugLogger.log("Login failed with code: " + str(response_code))
+		DebugLogger.log("Response: " + body.get_string_from_utf8())
 
 		var response_text = body.get_string_from_utf8()
 		var json = JSON.parse_string(response_text)

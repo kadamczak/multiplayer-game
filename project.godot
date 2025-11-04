@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+DebugLogger="*res://scripts/technical/debug_logger.gd"
 NetworkHandler="*res://scripts/network/network_handler.gd"
 ServerNetworkGlobals="*res://scripts/network/server_network_globals.gd"
 ClientNetworkGlobals="*res://scripts/network/client_network_globals.gd"

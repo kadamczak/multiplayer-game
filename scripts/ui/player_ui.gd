@@ -14,5 +14,5 @@ func update_balance_display(amount: int) -> void:
 
 func _on_token_expired() -> void:
 	# Token expired and couldn't be refreshed - need to re-login
-	print("Session expired - redirecting to login")
+	DebugLogger.log("Session expired - redirecting to login")
 	get_tree().change_scene_to_file("res://scenes/ui/login_scene.tscn")

@@ -82,22 +82,22 @@ func start_server(ip_address: String = "127.0.0.1", port: int = 42068) -> void:
 	connection = ENetConnection.new()
 	var error: Error = connection.create_host_bound(ip_address, port)
 	if error:
-		print("Server starting failed: ", error_string(error))
+		DebugLogger.log("Server starting failed: " + error_string(error))
 		connection = null
 		return
 		
-	print("Server started")
+	DebugLogger.log("Server started")
 	is_server = true
 	
 func start_client(ip_address: String = "127.0.0.1", port: int = 42068) -> void:
 	connection = ENetConnection.new()
 	var error: Error = connection.create_host(1)
 	if error:
-		print("Client starting failed: ", error_string(error))
+		DebugLogger.log("Client starting failed: " + error_string(error))
 		connection = null
 		return
 	
-	print("Client started")
+	DebugLogger.log("Client started")
 	server_peer = connection.connect_to_host(ip_address, port)
 	
 	
@@ -109,11 +109,11 @@ func peer_connected(peer: ENetPacketPeer) -> void:
 	var peer_id: int = available_peer_ids.pop_back()
 	peer.set_meta("id", peer_id)
 	client_peers[peer_id] = peer
-	print("Peer connected with assigned id: ", peer_id)
+	DebugLogger.log("Peer connected with assigned id: " + str(peer_id))
 	on_peer_connected.emit(peer_id) #6
 
 func connected_to_server() -> void:
-	print("Succesfully connected to server")
+	DebugLogger.log("Succesfully connected to server")
 	on_connected_to_server.emit() #5
 	
 	
@@ -125,11 +125,11 @@ func peer_disconnected(peer: ENetPacketPeer) -> void:
 	var peer_id: int = peer.get_meta("id")
 	available_peer_ids.push_back(peer_id)
 	client_peers.erase(peer_id)
-	print("Peer disconnected with assigned id: ", peer_id)
+	DebugLogger.log("Peer disconnected with assigned id: " + str(peer_id))
 	on_peer_disconnected.emit(peer_id)
 
 func disconnected_from_server() -> void:
-	print("Succesfully disconnected from server")
+	DebugLogger.log("Succesfully disconnected from server")
 	on_disconnected_from_server.emit()
 	connection = null
 

@@ -25,7 +25,7 @@ func _index_spawn_areas() -> void:
 		if child is Area2D:
 			var label = child.name
 			spawn_areas[label] = child
-			print("PlayerSpawner: Indexed spawn area '", label, "'")
+			DebugLogger.log("PlayerSpawner: Indexed spawn area '" + label + "'")
 	
 	if spawn_areas.is_empty():
 		push_error("PlayerSpawner: No spawn areas (Area2D) found!")
@@ -35,12 +35,12 @@ func _cleanup_existing_players() -> void:
 	# Remove all existing player nodes to avoid duplicates when changing scenes
 	for child in get_children():
 		if child is CharacterBody2D and child.has_method("get") and child.get("owner_id") != null:
-			print("Cleaning up existing player: ", child.name)
+			DebugLogger.log("Cleaning up existing player: " + child.name)
 			child.queue_free()
 	
 	# After cleanup, respawn the local player if we have an ID
 	if ClientNetworkGlobals.id != -1:
-		print("Respawning local player with ID: ", ClientNetworkGlobals.id)
+		DebugLogger.log("Respawning local player with ID: " + str(ClientNetworkGlobals.id))
 		call_deferred("spawn_player", ClientNetworkGlobals.id)
 	
 	# Get current scene path
@@ -53,14 +53,14 @@ func _cleanup_existing_players() -> void:
 			if ClientNetworkGlobals.player_scenes.has(remote_id):
 				var player_scene = ClientNetworkGlobals.player_scenes[remote_id]
 				if player_scene == current_scene_path:
-					print("Respawning remote player with ID: ", remote_id, " (in same scene)")
+					DebugLogger.log("Respawning remote player with ID: " + str(remote_id) + " (in same scene)")
 					call_deferred("spawn_player", remote_id)
 				else:
-					print("Skipping remote player with ID: ", remote_id, " (in different scene: ", player_scene, ")")
+					DebugLogger.log("Skipping remote player with ID: " + str(remote_id) + " (in different scene: " + player_scene + ")")
 			else:
 				# If we don't know their scene yet, don't spawn them
 				# They will be spawned when we receive their scene change notification
-				print("Skipping remote player with ID: ", remote_id, " (scene unknown, waiting for scene change notification)")
+				DebugLogger.log("Skipping remote player with ID: " + str(remote_id) + " (scene unknown, waiting for scene change notification)")
 
 
 func get_spawn_area_for_player(player_id: int) -> Area2D:
@@ -72,24 +72,24 @@ func get_spawn_area_for_player(player_id: int) -> Area2D:
 		# This is the local player entering from another scene
 		var scene_file = ClientNetworkGlobals.previous_scene.get_file().get_basename()
 		from_scene_name = _normalize_scene_name(scene_file)
-		print("Local player ", player_id, " came from scene: ", from_scene_name)
+		DebugLogger.log("Local player " + str(player_id) + " came from scene: " + from_scene_name)
 
-	print("Determining spawn area for player ", player_id, " (from scene: '", from_scene_name, "')")
+	DebugLogger.log("Determining spawn area for player " + str(player_id) + " (from scene: '" + from_scene_name + "')")
 	
 	# Check if we have a spawn area matching the previous scene
 	if not from_scene_name.is_empty() and spawn_areas.has(from_scene_name):
-		print("Using spawn area '", from_scene_name, "' for player ", player_id)
+		DebugLogger.log("Using spawn area '" + from_scene_name + "' for player " + str(player_id))
 		return spawn_areas[from_scene_name]
 	
 	# Otherwise use "Default" spawn area
 	if spawn_areas.has("Default"):
-		print("Using default spawn area for player ", player_id)
+		DebugLogger.log("Using default spawn area for player " + str(player_id))
 		return spawn_areas["Default"]
 	
 	# Fallback to first available spawn area
 	if not spawn_areas.is_empty():
 		var first_label = spawn_areas.keys()[0]
-		print("WARNING: No Default spawn area found, using '", first_label, "' for player ", player_id)
+		DebugLogger.log("WARNING: No Default spawn area found, using '" + first_label + "' for player " + str(player_id))
 		return spawn_areas[first_label]
 	
 	push_error("PlayerSpawner: No spawn areas available!")
@@ -130,7 +130,7 @@ func get_random_spawn_position(spawn_area: Area2D) -> Vector2:
 func spawn_player(id: int) -> void:
 	# Check if player already exists
 	if get_node_or_null(str(id)) != null:
-		print("WARNING: Player ", id, " already exists, skipping spawn")
+		DebugLogger.log("WARNING: Player " + str(id) + " already exists, skipping spawn")
 		return
 	
 	var player = NETWORK_PLAYER.instantiate() #9
@@ -142,21 +142,21 @@ func spawn_player(id: int) -> void:
 	player.global_position = get_random_spawn_position(spawn_area)
 	
 	call_deferred("add_child", player)
-	print("Spawned player ", id, " at position: ", player.global_position)
+	DebugLogger.log("Spawned player " + str(id) + " at position: " + str(player.global_position))
 
 func despawn_player(id: int) -> void:
 	var player = get_node_or_null(str(id))
 	if player:
-		print("Despawning player with ID: ", id)
+		DebugLogger.log("Despawning player with ID: " + str(id))
 		player.queue_free()
 	else:
-		print("WARNING: Could not find player with ID ", id, " to despawn")
+		DebugLogger.log("WARNING: Could not find player with ID " + str(id) + " to despawn")
 
 
 func _on_remote_id_assignment(remote_id: int) -> void:
 	# Don't spawn remote players immediately on ID assignment
 	# Wait for their scene change notification to know if they're in our scene
-	print("Remote ID ", remote_id, " assigned, waiting for scene change notification before spawning")
+	DebugLogger.log("Remote ID " + str(remote_id) + " assigned, waiting for scene change notification before spawning")
 
 
 func _on_player_scene_change(scene_change) -> void:
@@ -164,7 +164,7 @@ func _on_player_scene_change(scene_change) -> void:
 	var new_scene = scene_change.scene_path
 	var current_scene_path = get_tree().current_scene.scene_file_path
 	
-	print("Player ", player_id, " changed to scene: ", new_scene, " (current scene: ", current_scene_path, ")")
+	DebugLogger.log("Player " + str(player_id) + " changed to scene: " + new_scene + " (current scene: " + current_scene_path + ")")
 	
 	# If player left this scene, despawn them
 	if new_scene != current_scene_path:

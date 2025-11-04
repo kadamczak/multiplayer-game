@@ -41,13 +41,13 @@ func on_client_packet(data: PackedByteArray) -> void:
 			
 		PacketInfo.PACKET_TYPE.PLAYER_USERNAME:
 			var player_username = PlayerUsername.create_from_data(data) #12
-			print("ClientNetworkGlobals received username packet - ID: ", player_username.id, " Username: ", player_username.username)
+			DebugLogger.log("ClientNetworkGlobals received username packet - ID: " + str(player_username.id) + " Username: " + player_username.username)
 			player_usernames[player_username.id] = player_username.username
 			handle_player_username.emit(player_username)
 			
 		PacketInfo.PACKET_TYPE.PLAYER_DISCONNECT:
 			var player_disconnect = PlayerDisconnect.create_from_data(data)
-			print("ClientNetworkGlobals received disconnect for ID: ", player_disconnect.id)
+			DebugLogger.log("ClientNetworkGlobals received disconnect for ID: " + str(player_disconnect.id))
 			var disconnected_id = player_disconnect.id
 			remote_ids.erase(disconnected_id)
 			player_usernames.erase(disconnected_id)
@@ -60,7 +60,7 @@ func on_client_packet(data: PackedByteArray) -> void:
 			
 		PacketInfo.PACKET_TYPE.PLAYER_SCENE_CHANGE:
 			var scene_change = PlayerSceneChange.create_from_data(data)
-			print("ClientNetworkGlobals received scene change - ID: ", scene_change.id, " Scene: ", scene_change.scene_path)
+			DebugLogger.log("ClientNetworkGlobals received scene change - ID: " + str(scene_change.id) + " Scene: " + scene_change.scene_path)
 			player_scenes[scene_change.id] = scene_change.scene_path
 			handle_player_scene_change.emit(scene_change)
 		_:

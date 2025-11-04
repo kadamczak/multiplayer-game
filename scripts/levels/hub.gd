@@ -4,7 +4,7 @@ func _ready() -> void:
 	# Update current scene tracking (previous_scene is set by portal before scene change)
 	var scene_path = get_tree().current_scene.scene_file_path
 	ClientNetworkGlobals.current_scene = scene_path
-	print("Hub: Current scene: ", scene_path, ", Previous scene: ", ClientNetworkGlobals.previous_scene)
+	DebugLogger.log("Hub: Current scene: " + scene_path + ", Previous scene: " + ClientNetworkGlobals.previous_scene)
 	
 	# Connect to ID assignment if not already connected
 	if not ClientNetworkGlobals.handle_local_id_assignment.is_connected(_on_local_id_assigned):
@@ -12,13 +12,13 @@ func _ready() -> void:
 	
 	# If we already have an ID (coming from another scene), send username and scene change
 	if ClientNetworkGlobals.id != -1 and not ClientNetworkGlobals.username.is_empty():
-		print("Hub: Player already has ID ", ClientNetworkGlobals.id, ", sending username and scene change")
+		DebugLogger.log("Hub: Player already has ID " + str(ClientNetworkGlobals.id) + ", sending username and scene change")
 		_send_username(ClientNetworkGlobals.id)
 		_send_scene_change(ClientNetworkGlobals.id, scene_path)
 
 
 func _on_local_id_assigned(local_id: int) -> void:
-	print("Hub: ID assigned: ", local_id, ", sending username and scene change")
+	DebugLogger.log("Hub: ID assigned: " + str(local_id) + ", sending username and scene change")
 	_send_username(local_id)
 	var scene_path = get_tree().current_scene.scene_file_path
 	_send_scene_change(local_id, scene_path)
@@ -33,7 +33,7 @@ func _send_username(player_id: int) -> void:
 		push_warning("Hub: Server peer is null, cannot send username")
 		return
 	
-	print("Hub: Sending username '", ClientNetworkGlobals.username, "' for player ", player_id)
+	DebugLogger.log("Hub: Sending username '" + ClientNetworkGlobals.username + "' for player " + str(player_id))
 	PlayerUsername.create(player_id, ClientNetworkGlobals.username).send(NetworkHandler.server_peer)
 
 
@@ -42,5 +42,5 @@ func _send_scene_change(player_id: int, scene_path: String) -> void:
 		push_warning("Hub: Server peer is null, cannot send scene change")
 		return
 	
-	print("Hub: Sending scene change for player ", player_id, " to scene ", scene_path)
+	DebugLogger.log("Hub: Sending scene change for player " + str(player_id) + " to scene " + scene_path)
 	PlayerSceneChange.create(player_id, scene_path).send(NetworkHandler.server_peer)

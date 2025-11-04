@@ -60,7 +60,7 @@ func _physics_process(delta: float) -> void:
 	# Toggle run with Shift (only when on ground)
 	if Input.is_action_just_pressed("ui_run") and is_on_floor():
 		is_running = not is_running
-		print("Run toggled: ", is_running)
+		DebugLogger.log("Run toggled: " + str(is_running))
 	
 	# Get horizontal input (A/D keys map to ui_left/ui_right)
 	var direction := Input.get_axis("ui_left", "ui_right")
@@ -109,11 +109,11 @@ func client_handle_player_position(player_position: PlayerPosition) -> void:
 
 # handles username updates on the client
 func client_handle_player_username(username_packet: PlayerUsername) -> void: #13
-	print("Player ", owner_id, " received username packet for ID ", username_packet.id, ": ", username_packet.username)
+	DebugLogger.log("Player " + str(owner_id) + " received username packet for ID " + str(username_packet.id) + ": " + username_packet.username)
 	if owner_id != username_packet.id: return
 	player_username = username_packet.username
 	label.text = player_username
-	print("Player ", owner_id, " updated label to: ", label.text)
+	DebugLogger.log("Player " + str(owner_id) + " updated label to: " + label.text)
 
 # handles animation updates on the client
 func client_handle_player_animation(anim_packet: PlayerAnimation) -> void:
