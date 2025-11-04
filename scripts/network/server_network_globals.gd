@@ -4,6 +4,7 @@ signal handle_player_position(peer_id: int, player_position: PlayerPosition)
 
 var peer_ids: Array[int]
 var peer_usernames: Dictionary = {} # peer_id -> username mapping
+var peer_scenes: Dictionary = {} # peer_id -> scene_path mapping
 
 func _ready() -> void:
 	NetworkHandler.on_peer_connected.connect(on_peer_connected)
@@ -21,9 +22,16 @@ func on_peer_connected(peer_id: int) -> void:
 		print("Sending existing username to new client: ID ", existing_peer_id, " -> ", username)
 		PlayerUsername.create(existing_peer_id, username).send(NetworkHandler.client_peers[peer_id])
 	
+	# Send all existing scenes to the new client
+	for existing_peer_id in peer_scenes:
+		var scene_path = peer_scenes[existing_peer_id]
+		print("Sending existing scene to new client: ID ", existing_peer_id, " -> ", scene_path)
+		PlayerSceneChange.create(existing_peer_id, scene_path).send(NetworkHandler.client_peers[peer_id])
+	
 func on_peer_disconnected(peer_id: int) -> void:
 	peer_ids.erase(peer_id)
 	peer_usernames.erase(peer_id)
+	peer_scenes.erase(peer_id)
 	# Notify all clients that this player disconnected
 	print("Broadcasting disconnect for peer ", peer_id)
 	PlayerDisconnect.create(peer_id).broadcast(NetworkHandler.connection)
@@ -47,5 +55,13 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			# Broadcast animation state to all clients
 			var player_anim = PlayerAnimation.create_from_data(data)
 			player_anim.broadcast(NetworkHandler.connection)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_SCENE_CHANGE:
+			# Store and broadcast scene change to all clients
+			var scene_change = PlayerSceneChange.create_from_data(data)
+			print("Server received scene change from peer ", peer_id, " - ID: ", scene_change.id, " Scene: ", scene_change.scene_path)
+			peer_scenes[scene_change.id] = scene_change.scene_path
+			print("Broadcasting to all clients")
+			scene_change.broadcast(NetworkHandler.connection)
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")

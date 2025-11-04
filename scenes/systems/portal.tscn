@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://cxjy5n8h4dm3w"]
+
+[ext_resource type="Script" uid="uid://v8fhyyx6hirg" path="res://scripts/systems/portal.gd" id="1_portal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_portal"]
+size = Vector2(150, 200)
+
+[sub_resource type="LabelSettings" id="LabelSettings_portal"]
+font_size = 24
+font_color = Color(1, 1, 0.4, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Portal" type="Area2D"]
+script = ExtResource("1_portal")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_portal")
+debug_color = Color(0.701961, 0.278431, 0.929412, 0.419608)
+
+[node name="Sprite2D" type="ColorRect" parent="."]
+offset_left = -75.0
+offset_top = -100.0
+offset_right = 75.0
+offset_bottom = 100.0
+color = Color(0.470588, 0.25098, 0.843137, 0.392157)
+
+[node name="Label" type="Label" parent="."]
+visible = false
+offset_left = -100.0
+offset_top = -150.0
+offset_right = 100.0
+offset_bottom = -120.0
+text = "Press SPACE to Enter"
+label_settings = SubResource("LabelSettings_portal")
+horizontal_alignment = 1
+vertical_alignment = 1

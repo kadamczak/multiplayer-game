@@ -1,12 +1,13 @@
-[gd_scene load_steps=11 format=4 uid="uid://bnt1b1mk5qsuk"]
+[gd_scene load_steps=12 format=4 uid="uid://bnt1b1mk5qsuk"]
 
-[ext_resource type="Script" path="res://scripts/levels/hub.gd" id="1_hub"]
+[ext_resource type="Script" uid="uid://c454m437urgap" path="res://scripts/levels/hub.gd" id="1_hub"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_e13io"]
 [ext_resource type="Texture2D" uid="uid://cncc6o7djp8v2" path="res://assets/sprites/flower1.png" id="2_wrbqh"]
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="3_wrbqh"]
 [ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/ui/player_ui.tscn" id="4_i2ssx"]
 [ext_resource type="Texture2D" uid="uid://dpwht5l4h3vft" path="res://assets/sprites/rabbit.png" id="5_5rs17"]
 [ext_resource type="PackedScene" uid="uid://yg8t2bt4prdq" path="res://scenes/prefabs/small_bag.tscn" id="7_ignxr"]
+[ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="8_portal"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e13io"]
 size = Vector2(1200.5, 92.5)
@@ -93,7 +94,6 @@ texture = ExtResource("2_wrbqh")
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="PlayerUI" parent="UI" instance=ExtResource("4_i2ssx")]
-visible = true
 mouse_filter = 2
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
@@ -107,11 +107,18 @@ position = Vector2(-1467, 1206)
 [node name="Sprite2D" type="Sprite2D" parent="Shopkeeper"]
 texture = ExtResource("5_5rs17")
 
-[node name="small_bag" parent="." instance=ExtResource("7_ignxr")]
+[node name="Prefabs" type="Node" parent="."]
+
+[node name="small_bag" parent="Prefabs" instance=ExtResource("7_ignxr")]
 position = Vector2(-587, 1220)
 
-[node name="small_bag2" parent="." instance=ExtResource("7_ignxr")]
+[node name="small_bag2" parent="Prefabs" instance=ExtResource("7_ignxr")]
 position = Vector2(-426, 1217)
 
-[node name="small_bag3" parent="." instance=ExtResource("7_ignxr")]
+[node name="small_bag3" parent="Prefabs" instance=ExtResource("7_ignxr")]
 position = Vector2(-271, 1222)
+
+[node name="Portal" parent="." instance=ExtResource("8_portal")]
+position = Vector2(800, 1200)
+destination_scene = "res://scenes/levels/level1.tscn"
+portal_name = "Level 1"

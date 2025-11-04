@@ -6,12 +6,15 @@ signal handle_player_position(player_position: PlayerPosition)
 signal handle_player_username(player_username: PlayerUsername)
 signal handle_player_disconnect(player_id: int)
 signal handle_player_animation(player_animation: PlayerAnimation)
+signal handle_player_scene_change(player_scene_change: PlayerSceneChange)
 signal balance_changed(new_balance: int)
 
 var id: int = -1
 var remote_ids: Array[int]
 var username: String = ""
 var player_usernames: Dictionary = {} # id -> username mapping
+var player_scenes: Dictionary = {} # id -> scene_path mapping
+var current_scene: String = ""
 var balance: int = 0:
 	set(value):
 		balance = value
@@ -48,6 +51,12 @@ func on_client_packet(data: PackedByteArray) -> void:
 		PacketInfo.PACKET_TYPE.PLAYER_ANIMATION:
 			var player_anim = PlayerAnimation.create_from_data(data)
 			handle_player_animation.emit(player_anim)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_SCENE_CHANGE:
+			var scene_change = PlayerSceneChange.create_from_data(data)
+			print("ClientNetworkGlobals received scene change - ID: ", scene_change.id, " Scene: ", scene_change.scene_path)
+			player_scenes[scene_change.id] = scene_change.scene_path
+			handle_player_scene_change.emit(scene_change)
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")
 
