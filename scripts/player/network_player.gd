@@ -6,8 +6,8 @@ const JUMP_VELOCITY: float = -700.0
 var is_authority: bool:
 	get: return !NetworkHandler.is_server && owner_id == ClientNetworkGlobals.id
 	
-# the peer_id of some particular player
-# the client has 1 NetworkPlayer for each player
+# The peer_id of some particular player
+# The client has 1 NetworkPlayer for each player
 var owner_id: int
 var player_username: String = ""
 
@@ -19,10 +19,8 @@ func _ready():
 		var camera = Camera2D.new()
 		add_child(camera)
 		camera.enabled = true
-		# Local player renders on top
 		z_index = 1
 	else:
-		# Other players render behind
 		z_index = 0
 	
 	# Check if username already exists for this player
@@ -61,13 +59,10 @@ func _physics_process(delta: float) -> void:
 	# Determine which animation should play
 	var target_animation := ""
 	if not is_on_floor():
-		# In air (jumping or falling)
 		target_animation = "air"
 	elif direction != 0:
-		# Walking
 		target_animation = "walk"
 	else:
-		# Idle
 		target_animation = "idle"
 	
 	# Only play animation if it's different from current

@@ -1,13 +1,11 @@
 extends Area2D
-## Portal - teleports players to another scene in multiplayer
 
-@export var destination_scene: String = "res://scenes/levels/level1.tscn"
+@export var destination_scene: String = "res://scenes/levels/hub.tscn"
 @export var portal_name: String = "Portal"
 
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
-	body_exited.connect(_on_body_exited)
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -16,14 +14,7 @@ func _on_body_entered(body: Node2D) -> void:
 			_travel_to_destination(body)
 
 
-func _on_body_exited(_body: Node2D) -> void:
-	# Not needed anymore since we travel immediately
-	pass
-
-
 func _travel_to_destination(player: Node2D) -> void:
-	print("Traveling to: ", destination_scene)
-	
 	# Get player ID before scene change
 	var player_id = player.owner_id
 	print("Player ", player_id, " is traveling to ", destination_scene)

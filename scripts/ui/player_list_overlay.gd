@@ -8,7 +8,6 @@ var is_visible_overlay: bool = false
 
 
 func _ready() -> void:
-	# Hide by default
 	panel.visible = false
 	is_visible_overlay = false
 

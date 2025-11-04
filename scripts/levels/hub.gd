@@ -1,9 +1,6 @@
 extends Node2D
-## Hub scene script - handles post-login initialization
 
 func _ready() -> void:
-	print("Hub scene loaded")
-	
 	# Update current scene tracking
 	var scene_path = get_tree().current_scene.scene_file_path
 	ClientNetworkGlobals.current_scene = scene_path

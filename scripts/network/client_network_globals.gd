@@ -11,10 +11,13 @@ signal balance_changed(new_balance: int)
 
 var id: int = -1
 var remote_ids: Array[int]
+
 var username: String = ""
 var player_usernames: Dictionary = {} # id -> username mapping
-var player_scenes: Dictionary = {} # id -> scene_path mapping
+
 var current_scene: String = ""
+var player_scenes: Dictionary = {} # id -> scene_path mapping
+
 var balance: int = 0:
 	set(value):
 		balance = value
@@ -44,10 +47,12 @@ func on_client_packet(data: PackedByteArray) -> void:
 		PacketInfo.PACKET_TYPE.PLAYER_DISCONNECT:
 			var player_disconnect = PlayerDisconnect.create_from_data(data)
 			print("ClientNetworkGlobals received disconnect for ID: ", player_disconnect.id)
-			remote_ids.erase(player_disconnect.id)
-			player_usernames.erase(player_disconnect.id)
-			handle_player_disconnect.emit(player_disconnect.id)
-			
+			var disconnected_id = player_disconnect.id
+			remote_ids.erase(disconnected_id)
+			player_usernames.erase(disconnected_id)
+			player_scenes.erase(disconnected_id)
+			handle_player_disconnect.emit(disconnected_id)
+
 		PacketInfo.PACKET_TYPE.PLAYER_ANIMATION:
 			var player_anim = PlayerAnimation.create_from_data(data)
 			handle_player_animation.emit(player_anim)

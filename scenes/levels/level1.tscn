@@ -4,8 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="1_x6ivy"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_spawner"]
 [ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/ui/player_ui.tscn" id="3_ui"]
-[ext_resource type="PackedScene" path="res://scenes/systems/portal.tscn" id="4_portal"]
-[ext_resource type="PackedScene" uid="uid://bu6wjhx3yjq3v" path="res://scenes/ui/player_list_overlay.tscn" id="5_overlay"]
+[ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="4_portal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/player_list_overlay.tscn" id="5_overlay"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_spawn"]
 size = Vector2(800, 100)
@@ -58,8 +58,7 @@ mouse_filter = 2
 
 [node name="Portal" parent="." instance=ExtResource("4_portal")]
 position = Vector2(-961, 617)
-destination_scene = "res://scenes/levels/hub.tscn"
-portal_name = "Return to Hub"
+portal_name = "Hub"
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 position = Vector2(-24, 227)

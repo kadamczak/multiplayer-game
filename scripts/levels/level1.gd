@@ -1,9 +1,6 @@
 extends Node2D
-## Level1 scene script - handles multiplayer functionality.
 
 func _ready() -> void:
-	print("Level1 scene loaded")
-	
 	# Update current scene tracking
 	var scene_path = get_tree().current_scene.scene_file_path
 	ClientNetworkGlobals.current_scene = scene_path

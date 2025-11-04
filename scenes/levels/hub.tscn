@@ -123,4 +123,5 @@ position = Vector2(-271, 1222)
 
 [node name="Portal" parent="." instance=ExtResource("8_portal")]
 position = Vector2(800, 1200)
+destination_scene = "res://scenes/levels/level1.tscn"
 portal_name = "Level 1"
