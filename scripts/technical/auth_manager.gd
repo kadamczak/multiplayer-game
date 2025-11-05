@@ -5,7 +5,7 @@ signal token_refresh_failed()
 
 var access_token: String = ""
 var refresh_token: String = ""
-var stay_logged_in: bool = false
+var stay_logged_in: bool = true
 
 const AUTH_API_BASE: String = "https://localhost:7110/v1/identity"
 var _instance_name: String = ""
@@ -20,7 +20,7 @@ func _ready() -> void:
 			break
 
 
-## Store tokens in memory and persist refresh token to disk
+## Store tokens in memory and persist refresh token to disk if stay_logged_in is true
 func store_tokens(access: String, refresh: String, stay_logged: bool) -> void:
 	access_token = access
 	refresh_token = refresh
@@ -44,7 +44,6 @@ func _save_refresh_token_to_file(token: String) -> void:
 	DebugLogger.log("Refresh token saved to: " + filename)
 
 
-## Load refresh token from secure file
 func load_refresh_token_from_file() -> String:
 	var filename = _get_refresh_token_filename()
 	
@@ -69,7 +68,6 @@ func _get_refresh_token_filename() -> String:
 	if not _instance_name.is_empty():
 		base_name += "_" + _instance_name
 	
-	# Store in user data directory
 	return "user://" + base_name + ".dat"
 
 
@@ -124,7 +122,6 @@ func refresh_access_token() -> bool:
 		token_refresh_failed.emit()
 		return false
 	
-	# Wait for response
 	var response = await http.request_completed
 	http.queue_free()
 	
@@ -155,8 +152,6 @@ func refresh_access_token() -> bool:
 	else:
 		DebugLogger.log("Token refresh failed with code: " + str(response_code))
 		DebugLogger.log("Response: " + response_body.get_string_from_utf8())
-		
-		# Clear invalid tokens
 		clear_tokens()
 		token_refresh_failed.emit()
 		return false
@@ -171,10 +166,7 @@ func attempt_auto_login() -> bool:
 		DebugLogger.log("No saved refresh token found")
 		return false
 	
-	# Store the refresh token temporarily
 	refresh_token = saved_refresh
-	
-	# Try to refresh and get new access token
 	var success = await refresh_access_token()
 	
 	if not success:
@@ -186,7 +178,6 @@ func attempt_auto_login() -> bool:
 
 
 ## Make an authenticated HTTP request with automatic token refresh on 401
-## Returns the response as [result, response_code, headers, body]
 func make_authenticated_request(url: String, method: HTTPClient.Method, body: String = "", additional_headers: Array = []) -> Array:
 	if not has_access_token():
 		DebugLogger.log("No access token available")

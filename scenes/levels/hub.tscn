@@ -181,7 +181,7 @@ follow_viewport_scale = 1.2
 modulate = Color(0.600566, 0.602944, 0.49285388, 1)
 
 [node name="tree" type="Sprite2D" parent="Environment/2/all"]
-position = Vector2(-1202.6514, 809.09094)
+position = Vector2(-1178.4847, 809.09094)
 texture = ExtResource("5_pu6vg")
 
 [node name="bush" type="Sprite2D" parent="Environment/2/all"]
