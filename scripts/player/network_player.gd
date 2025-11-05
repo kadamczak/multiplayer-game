@@ -21,6 +21,7 @@ var is_running: bool = false
 func _ready():
 	if is_authority:
 		var camera = Camera2D.new()
+		camera.position = Vector2(0, -150)  # Offset camera higher (negative Y is up)
 		add_child(camera)
 		camera.enabled = true
 		z_index = 1

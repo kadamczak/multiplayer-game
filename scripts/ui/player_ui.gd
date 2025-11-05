@@ -6,8 +6,8 @@ func _ready():
 	ClientNetworkGlobals.balance_changed.connect(update_balance_display)
 	update_balance_display(ClientNetworkGlobals.balance)
 	
-	# Listen for token expiry to handle forced logout
-	#AuthManager.token_expired.connect(_on_token_expired)
+	# Listen for token refresh failure to handle forced logout
+	AuthManager.token_refresh_failed.connect(_on_token_expired)
 
 func update_balance_display(amount: int) -> void:
 	balance_label.text = str(amount)
