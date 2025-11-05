@@ -6,7 +6,6 @@ var spawn_areas: Dictionary = {}  # label -> Area2D mapping
 
 
 func _ready() -> void:
-	# Index all spawn areas by their labels
 	_index_spawn_areas()
 	
 	NetworkHandler.on_peer_connected.connect(spawn_player)
@@ -15,7 +14,6 @@ func _ready() -> void:
 	ClientNetworkGlobals.handle_player_disconnect.connect(despawn_player)
 	ClientNetworkGlobals.handle_player_scene_change.connect(_on_player_scene_change)
 	
-	# Clean up any existing player instances from previous scene
 	_cleanup_existing_players()
 
 
@@ -64,7 +62,6 @@ func _cleanup_existing_players() -> void:
 
 
 func get_spawn_area_for_player(player_id: int) -> Area2D:
-	# Determine which spawn area to use based on where the player came from
 	var from_scene_name = ""
 	
 	# Check if we have a record of where this player came from

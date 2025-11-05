@@ -34,14 +34,12 @@ func _ready():
 		label.text = player_username
 
 func _enter_tree() -> void:
-	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
 	ClientNetworkGlobals.handle_player_username.connect(client_handle_player_username)
 	ClientNetworkGlobals.handle_player_animation.connect(client_handle_player_animation)
 
 
 func _exit_tree() -> void:
-	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.disconnect(client_handle_player_position)
 	ClientNetworkGlobals.handle_player_username.disconnect(client_handle_player_username)
 	ClientNetworkGlobals.handle_player_animation.disconnect(client_handle_player_animation)
@@ -97,11 +95,6 @@ func _physics_process(delta: float) -> void:
 	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
 	PlayerAnimation.create(owner_id, sprite.animation, sprite.flip_h).send(NetworkHandler.server_peer)
 
-# server -> all players
-func server_handle_player_position(peer_id: int, player_position: PlayerPosition) -> void:
-	if owner_id != peer_id: return
-	global_position = player_position.position
-	PlayerPosition.create(owner_id, global_position).broadcast(NetworkHandler.connection)
 	
 # handles other players on the client
 func client_handle_player_position(player_position: PlayerPosition) -> void:

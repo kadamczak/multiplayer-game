@@ -41,10 +41,10 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 	var packet_type: int = data.decode_u8(0)
 	match packet_type:
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
-			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
+			var player_position = PlayerPosition.create_from_data(data)
+			player_position.broadcast(NetworkHandler.connection)
 			
 		PacketInfo.PACKET_TYPE.PLAYER_USERNAME: #11
-			# Store and broadcast the username to all clients
 			var player_username = PlayerUsername.create_from_data(data)
 			DebugLogger.log("Server received username from peer " + str(peer_id) + " - ID: " + str(player_username.id) + " Username: " + player_username.username)
 			peer_usernames[player_username.id] = player_username.username
@@ -52,12 +52,10 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			player_username.broadcast(NetworkHandler.connection)
 			
 		PacketInfo.PACKET_TYPE.PLAYER_ANIMATION:
-			# Broadcast animation state to all clients
 			var player_anim = PlayerAnimation.create_from_data(data)
 			player_anim.broadcast(NetworkHandler.connection)
 			
 		PacketInfo.PACKET_TYPE.PLAYER_SCENE_CHANGE:
-			# Store and broadcast scene change to all clients
 			var scene_change = PlayerSceneChange.create_from_data(data)
 			DebugLogger.log("Server received scene change from peer " + str(peer_id) + " - ID: " + str(scene_change.id) + " Scene: " + scene_change.scene_path)
 			peer_scenes[scene_change.id] = scene_change.scene_path
