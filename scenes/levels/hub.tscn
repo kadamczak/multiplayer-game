@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="8_portal"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e13io"]
-size = Vector2(1200.5, 157.25)
+size = Vector2(848.25, 131.625)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_frsds"]
 size = Vector2(285.75, 163.5)
@@ -84,7 +84,7 @@ script = ExtResource("1_hub")
 position = Vector2(231, 338)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Default"]
-position = Vector2(-493, 111)
+position = Vector2(-316.875, 123.8125)
 shape = SubResource("RectangleShape2D_e13io")
 
 [node name="Level1" type="Area2D" parent="PlayerSpawner"]
@@ -195,6 +195,7 @@ scale = Vector2(0.76828086, 0.8472644)
 texture = ExtResource("4_hgdgd")
 
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 4
 
 [node name="PlayerUI" parent="UI" instance=ExtResource("4_i2ssx")]
 mouse_filter = 2

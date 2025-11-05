@@ -53,6 +53,13 @@ placeholder_text = "Password"
 max_length = 256
 secret = true
 
+[node name="StayLoggedInCheckbox" type="CheckBox" parent="Login"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Stay logged in"
+autowrap_mode = 2
+
 [node name="LoginButton" type="Button" parent="Login"]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
