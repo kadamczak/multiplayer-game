@@ -20,17 +20,25 @@ func on_scene_ready(scene_root: Node) -> void:
 	
 	player_container = scene_root.find_child("Players", false, false)
 	_index_spawn_areas(scene_root)
+	
+	# If we have an ID assigned, refresh players (this handles scene transitions)
+	if ClientNetworkGlobals.id != -1:
+		DebugLogger.log("Scene ready with assigned ID, refreshing players")
+		_refresh_players()
 
 
 func _on_node_added(node: Node) -> void:
 	if node == get_tree().current_scene:
-		call_deferred("on_scene_ready", node)
+		on_scene_ready(node)
 
 
 func _on_local_id_assignment(local_id: int) -> void:
 	DebugLogger.log("ID assigned: " + str(local_id) + ", sending username and scene change")
 	_send_username(local_id)
 	_send_scene_change(local_id, ClientNetworkGlobals.current_scene)
+	
+	# After ID assignment, spawn the local player and any remote players in the same scene
+	_refresh_players()
 
 
 func _index_spawn_areas(scene_root: Node) -> void:
@@ -63,7 +71,11 @@ func _find_all_spawn_areas(node: Node) -> Array:
 
 func _refresh_players() -> void:
 	if player_container == null:
+		DebugLogger.log("_refresh_players: player_container is null, skipping")
 		return
+	
+	DebugLogger.log("_refresh_players: Starting refresh. Current scene: " + str(ClientNetworkGlobals.current_scene))
+	DebugLogger.log("_refresh_players: Known player scenes: " + str(ClientNetworkGlobals.player_scenes))
 	
 	# Remove all existing player nodes
 	for child in player_container.get_children():
@@ -74,11 +86,12 @@ func _refresh_players() -> void:
 	# After cleanup, respawn the local player if we have an ID
 	if ClientNetworkGlobals.id != -1:
 		DebugLogger.log("Respawning local player with ID: " + str(ClientNetworkGlobals.id))
-		call_deferred("spawn_player", ClientNetworkGlobals.id)
+		spawn_player(ClientNetworkGlobals.id)
 	
 	# Get current scene path
 	var current_scene = ClientNetworkGlobals.current_scene
 	if current_scene == null:
+		DebugLogger.log("_refresh_players: current_scene is null, skipping remote players")
 		return
 
 	for player_id in ClientNetworkGlobals.player_scenes:
@@ -86,9 +99,12 @@ func _refresh_players() -> void:
 			continue
 
 		var player_scene = ClientNetworkGlobals.player_scenes[player_id]
+		DebugLogger.log("_refresh_players: Checking player " + str(player_id) + " - their scene: " + player_scene + ", current: " + current_scene)
 		if player_scene == current_scene:
 			DebugLogger.log("Respawning remote player with ID: " + str(player_id) + " (in same scene)")
-			call_deferred("spawn_player", player_id)
+			spawn_player(player_id)
+		else:
+			DebugLogger.log("Skipping remote player with ID: " + str(player_id) + " (different scene)")
 
 
 func get_spawn_area_for_player(player_id: int) -> Area2D:
@@ -146,10 +162,10 @@ func spawn_player(id: int) -> void:
 		return
 	
 	# Check if player already exists
-	var existing = player_container.get_node_or_null(str(id))
-	if existing != null:
-		DebugLogger.log("WARNING: Player " + str(id) + " already exists, skipping spawn")
-		return
+	# var existing = player_container.get_node_or_null(str(id))
+	# if existing != null:
+	# 	DebugLogger.log("WARNING: Player " + str(id) + " already exists, skipping spawn")
+	# 	return
 	
 	var player = NETWORK_PLAYER.instantiate()
 	player.owner_id = id
@@ -159,7 +175,7 @@ func spawn_player(id: int) -> void:
 	var spawn_area = get_spawn_area_for_player(id)
 	player.global_position = get_random_spawn_position(spawn_area)
 	
-	player_container.call_deferred("add_child", player)
+	player_container.add_child(player)
 	DebugLogger.log("Spawned player " + str(id) + " at position: " + str(player.global_position))
 
 
@@ -182,8 +198,11 @@ func _on_player_scene_change(scene_change) -> void:
 
 	ClientNetworkGlobals.player_scenes[player_id] = new_scene
 
+	DebugLogger.log("Player scenes after update: " + str(ClientNetworkGlobals.player_scenes))
+
+	# Skip handling for local player - they'll be respawned when the scene loads via on_scene_ready()
 	if player_id == ClientNetworkGlobals.id:
-		_refresh_players()
+		DebugLogger.log("Local player scene change detected, waiting for scene load")
 		return
 	
 	# Get current scene path safely
@@ -192,12 +211,12 @@ func _on_player_scene_change(scene_change) -> void:
 		DebugLogger.log("Current scene is null, ignoring scene change for player " + str(player_id))
 		return
 	
-	#var current_scene_path = current_scene.scene_file_path
 	DebugLogger.log("Player " + str(player_id) + " changed to scene: " + new_scene + " (current scene: " + current_scene_path + ")")
 	
+	# For remote players, incrementally spawn or despawn based on scene match
 	if new_scene != current_scene_path:
 		despawn_player(player_id)
-	elif new_scene == current_scene_path and player_id != ClientNetworkGlobals.id:
+	else:
 		spawn_player(player_id)
 
 

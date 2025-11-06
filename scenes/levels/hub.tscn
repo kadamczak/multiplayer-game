@@ -105,7 +105,7 @@ shape = SubResource("RectangleShape2D_hgdgd")
 position = Vector2(0, -16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnAreas/Remote"]
-position = Vector2(-18621, -3651.5)
+position = Vector2(-18652, -3651.5)
 shape = SubResource("RectangleShape2D_x0xvm")
 
 [node name="Environment" type="Node" parent="."]

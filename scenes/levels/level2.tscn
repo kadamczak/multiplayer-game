@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://b24suq232fld3"]
+[gd_scene load_steps=11 format=4 uid="uid://b24suq232fld3"]
 
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="1_d5djh"]
 [ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/ui/player_ui.tscn" id="2_ok6xr"]
@@ -11,6 +11,9 @@ size = Vector2(202.5, 143)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d5djh"]
 size = Vector2(1394.5, 181.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ok6xr"]
+size = Vector2(1803, 2401)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gycjm"]
 texture = ExtResource("5_b0vvs")
@@ -41,20 +44,26 @@ sources/3 = SubResource("TileSetAtlasSource_gycjm")
 
 [node name="Level2" type="Node2D"]
 
-[node name="PlayerSpawner" parent="." instance=ExtResource("1_d5djh")]
+[node name="SpawnAreas" parent="." instance=ExtResource("1_d5djh")]
 
-[node name="Hub" type="Area2D" parent="PlayerSpawner"]
+[node name="Hub" type="Area2D" parent="SpawnAreas"]
 position = Vector2(0, 200)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Hub"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnAreas/Hub"]
 position = Vector2(-41, 577)
 shape = SubResource("RectangleShape2D_oyk6k")
 
-[node name="Default" type="Area2D" parent="PlayerSpawner"]
+[node name="Default" type="Area2D" parent="SpawnAreas"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Default"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnAreas/Default"]
 position = Vector2(-1710, 735)
 shape = SubResource("RectangleShape2D_d5djh")
+
+[node name="Remote" type="Area2D" parent="SpawnAreas"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnAreas/Remote"]
+position = Vector2(-7525, -1178)
+shape = SubResource("RectangleShape2D_ok6xr")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
