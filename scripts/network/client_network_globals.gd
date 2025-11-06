@@ -1,7 +1,6 @@
 extends Node
 
 signal handle_local_id_assignment(local_id: int)
-signal handle_remote_id_assignment(remote_id: int)
 signal handle_player_position(player_position: PlayerPosition)
 signal handle_player_username(player_username: PlayerUsername)
 signal handle_player_disconnect(player_id: int)
@@ -10,7 +9,6 @@ signal handle_player_scene_change(player_scene_change: PlayerSceneChange)
 signal balance_changed(new_balance: int)
 
 var id: int = -1
-var remote_ids: Array[int]
 
 var username: String = ""
 var player_usernames: Dictionary = {} # id -> username mapping
@@ -49,7 +47,6 @@ func on_client_packet(data: PackedByteArray) -> void:
 			var player_disconnect = PlayerDisconnect.create_from_data(data)
 			DebugLogger.log("ClientNetworkGlobals received disconnect for ID: " + str(player_disconnect.id))
 			var disconnected_id = player_disconnect.id
-			remote_ids.erase(disconnected_id)
 			player_usernames.erase(disconnected_id)
 			player_scenes.erase(disconnected_id)
 			handle_player_disconnect.emit(disconnected_id)
@@ -70,13 +67,4 @@ func on_client_packet(data: PackedByteArray) -> void:
 func manage_ids(id_assignment: IDAssignment) -> void:
 	if id == -1:
 		id = id_assignment.id
-		handle_local_id_assignment.emit(id_assignment.id) #8
-		
-		remote_ids = id_assignment.remoted_ids
-		for remote_id in remote_ids:
-			if remote_id == id: continue
-			handle_remote_id_assignment.emit(remote_id)
-	
-	else:
-		remote_ids.append(id_assignment.id)
-		handle_remote_id_assignment.emit(id_assignment.id)
+		handle_local_id_assignment.emit(id_assignment.id)

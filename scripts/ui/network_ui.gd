@@ -46,7 +46,7 @@ func _on_login_button_pressed() -> void:
 		"X-Client-Type: Game"
 	]
 	
-	var error = http_request.request( #1
+	var error = http_request.request(
 		"https://localhost:7110/v1/identity/login",
 		headers,
 		HTTPClient.METHOD_POST,
@@ -60,7 +60,7 @@ func _on_login_button_pressed() -> void:
 
 func _on_login_response(_result, response_code, _headers, body):
 	
-	if response_code == 200: #2
+	if response_code == 200:
 		var json = JSON.parse_string(body.get_string_from_utf8())
 		
 		var access_token = json.get("accessToken", "")
@@ -82,7 +82,7 @@ func _on_login_response(_result, response_code, _headers, body):
 			login_panel.visible = true
 			return
 
-		_successfully_log_in(user_info.userName, user_info.balance) #3
+		_successfully_log_in(user_info.userName, user_info.balance)
 	else:
 		DebugLogger.log("Login failed with code: " + str(response_code))
 		DebugLogger.log("Response: " + body.get_string_from_utf8())
@@ -160,5 +160,5 @@ func _successfully_log_in(username: String, balance: int) -> void:
 	ClientNetworkGlobals.username = username
 	ClientNetworkGlobals.balance = balance
 
-	NetworkHandler.start_client() #4
+	NetworkHandler.start_client()
 	get_tree().change_scene_to_file("res://scenes/levels/hub.tscn")

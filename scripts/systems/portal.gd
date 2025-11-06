@@ -15,22 +15,16 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _travel_to_destination(player: Node2D) -> void:
-	# Get player ID before scene change
 	var player_id = player.owner_id
 	DebugLogger.log("Player " + str(player_id) + " is traveling to " + destination_scene)
 	
-	# Store the current scene as the previous scene BEFORE changing
 	var current_scene_path = get_tree().current_scene.scene_file_path
 	ClientNetworkGlobals.previous_scene = current_scene_path
-	DebugLogger.log("Storing previous scene: " + current_scene_path)
+	ClientNetworkGlobals.current_scene = destination_scene
 	
-	# Notify server and other clients about scene change
+	get_tree().change_scene_to_file(destination_scene)
+
 	if NetworkHandler.server_peer != null:
 		PlayerSceneChange.create(player_id, destination_scene).send(NetworkHandler.server_peer)
 		DebugLogger.log("Sent scene change notification to server")
 	
-	# Update local scene tracking
-	ClientNetworkGlobals.current_scene = destination_scene
-	
-	# Change scene
-	get_tree().change_scene_to_file(destination_scene)

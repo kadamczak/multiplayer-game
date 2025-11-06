@@ -1,6 +1,5 @@
 [gd_scene load_steps=22 format=4 uid="uid://bnt1b1mk5qsuk"]
 
-[ext_resource type="Script" uid="uid://c454m437urgap" path="res://scripts/levels/hub.gd" id="1_hub"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_e13io"]
 [ext_resource type="Texture2D" uid="uid://cncc6o7djp8v2" path="res://assets/sprites/flower1.png" id="2_wrbqh"]
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="3_wrbqh"]
@@ -21,6 +20,9 @@ size = Vector2(285.75, 163.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hgdgd"]
 size = Vector2(243.25, 184.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x0xvm"]
+size = Vector2(3096, 1113)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dvhlj"]
 texture = ExtResource("4_lo7ou")
@@ -76,28 +78,35 @@ physics_layer_0/collision_layer = 1
 sources/3 = SubResource("TileSetAtlasSource_5rs17")
 
 [node name="SceneExample" type="Node2D"]
-script = ExtResource("1_hub")
 
-[node name="PlayerSpawner" parent="." instance=ExtResource("2_e13io")]
+[node name="SpawnAreas" parent="." instance=ExtResource("2_e13io")]
+script = null
 
-[node name="Default" type="Area2D" parent="PlayerSpawner"]
+[node name="Default" type="Area2D" parent="SpawnAreas"]
 position = Vector2(231, 338)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Default"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnAreas/Default"]
 position = Vector2(-316.875, 123.8125)
 shape = SubResource("RectangleShape2D_e13io")
 
-[node name="Level1" type="Area2D" parent="PlayerSpawner"]
+[node name="Level1" type="Area2D" parent="SpawnAreas"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Level1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnAreas/Level1"]
 position = Vector2(1371, 1157)
 shape = SubResource("RectangleShape2D_frsds")
 
-[node name="Level2" type="Area2D" parent="PlayerSpawner"]
+[node name="Level2" type="Area2D" parent="SpawnAreas"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSpawner/Level2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnAreas/Level2"]
 position = Vector2(-3139, 1144)
 shape = SubResource("RectangleShape2D_hgdgd")
+
+[node name="Remote" type="Area2D" parent="SpawnAreas"]
+position = Vector2(0, -16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnAreas/Remote"]
+position = Vector2(-18621, -3651.5)
+shape = SubResource("RectangleShape2D_x0xvm")
 
 [node name="Environment" type="Node" parent="."]
 
@@ -233,3 +242,5 @@ portal_name = "Level 1"
 position = Vector2(-3409, 1151)
 destination_scene = "res://scenes/levels/level2.tscn"
 portal_name = "Level 2"
+
+[node name="Players" type="Node" parent="."]

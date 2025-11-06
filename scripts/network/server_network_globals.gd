@@ -1,8 +1,5 @@
 extends Node
 
-signal handle_player_position(peer_id: int, player_position: PlayerPosition)
-
-var peer_ids: Array[int]
 var peer_usernames: Dictionary = {} # peer_id -> username mapping
 var peer_scenes: Dictionary = {} # peer_id -> scene_path mapping
 
@@ -13,8 +10,7 @@ func _ready() -> void:
 	
 
 func on_peer_connected(peer_id: int) -> void:
-	peer_ids.append(peer_id) #7
-	IDAssignment.create(peer_id, peer_ids).broadcast(NetworkHandler.connection)
+	IDAssignment.create(peer_id).broadcast(NetworkHandler.connection)
 	
 	# Send all existing usernames to the new client
 	for existing_peer_id in peer_usernames:
@@ -29,14 +25,11 @@ func on_peer_connected(peer_id: int) -> void:
 		PlayerSceneChange.create(existing_peer_id, scene_path).send(NetworkHandler.client_peers[peer_id])
 	
 func on_peer_disconnected(peer_id: int) -> void:
-	peer_ids.erase(peer_id)
 	peer_usernames.erase(peer_id)
 	peer_scenes.erase(peer_id)
-	# Notify all clients that this player disconnected
 	DebugLogger.log("Broadcasting disconnect for peer " + str(peer_id))
 	PlayerDisconnect.create(peer_id).broadcast(NetworkHandler.connection)
 	
-# Server only sends IDAssignment packets, does not receive them.	
 func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 	var packet_type: int = data.decode_u8(0)
 	match packet_type:
@@ -44,7 +37,7 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			var player_position = PlayerPosition.create_from_data(data)
 			player_position.broadcast(NetworkHandler.connection)
 			
-		PacketInfo.PACKET_TYPE.PLAYER_USERNAME: #11
+		PacketInfo.PACKET_TYPE.PLAYER_USERNAME:
 			var player_username = PlayerUsername.create_from_data(data)
 			DebugLogger.log("Server received username from peer " + str(peer_id) + " - ID: " + str(player_username.id) + " Username: " + player_username.username)
 			peer_usernames[player_username.id] = player_username.username
