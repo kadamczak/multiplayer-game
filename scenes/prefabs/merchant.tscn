@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://kg1j3uam65wf"]
+[gd_scene load_steps=18 format=3 uid="uid://kg1j3uam65wf"]
 
 [ext_resource type="Texture2D" uid="uid://ptj7368s7w4f" path="res://assets/spritesheets/rabbit_spritesheets/rabbit_idle.png" id="1_li4o6"]
 [ext_resource type="Script" uid="uid://dst5i7ttbj51g" path="res://scripts/prefabs/merchant.gd" id="1_shopkeeper"]
+[ext_resource type="PackedScene" uid="uid://dhgky4w5olwah" path="res://scenes/ui/merchant_ui.tscn" id="2_hfdix"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lo7ou"]
 atlas = ExtResource("1_li4o6")
@@ -101,6 +102,8 @@ size = Vector2(471.66666, 220.83333)
 [node name="Merchant" type="Node2D"]
 scale = Vector2(1.2, 1.2)
 script = ExtResource("1_shopkeeper")
+
+[node name="MerchantUI" parent="." instance=ExtResource("2_hfdix")]
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
 position = Vector2(-0.83325195, 6.6666665)

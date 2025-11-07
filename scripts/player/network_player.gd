@@ -57,7 +57,7 @@ func _physics_process(delta: float) -> void:
 		velocity += get_gravity() * delta
 	
 	# If dialogue is active, don't process movement input
-	if ClientNetworkGlobals.is_dialogue_active:
+	if ClientNetworkGlobals.is_movement_blocking_ui_active:
 		velocity.x = move_toward(velocity.x, 0, WALK_SPEED)
 		move_and_slide()
 		if sprite.animation != "idle":
