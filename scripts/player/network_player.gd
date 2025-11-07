@@ -21,12 +21,16 @@ var is_running: bool = false
 func _ready():
 	if is_authority:
 		var camera = Camera2D.new()
-		camera.position = Vector2(0, -150)  # Offset camera higher (negative Y is up)
+		camera.position = Vector2(0, -150)
 		add_child(camera)
 		camera.enabled = true
 		z_index = 1
+		collision_layer = 1
+		collision_mask = 1  # Only collides with environment (layer 1)
 	else:
 		z_index = 0
+		collision_layer = 2
+		collision_mask = 0  # Don't collide with anything
 	
 	# Check if username already exists for this player
 	if ClientNetworkGlobals.player_usernames.has(owner_id):
