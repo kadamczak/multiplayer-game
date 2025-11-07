@@ -14,10 +14,10 @@ script = ExtResource("1_sd0pw")
 [node name="Panel" type="Panel" parent="."]
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = -100.0
-offset_bottom = 378.0
+offset_left = 65.0
+offset_top = 65.0
+offset_right = -135.0
+offset_bottom = 343.0
 grow_horizontal = 2
 
 [node name="ColorRect" type="ColorRect" parent="Panel"]
@@ -27,7 +27,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0.5647059)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
 layout_mode = 1
@@ -49,13 +49,33 @@ texture = ExtResource("2_portrait")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DialogueLabel" type="Label" parent="Panel/HBoxContainer"]
+[node name="RightSide" type="VBoxContainer" parent="Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 1
+theme_override_constants/separation = 15
+
+[node name="DialogueLabel" type="Label" parent="Panel/HBoxContainer/RightSide"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 text = "..."
 label_settings = SubResource("LabelSettings_j7bd3")
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="Panel/HBoxContainer/RightSide"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 2
+
+[node name="TalkButton" type="Button" parent="Panel/HBoxContainer/RightSide/ButtonContainer"]
+custom_minimum_size = Vector2(120, 50)
+layout_mode = 2
+text = "Talk"
+
+[node name="TradeButton" type="Button" parent="Panel/HBoxContainer/RightSide/ButtonContainer"]
+custom_minimum_size = Vector2(120, 50)
+layout_mode = 2
+text = "Trade"

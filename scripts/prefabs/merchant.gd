@@ -14,6 +14,9 @@ var local_player_in_area: bool = false
 func _ready() -> void:
 	area_2d.body_entered.connect(_on_body_entered)
 	area_2d.body_exited.connect(_on_body_exited)
+	merchant_ui.talk_clicked.connect(_on_talk_clicked)
+	merchant_ui.trade_clicked.connect(_on_trade_clicked)
+
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is CharacterBody2D and body.has_method("get") and body.get("is_authority"):
@@ -31,6 +34,14 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_cancel"):
 			merchant_ui.hide_dialogue()
 			get_viewport().set_input_as_handled()
-	elif local_player_in_area and event.is_action_pressed("ui_action"):
-		merchant_ui.show_dialogue(greeting_text)
+	elif local_player_in_area and event.is_action_pressed("ui_accept"):
+		merchant_ui.show_dialogue(greeting_text, "Talk")
 		get_viewport().set_input_as_handled()
+
+
+func _on_talk_clicked() -> void:
+	merchant_ui.show_dialogue(talk_text, "Talk")
+
+
+func _on_trade_clicked() -> void:
+	merchant_ui.show_dialogue(trade_text, "Trade")
