@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://yg8t2bt4prdq" path="res://scenes/prefabs/small_bag.tscn" id="7_ignxr"]
 [ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="8_portal"]
 [ext_resource type="PackedScene" uid="uid://kg1j3uam65wf" path="res://scenes/prefabs/merchant.tscn" id="9_x0xvm"]
-[ext_resource type="PackedScene" uid="uid://dhgky4w5olwah" path="res://scenes/ui/dialogue_ui.tscn" id="10_lo7ou"]
+[ext_resource type="PackedScene" uid="uid://dhgky4w5olwah" path="res://scenes/ui/merchant_ui.tscn" id="10_lo7ou"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e13io"]
 size = Vector2(848.25, 131.625)
@@ -214,7 +214,7 @@ mouse_filter = 2
 
 [node name="PlayerListOverlay" parent="UI" instance=ExtResource("5_frsds")]
 
-[node name="DialogueUI" parent="UI" instance=ExtResource("10_lo7ou")]
+[node name="MerchantUI" parent="UI" instance=ExtResource("10_lo7ou")]
 
 [node name="world" type="TileMapLayer" parent="."]
 position = Vector2(-31, 227)
@@ -224,6 +224,7 @@ tile_set = SubResource("TileSet_i2ssx")
 [node name="Merchant" parent="." instance=ExtResource("9_x0xvm")]
 z_index = 10
 position = Vector2(-2631, 1216)
+scale = Vector2(1, 1)
 merchant_id = 1
 
 [node name="Prefabs" type="Node" parent="."]
