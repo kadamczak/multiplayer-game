@@ -13,7 +13,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
+	if Input.is_action_just_pressed("ui_toggle_playerlist"):
 		toggle_overlay()
 		get_viewport().set_input_as_handled()
 
