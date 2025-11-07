@@ -17,6 +17,8 @@ var current_scene: String = ""
 var previous_scene: String = ""  # Track where local player came from
 var player_scenes: Dictionary = {} # id -> scene_path mapping
 
+var is_dialogue_active: bool = false  # Track if dialogue UI is open
+
 var balance: int = 0:
 	set(value):
 		balance = value

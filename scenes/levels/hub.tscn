@@ -222,6 +222,7 @@ tile_map_data = PackedByteArray("AADd/xgAAQAAAAAAAADe/xgAAQAAAAAAAADf/xgAAQAAAAA
 tile_set = SubResource("TileSet_i2ssx")
 
 [node name="Merchant" parent="." instance=ExtResource("9_x0xvm")]
+z_index = 10
 position = Vector2(-2631, 1216)
 merchant_id = 1
 

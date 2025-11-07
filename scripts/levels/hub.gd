@@ -5,10 +5,20 @@ extends Node2D
 
 func _ready() -> void:	
 	merchant.player_interacted.connect(_on_merchant_interacted)
+	dialogue_ui.dialogue_opened.connect(_on_dialogue_opened)
+	dialogue_ui.dialogue_closed.connect(_on_dialogue_closed)
 
 
 func _on_merchant_interacted() -> void:
 	dialogue_ui.show_dialogue("Hello!")
+
+
+func _on_dialogue_opened() -> void:
+	ClientNetworkGlobals.is_dialogue_active = true
+
+
+func _on_dialogue_closed() -> void:
+	ClientNetworkGlobals.is_dialogue_active = false
 
 
 func _input(event: InputEvent) -> void:

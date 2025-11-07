@@ -52,6 +52,14 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	
+	# If dialogue is active, don't process movement input
+	if ClientNetworkGlobals.is_dialogue_active:
+		velocity.x = move_toward(velocity.x, 0, WALK_SPEED)
+		move_and_slide()
+		if sprite.animation != "idle":
+			sprite.play("idle")
+		return
+	
 	# Handle jump
 	if Input.is_action_just_pressed("ui_jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
