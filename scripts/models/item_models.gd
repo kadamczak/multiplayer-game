@@ -6,9 +6,9 @@ class ReadItemResponse:
 	var description: String
 	
 	func _init(data: Dictionary = {}) -> void:
-		id = data.get("id", 0)
-		name = data.get("name", "")
-		description = data.get("description", "")
+		id = data.get("id")
+		name = data.get("name")
+		description = data.get("description")
 	
 	static func from_json(data: Dictionary) -> ReadItemResponse:
 		return ReadItemResponse.new(data)

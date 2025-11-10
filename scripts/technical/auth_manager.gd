@@ -125,25 +125,23 @@ func refresh_access_token() -> bool:
 	var response = await http.request_completed
 	http.queue_free()
 	
-	var _result = response[0]
 	var response_code = response[1]
 	var response_body = response[3]
 	
 	if response_code == 200:
 		var json = JSON.parse_string(response_body.get_string_from_utf8())
 		
-		if json != null and json.has("accessToken") and json.has("refreshToken"):
-			var new_access = json.get("accessToken", "")
-			var new_refresh = json.get("refreshToken", "")
+		if json != null:
+			var token_response = UserModels.TokenResponse.from_json(json)
 			
-			access_token = new_access
-			refresh_token = new_refresh
+			access_token = token_response.access_token
+			refresh_token = token_response.refresh_token
 			
 			if stay_logged_in:
-				_save_refresh_token_to_file(new_refresh)
+				_save_refresh_token_to_file(token_response.refresh_token)
 			
 			DebugLogger.log("Token refresh successful")
-			token_refreshed.emit(new_access)
+			token_refreshed.emit(token_response.access_token)
 			return true
 		else:
 			DebugLogger.log("Token refresh response missing tokens")
@@ -152,7 +150,6 @@ func refresh_access_token() -> bool:
 	else:
 		DebugLogger.log("Token refresh failed with code: " + str(response_code))
 		DebugLogger.log("Response: " + response_body.get_string_from_utf8())
-		clear_tokens()
 		token_refresh_failed.emit()
 		return false
 
@@ -194,7 +191,6 @@ func make_authenticated_request(url: String, method: HTTPClient.Method, body: St
 		"Accept: application/json",
 	]
 	
-	# Add any additional headers
 	for header in additional_headers:
 		headers.append(header)
 	
@@ -204,20 +200,15 @@ func make_authenticated_request(url: String, method: HTTPClient.Method, body: St
 		http.queue_free()
 		return [error, 0, [], PackedByteArray()]
 	
-	# Wait for response
 	var response = await http.request_completed
 	http.queue_free()
 	
-	var _result = response[0]
 	var response_code = response[1]
-	var _response_headers = response[2]
-	var _response_body = response[3]
 	
 	# If 401, try to refresh token and retry once
 	if response_code == 401:
 		DebugLogger.log("Received 401, attempting to refresh token and retry...")
 		
-		# Prevent multiple simultaneous refresh attempts
 		if _is_refreshing:
 			DebugLogger.log("Already refreshing, skipping retry")
 			return response
@@ -236,8 +227,6 @@ func make_authenticated_request(url: String, method: HTTPClient.Method, body: St
 		var retry_http = HTTPRequest.new()
 		add_child(retry_http)
 		retry_http.set_tls_options(TLSOptions.client_unsafe())
-		
-		# Update authorization header with new token
 		headers[0] = "Authorization: " + get_auth_header()
 		
 		error = retry_http.request(url, headers, method, body)
