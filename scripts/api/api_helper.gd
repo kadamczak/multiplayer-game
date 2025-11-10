@@ -34,10 +34,12 @@ func parse_problem_details(response_code: int,
 
 # Generic API request wrapper
 # Returns ApiResponse format: { "success": true, "data": T } or { "success": false, "problem": ProblemDetails }
+# If parse_callback is provided, it will be called with the JSON data to convert to a typed object
 func api_request(url: String,
 						method: HTTPClient.Method,
 						body: String = "",
-						headers: Array = []) -> Dictionary:
+						headers: Array = [],
+						parse_callback: Callable = Callable()) -> Dictionary:
 	var http_request = HTTPRequest.new()
 	http_request.set_tls_options(TLSOptions.client_unsafe())
 	
@@ -96,7 +98,11 @@ func api_request(url: String,
 		if content_type.contains("application/json"):
 			var json = JSON.parse_string(response_body.get_string_from_utf8())
 			if json != null:
-				return { "success": true, "data": json }
+				# If parse_callback is provided, use it to convert JSON to typed object
+				var data = json
+				if parse_callback.is_valid():
+					data = parse_callback.call(json)
+				return { "success": true, "data": data }
 		
 		# For void responses (no content)
 		return { "success": true, "data": null }
@@ -111,21 +117,23 @@ func authenticated_request(url: String,
 								  access_token: String,
 								  method: HTTPClient.Method,
 								  body: String = "",
-								  additional_headers: Array = []) -> Dictionary:
+								  additional_headers: Array = [],
+								  parse_callback: Callable = Callable()) -> Dictionary:
 	var headers = additional_headers.duplicate()
 	
 	# Add Authorization header if token exists
 	if not access_token.is_empty():
 		headers.append("Authorization: Bearer " + access_token)
 	
-	return await api_request(url, method, body, headers)
+	return await api_request(url, method, body, headers, parse_callback)
 
 
 # Authenticated request with automatic token refresh on 401
 func authenticated_request_with_refresh(url: String,
 											   method: HTTPClient.Method,
 											   body: String = "",
-											   additional_headers: Array = []) -> Dictionary:
+											   additional_headers: Array = [],
+											   parse_callback: Callable = Callable()) -> Dictionary:
 	if not AuthManager.has_access_token():
 		return {
 			"success": false,
@@ -136,7 +144,7 @@ func authenticated_request_with_refresh(url: String,
 		}
 	
 	var access_token = AuthManager.access_token
-	var response = await authenticated_request(url, access_token, method, body, additional_headers)
+	var response = await authenticated_request(url, access_token, method, body, additional_headers, parse_callback)
 	
 	# If unauthorized, attempt to refresh token and retry once
 	if not response.success:
@@ -151,7 +159,7 @@ func authenticated_request_with_refresh(url: String,
 			
 			if refreshed:
 				var new_token = AuthManager.access_token
-				response = await authenticated_request(url, new_token, method, body, additional_headers)
+				response = await authenticated_request(url, new_token, method, body, additional_headers, parse_callback)
 			else:
 				AuthManager.token_refresh_failed.emit()
 				return response

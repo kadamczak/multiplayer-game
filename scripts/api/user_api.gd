@@ -12,7 +12,8 @@ static func login(username: String, password: String) -> Dictionary:
 		BASE_URL + "/identity/login",
 		HTTPClient.METHOD_POST,
 		body,
-		headers
+		headers,
+		UserModels.TokenResponse.from_json
 	)
 	
 	if not response.success:
@@ -33,29 +34,18 @@ static func login(username: String, password: String) -> Dictionary:
 			"response_code": problem.status
 		}
 	
-	# Success - parse token response
-	var login_response = UserModels.TokenResponse.from_json(response.data)
+	# Success - data is already parsed as TokenResponse
 	return {
 		"success": true,
-		"data": login_response
+		"data": response.data
 	}
 
 
 static func get_user_game_info() -> Dictionary:
-	var response = await ApiHelper.authenticated_request_with_refresh(
+	return await ApiHelper.authenticated_request_with_refresh(
 		BASE_URL + "/users/me/game-info",
-		HTTPClient.METHOD_GET
+		HTTPClient.METHOD_GET,
+		"",
+		[],
+		UserModels.ReadUserGameInfoResponse.from_json
 	)
-	
-	if not response.success:
-		var problem: ApiResponse.ProblemDetails = response.problem
-		return {
-			"success": false,
-			"problem": problem
-		}
-	
-	var user_info = UserModels.ReadUserGameInfoResponse.from_json(response.data)
-	return {
-		"success": true,
-		"data": user_info
-	}
