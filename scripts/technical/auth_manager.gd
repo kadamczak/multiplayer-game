@@ -20,7 +20,7 @@ func _ready() -> void:
 			break
 
 
-## Store tokens in memory and persist refresh token to disk if stay_logged_in is true
+## Store both tokens in memory and persist refresh token to disk if stay_logged_in is true
 func store_tokens(access: String, refresh: String, stay_logged: bool) -> void:
 	access_token = access
 	refresh_token = refresh
