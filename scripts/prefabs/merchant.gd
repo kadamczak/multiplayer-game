@@ -16,6 +16,7 @@ func _ready() -> void:
 	area_2d.body_exited.connect(_on_body_exited)
 	merchant_ui.talk_clicked.connect(_on_talk_clicked)
 	merchant_ui.trade_clicked.connect(_on_trade_clicked)
+	merchant_ui.back_from_trade_clicked.connect(_on_back_from_trade_clicked)
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -30,9 +31,12 @@ func _on_body_exited(body: Node2D) -> void:
 			local_player_in_area = false
 
 func _input(event: InputEvent) -> void:
-	if merchant_ui.panel.visible:
+	if merchant_ui.panel.visible or merchant_ui.trade_panel.visible:
 		if event.is_action_pressed("ui_cancel"):
-			merchant_ui.hide_dialogue()
+			if merchant_ui.trade_panel.visible:
+				_on_back_from_trade_clicked()
+			else:
+				merchant_ui.hide_dialogue()
 			get_viewport().set_input_as_handled()
 	elif local_player_in_area and event.is_action_pressed("ui_accept"):
 		merchant_ui.show_dialogue(greeting_text, "Talk")
@@ -44,4 +48,16 @@ func _on_talk_clicked() -> void:
 
 
 func _on_trade_clicked() -> void:
-	merchant_ui.show_dialogue(trade_text, "Trade")
+	merchant_ui.show_trading_view()
+	
+	var response = await MerchantAPI.get_merchant_offers(merchant_id)
+	
+	if response.success:
+		merchant_ui.display_offers(response.data)
+	else:
+		var problem: ApiResponse.ProblemDetails = response.problem
+		merchant_ui.show_error("Failed to load offers: " + problem.title)
+
+
+func _on_back_from_trade_clicked() -> void:
+	merchant_ui.show_dialogue(greeting_text, "Trade")
