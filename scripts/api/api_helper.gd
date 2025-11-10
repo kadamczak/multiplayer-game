@@ -40,9 +40,7 @@ func api_request(url: String,
 						parse_callback: Callable = Callable()) -> Dictionary:
 	var http_request = HTTPRequest.new()
 	http_request.set_tls_options(TLSOptions.client_unsafe())
-	
-	var scene_root = Engine.get_main_loop().root
-	scene_root.add_child(http_request)
+	add_child(http_request)
 	
 	var headers = [
 		"Content-Type: application/json",
@@ -54,6 +52,7 @@ func api_request(url: String,
 		headers.append(header)
 	
 	var error = http_request.request(url, headers, method, body)
+
 	
 	if error != OK:
 		http_request.queue_free()

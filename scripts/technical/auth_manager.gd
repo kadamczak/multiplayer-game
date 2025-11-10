@@ -118,59 +118,19 @@ func refresh_access_token() -> bool:
 		token_refresh_failed.emit()
 		return false
 	
-	var http = HTTPRequest.new()
-	add_child(http)
-	http.set_tls_options(TLSOptions.client_unsafe())
+	var response = await IdentityAPI.refresh(refresh_token)
 	
-	var body = JSON.stringify(refresh_token)
-	
-	var headers = [
-		"Content-Type: application/json",
-		"Accept: application/json",
-		"X-Client-Type: Game"
-	]
-	
-	var error = http.request(
-		ApiConfig.API_BASE_URL + "/v1/identity/refresh",
-		headers,
-		HTTPClient.METHOD_POST,
-		body
-	)
-	
-	if error != OK:
-		DebugLogger.log("Token refresh request failed with error: " + str(error))
-		http.queue_free()
+	if not response.success:
+		var problem: ApiResponse.ProblemDetails = response.problem
+		DebugLogger.log("Token refresh failed with code: " + str(problem.status))
+		DebugLogger.log("Response: " + problem.title)
 		token_refresh_failed.emit()
 		return false
 	
-	var response = await http.request_completed
-	http.queue_free()
+	var token_response: UserModels.TokenResponse = response.data
+	store_tokens(token_response.access_token, token_response.refresh_token)
 	
-	var response_code = response[1]
-	var response_body = response[3]
-	
-	if response_code == 200:
-		var json = JSON.parse_string(response_body.get_string_from_utf8())
-		
-		if json != null:
-			var token_response = UserModels.TokenResponse.from_json(json)
-			
-			access_token = token_response.access_token
-			refresh_token = token_response.refresh_token
-			
-			if stay_logged_in:
-				_save_refresh_token_to_file(token_response.refresh_token)
-			
-			DebugLogger.log("Token refresh successful")
-			token_refreshed.emit(token_response.access_token)
-			return true
-		else:
-			DebugLogger.log("Token refresh response missing tokens")
-			token_refresh_failed.emit()
-			return false
-	else:
-		DebugLogger.log("Token refresh failed with code: " + str(response_code))
-		DebugLogger.log("Response: " + response_body.get_string_from_utf8())
-		token_refresh_failed.emit()
-		return false
+	DebugLogger.log("Token refresh successful")
+	token_refreshed.emit(token_response.access_token)
+	return true
 

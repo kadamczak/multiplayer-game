@@ -1,9 +1,9 @@
 class_name IdentityAPI
 
 static func refresh(refresh_token: String) -> Dictionary:
-	var body = JSON.stringify(refresh_token)
+	var body: String = JSON.stringify(refresh_token)
 
-	return await ApiHelper.authenticated_request_with_refresh(
+	return await ApiHelper.api_request(
 		ApiConfig.API_BASE_URL + "/v1/identity/refresh",
 		HTTPClient.METHOD_POST,
 		["X-Client-Type: Game"],
