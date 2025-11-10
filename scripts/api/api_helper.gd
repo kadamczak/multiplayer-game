@@ -1,7 +1,5 @@
 extends Node
 
-const BASE_URL = "https://localhost:7110/v1"
-
 # Helper function to parse error responses
 func parse_problem_details(response_code: int,
 								  response_headers: PackedStringArray,

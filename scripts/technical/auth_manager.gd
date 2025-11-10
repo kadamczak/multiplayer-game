@@ -7,7 +7,6 @@ var access_token: String = ""
 var refresh_token: String = ""
 var stay_logged_in: bool = true
 
-const AUTH_API_BASE: String = "https://localhost:7110/v1/identity"
 var _instance_name: String = ""
 var _is_refreshing: bool = false
 
@@ -132,7 +131,7 @@ func refresh_access_token() -> bool:
 	]
 	
 	var error = http.request(
-		AUTH_API_BASE + "/refresh",
+		ApiConfig.API_BASE_URL + "/v1/identity/refresh",
 		headers,
 		HTTPClient.METHOD_POST,
 		body

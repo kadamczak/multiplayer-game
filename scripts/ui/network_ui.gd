@@ -31,7 +31,7 @@ func _on_login_button_pressed() -> void:
 		error_label.visible = true
 		return
 	
-	var result = await UserAPI.login(username, password)
+	var result = await IdentityAPI.login(username, password)
 	
 	if result.success:
 		var login_response: UserModels.TokenResponse = result.data
@@ -50,8 +50,8 @@ func _on_login_button_pressed() -> void:
 			error_label.text = "Login successful but failed to fetch user info."
 			error_label.visible = true
 	else:
-		DebugLogger.log("Login failed: " + result.error)
-		error_label.text = result.error
+		DebugLogger.log("Login failed: " + result.problem)
+		error_label.text = result.problem
 		error_label.visible = true
 
 
