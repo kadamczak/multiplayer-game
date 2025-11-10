@@ -20,28 +20,24 @@ func _ready() -> void:
 			break
 
 
-## Store both tokens in memory and persist refresh token to disk if stay_logged_in is true
-func store_tokens(access: String, refresh: String, stay_logged: bool) -> void:
+func has_access_token() -> bool:
+	return not access_token.is_empty()
+
+
+func get_auth_header() -> String:
+	return "Bearer " + access_token
+
+
+func set_stay_logged_in(stay_logged: bool) -> void:
+	stay_logged_in = stay_logged
+
+
+func store_tokens(access: String, refresh: String) -> void:
 	access_token = access
 	refresh_token = refresh
-	stay_logged = stay_logged
 
-	if stay_logged:
+	if stay_logged_in:
 		_save_refresh_token_to_file(refresh)
-
-
-func _save_refresh_token_to_file(token: String) -> void:
-	var filename = _get_refresh_token_filename()
-	var file = FileAccess.open(filename, FileAccess.WRITE)
-	
-	if file == null:
-		push_error("Failed to save refresh token to file: " + filename + " (Error: " + str(FileAccess.get_open_error()) + ")")
-		return
-	
-	file.store_string(token)
-	file.close()
-	
-	DebugLogger.log("Refresh token saved to: " + filename)
 
 
 func load_refresh_token_from_file() -> String:
@@ -63,12 +59,46 @@ func load_refresh_token_from_file() -> String:
 	return token
 
 
+func _save_refresh_token_to_file(token: String) -> void:
+	var filename = _get_refresh_token_filename()
+	var file = FileAccess.open(filename, FileAccess.WRITE)
+	
+	if file == null:
+		push_error("Failed to save refresh token to file: " + filename + " (Error: " + str(FileAccess.get_open_error()) + ")")
+		return
+	
+	file.store_string(token)
+	file.close()
+	
+	DebugLogger.log("Refresh token saved to: " + filename)
+
+
 func _get_refresh_token_filename() -> String:
 	var base_name = "auth_token"
 	if not _instance_name.is_empty():
 		base_name += "_" + _instance_name
 	
 	return "user://" + base_name + ".dat"
+
+
+func attempt_auto_login() -> bool:
+	DebugLogger.log("Attempting automatic login...")
+	
+	var saved_refresh = load_refresh_token_from_file()
+	if saved_refresh.is_empty():
+		DebugLogger.log("No saved refresh token found")
+		return false
+	
+	refresh_token = saved_refresh
+	var success = await refresh_access_token()
+	
+	if not success:
+		DebugLogger.log("Automatic login failed")
+		return false
+	
+	DebugLogger.log("Automatic login successful")
+	return true
+
 
 
 func clear_tokens() -> void:
@@ -81,14 +111,6 @@ func clear_tokens() -> void:
 		DebugLogger.log("Token file deleted: " + filename)
 	
 	DebugLogger.log("All tokens cleared")
-
-
-func has_access_token() -> bool:
-	return not access_token.is_empty()
-
-
-func get_auth_header() -> String:
-	return "Bearer " + access_token
 
 
 func refresh_access_token() -> bool:
@@ -153,90 +175,3 @@ func refresh_access_token() -> bool:
 		token_refresh_failed.emit()
 		return false
 
-
-## Attempt automatic login using saved refresh token
-func attempt_auto_login() -> bool:
-	DebugLogger.log("Attempting automatic login...")
-	
-	var saved_refresh = load_refresh_token_from_file()
-	if saved_refresh.is_empty():
-		DebugLogger.log("No saved refresh token found")
-		return false
-	
-	refresh_token = saved_refresh
-	var success = await refresh_access_token()
-	
-	if not success:
-		DebugLogger.log("Automatic login failed")
-		return false
-	
-	DebugLogger.log("Automatic login successful")
-	return true
-
-
-## Make an authenticated HTTP request with automatic token refresh on 401
-func make_authenticated_request(url: String, method: HTTPClient.Method, body: String = "", additional_headers: Array = []) -> Array:
-	if not has_access_token():
-		DebugLogger.log("No access token available")
-		token_refresh_failed.emit()
-		return [FAILED, 0, [], PackedByteArray()]
-	
-	var http = HTTPRequest.new()
-	add_child(http)
-	http.set_tls_options(TLSOptions.client_unsafe())
-	
-	var headers = [
-		"Authorization: " + get_auth_header(),
-		"Content-Type: application/json",
-		"Accept: application/json",
-	]
-	
-	for header in additional_headers:
-		headers.append(header)
-	
-	var error = http.request(url, headers, method, body)
-	if error != OK:
-		DebugLogger.log("Request failed with error: " + str(error))
-		http.queue_free()
-		return [error, 0, [], PackedByteArray()]
-	
-	var response = await http.request_completed
-	http.queue_free()
-	
-	var response_code = response[1]
-	
-	# If 401, try to refresh token and retry once
-	if response_code == 401:
-		DebugLogger.log("Received 401, attempting to refresh token and retry...")
-		
-		if _is_refreshing:
-			DebugLogger.log("Already refreshing, skipping retry")
-			return response
-		
-		_is_refreshing = true
-		var refreshed = await refresh_access_token()
-		_is_refreshing = false
-		
-		if not refreshed:
-			DebugLogger.log("Token refresh failed, cannot retry request")
-			token_refresh_failed.emit()
-			return response
-		
-		# Retry the original request with new token
-		DebugLogger.log("Token refreshed, retrying original request...")
-		var retry_http = HTTPRequest.new()
-		add_child(retry_http)
-		retry_http.set_tls_options(TLSOptions.client_unsafe())
-		headers[0] = "Authorization: " + get_auth_header()
-		
-		error = retry_http.request(url, headers, method, body)
-		if error != OK:
-			DebugLogger.log("Retry request failed with error: " + str(error))
-			retry_http.queue_free()
-			return [error, 0, [], PackedByteArray()]
-		
-		var retry_response = await retry_http.request_completed
-		retry_http.queue_free()
-		return retry_response
-	
-	return response

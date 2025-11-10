@@ -36,7 +36,9 @@ func _on_login_button_pressed() -> void:
 	if result.success:
 		var login_response: UserModels.TokenResponse = result.data
 		var stay_logged_in = stay_logged_in_checkbox.button_pressed
-		AuthManager.store_tokens(login_response.access_token, login_response.refresh_token, stay_logged_in)
+		
+		AuthManager.set_stay_logged_in(stay_logged_in)
+		AuthManager.store_tokens(login_response.access_token, login_response.refresh_token)
 		
 		var user_info_result = await UserAPI.get_user_game_info()
 		

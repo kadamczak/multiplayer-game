@@ -69,7 +69,7 @@ static func login(username: String, password: String) -> Dictionary:
 
 
 static func get_user_game_info() -> Dictionary:
-	var response = await AuthManager.make_authenticated_request(
+	var response = await ApiHelper.make_authenticated_request(
 		BASE_URL + "/users/me/game-info",
 		HTTPClient.METHOD_GET
 	)
