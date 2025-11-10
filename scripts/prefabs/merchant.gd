@@ -17,6 +17,7 @@ func _ready() -> void:
 	merchant_ui.talk_clicked.connect(_on_talk_clicked)
 	merchant_ui.trade_clicked.connect(_on_trade_clicked)
 	merchant_ui.back_from_trade_clicked.connect(_on_back_from_trade_clicked)
+	merchant_ui.buy_clicked.connect(_on_buy_clicked)
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -61,3 +62,18 @@ func _on_trade_clicked() -> void:
 
 func _on_back_from_trade_clicked() -> void:
 	merchant_ui.show_dialogue(greeting_text, "Trade")
+
+
+func _on_buy_clicked(offer_id: int, price: int) -> void:
+	if ClientNetworkGlobals.balance < price:
+		merchant_ui.show_error("Insufficient funds! You need " + str(price) + " gold but only have " + str(ClientNetworkGlobals.balance) + " gold.")
+		return
+	
+	# Make purchase request
+	var response = await MerchantAPI.purchase_offer(offer_id)
+	
+	if response.success:
+		ClientNetworkGlobals.balance -= price
+	else:
+		var problem: ApiResponse.ProblemDetails = response.problem
+		merchant_ui.show_error("Purchase failed: " + problem.title)

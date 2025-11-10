@@ -3,6 +3,7 @@ extends CanvasLayer
 signal talk_clicked()
 signal trade_clicked()
 signal back_from_trade_clicked()
+signal buy_clicked(offer_id: int, price: int)
 
 @onready var panel = $Panel
 @onready var dialogue_label = $Panel/HBoxContainer/RightSide/DialogueLabel
@@ -66,6 +67,7 @@ func display_offers(offers: Array) -> void:
 		offers_container.add_child(offer_item)
 		
 		var buy_button = offer_item.get_node("TopRow/BuyButton")
+		buy_button.pressed.connect(_on_buy_button_pressed.bind(offer.id, offer.price))
 		
 		# Set up focus navigation
 		if previous_button:
@@ -146,3 +148,7 @@ func _on_trade_pressed() -> void:
 
 func _on_back_pressed() -> void:
 	back_from_trade_clicked.emit()
+
+
+func _on_buy_button_pressed(offer_id: int, price: int) -> void:
+	buy_clicked.emit(offer_id, price)
