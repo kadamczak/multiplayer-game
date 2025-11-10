@@ -3,9 +3,9 @@ extends Node
 const BASE_URL = "https://localhost:7110/v1"
 
 # Helper function to parse error responses
-static func parse_problem_details(response_code: int,
-                                  response_headers: PackedStringArray,
-                                  response_body: PackedByteArray) -> ApiResponse.ProblemDetails:
+func parse_problem_details(response_code: int,
+								  response_headers: PackedStringArray,
+								  response_body: PackedByteArray) -> ApiResponse.ProblemDetails:
 	var content_type = ""
 	for header in response_headers:
 		if header.to_lower().begins_with("content-type:"):
@@ -34,10 +34,10 @@ static func parse_problem_details(response_code: int,
 
 # Generic API request wrapper
 # Returns ApiResponse format: { "success": true, "data": T } or { "success": false, "problem": ProblemDetails }
-static func api_request(url: String,
-                        method: HTTPClient.Method,
-                        body: String = "",
-                        headers: Array = []) -> Dictionary:
+func api_request(url: String,
+						method: HTTPClient.Method,
+						body: String = "",
+						headers: Array = []) -> Dictionary:
 	var http_request = HTTPRequest.new()
 	http_request.set_tls_options(TLSOptions.client_unsafe())
 	
@@ -106,71 +106,57 @@ static func api_request(url: String,
 	return { "success": false, "problem": problem }
 
 
+# Authenticated request wrapper - includes Authorization header
+func authenticated_request(url: String,
+								  access_token: String,
+								  method: HTTPClient.Method,
+								  body: String = "",
+								  additional_headers: Array = []) -> Dictionary:
+	var headers = additional_headers.duplicate()
+	
+	# Add Authorization header if token exists
+	if not access_token.is_empty():
+		headers.append("Authorization: Bearer " + access_token)
+	
+	return await api_request(url, method, body, headers)
 
-## Make an authenticated HTTP request with automatic token refresh on 401
-func make_authenticated_request(url: String, method: HTTPClient.Method, body: String = "", additional_headers: Array = []) -> Array:
+
+# Authenticated request with automatic token refresh on 401
+func authenticated_request_with_refresh(url: String,
+											   method: HTTPClient.Method,
+											   body: String = "",
+											   additional_headers: Array = []) -> Dictionary:
 	if not AuthManager.has_access_token():
-		DebugLogger.log("No access token available")
-		AuthManager.token_refresh_failed.emit()
-		return [FAILED, 0, [], PackedByteArray()]
+		return {
+			"success": false,
+			"problem": ApiResponse.ProblemDetails.new({
+				"title": "No access token available",
+				"status": 401
+			})
+		}
 	
-	var http = HTTPRequest.new()
-	add_child(http)
-	http.set_tls_options(TLSOptions.client_unsafe())
+	var access_token = AuthManager.access_token
+	var response = await authenticated_request(url, access_token, method, body, additional_headers)
 	
-	var headers = [
-		"Authorization: " + AuthManager.get_auth_header(),
-		"Content-Type: application/json",
-		"Accept: application/json",
-	]
+	# If unauthorized, attempt to refresh token and retry once
+	if not response.success:
+		var problem: ApiResponse.ProblemDetails = response.problem
+		if problem.status == 401:
+			if AuthManager._is_refreshing:
+				return response
+			
+			AuthManager._is_refreshing = true
+			var refreshed = await AuthManager.refresh_access_token()
+			AuthManager._is_refreshing = false
+			
+			if refreshed:
+				var new_token = AuthManager.access_token
+				response = await authenticated_request(url, new_token, method, body, additional_headers)
+			else:
+				AuthManager.token_refresh_failed.emit()
+				return response
 	
-	for header in additional_headers:
-		headers.append(header)
-	
-	var error = http.request(url, headers, method, body)
-	if error != OK:
-		DebugLogger.log("Request failed with error: " + str(error))
-		http.queue_free()
-		return [error, 0, [], PackedByteArray()]
-	
-	var response = await http.request_completed
-	http.queue_free()
-	
-	var response_code = response[1]
-	
-	# If 401, try to refresh token and retry once
-	if response_code == 401:
-		DebugLogger.log("Received 401, attempting to refresh token and retry...")
-		
-		if AuthManager._is_refreshing:
-			DebugLogger.log("Already refreshing, skipping retry")
-			return response
-		
-		AuthManager._is_refreshing = true
-		var refreshed = await AuthManager.refresh_access_token()
-		AuthManager._is_refreshing = false
-		
-		if not refreshed:
-			DebugLogger.log("Token refresh failed, cannot retry request")
-			AuthManager.token_refresh_failed.emit()
-			return response
-		
-		# Retry the original request with new token
-		DebugLogger.log("Token refreshed, retrying original request...")
-		var retry_http = HTTPRequest.new()
-		add_child(retry_http)
-		retry_http.set_tls_options(TLSOptions.client_unsafe())
-		headers[0] = "Authorization: " + AuthManager.get_auth_header()
-		
-		error = retry_http.request(url, headers, method, body)
-		if error != OK:
-			DebugLogger.log("Retry request failed with error: " + str(error))
-			retry_http.queue_free()
-			return [error, 0, [], PackedByteArray()]
-		
-		var retry_response = await retry_http.request_completed
-		retry_http.queue_free()
-		response = retry_response
-	
-
 	return response
+
+
+

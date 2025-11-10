@@ -13,7 +13,7 @@ class ProblemDetails:
 	
 	# Optional fields
 	var errors: Dictionary # Dictionary<String, Array<String>>
-    
+	
 	var type: String
 	var detail: String
 	var instance: String

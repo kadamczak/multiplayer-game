@@ -42,31 +42,20 @@ static func login(username: String, password: String) -> Dictionary:
 
 
 static func get_user_game_info() -> Dictionary:
-	var response = await ApiHelper.make_authenticated_request(
+	var response = await ApiHelper.authenticated_request_with_refresh(
 		BASE_URL + "/users/me/game-info",
 		HTTPClient.METHOD_GET
 	)
 	
-	var result = response[0]
-	var response_code = response[1]
-	var response_body = response[3]
-	
-	if result != OK:
-		return {"success": false, "error": "Request failed: " + str(result)}
-	
-	if response_code == 200:
-		var json = JSON.parse_string(response_body.get_string_from_utf8())
-		if json != null:
-			var user_info = UserModels.ReadUserGameInfoResponse.from_json(json)
-			return {
-				"success": true,
-				"data": user_info
-			}
-		else:
-			return {"success": false, "error": "Invalid JSON response"}
-	else:
+	if not response.success:
+		var problem: ApiResponse.ProblemDetails = response.problem
 		return {
 			"success": false,
-			"error": "Failed to fetch user info",
-			"response_code": response_code
+			"problem": problem
 		}
+	
+	var user_info = UserModels.ReadUserGameInfoResponse.from_json(response.data)
+	return {
+		"success": true,
+		"data": user_info
+	}
