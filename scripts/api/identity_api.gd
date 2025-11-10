@@ -1,17 +1,26 @@
 class_name IdentityAPI
 
+static func refresh(refresh_token: String) -> Dictionary:
+	var body = JSON.stringify(refresh_token)
+
+	return await ApiHelper.authenticated_request_with_refresh(
+		ApiConfig.API_BASE_URL + "/v1/identity/refresh",
+		HTTPClient.METHOD_POST,
+		["X-Client-Type: Game"],
+		body,
+		UserModels.TokenResponse.from_json
+	)
+
 
 static func login(username: String, password: String) -> Dictionary:
 	var request_model = UserModels.LoginRequest.new(username, password)
 	var body = JSON.stringify(request_model.to_json())
 	
-	var headers = ["X-Client-Type: Game"]
-	
 	var response = await ApiHelper.api_request(
 		ApiConfig.API_BASE_URL + "/v1/identity/login",
 		HTTPClient.METHOD_POST,
+		["X-Client-Type: Game"],
 		body,
-		headers,
 		UserModels.TokenResponse.from_json
 	)
 	
