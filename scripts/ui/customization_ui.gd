@@ -3,21 +3,27 @@ extends CanvasLayer
 signal color_applied(color: Color)
 signal eye_color_applied(eye_color: Color)
 signal wings_changed(wings_type: int)  # 0 = none, 1 = wings1, 2 = wings2
+signal wings_color_applied(color: Color)
 signal horns_changed(horns_type: int)  # 0 = none, 1 = horns1
+signal horns_color_applied(color: Color)
 signal markings_changed(markings_type: int)  # 0 = none, 1 = markings1, 2 = markings2
+signal markings_color_applied(color: Color)
 signal closed()
 
 @onready var panel = $Panel
-@onready var color_picker_button = $Panel/MarginContainer/VBoxContainer/ColorsContainer/BodyColorSection/ColorPickerButton
-@onready var eye_color_picker_button = $Panel/MarginContainer/VBoxContainer/ColorsContainer/EyeColorSection/EyeColorPickerButton
-@onready var no_wings_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/NoWingsButton
-@onready var wings1_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/Wings1Button
-@onready var wings2_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/Wings2Button
-@onready var no_horns_button = $Panel/MarginContainer/VBoxContainer/HornsContainer/NoHornsButton
-@onready var horns1_button = $Panel/MarginContainer/VBoxContainer/HornsContainer/Horns1Button
-@onready var no_markings_button = $Panel/MarginContainer/VBoxContainer/MarkingsContainer/NoMarkingsButton
-@onready var markings1_button = $Panel/MarginContainer/VBoxContainer/MarkingsContainer/Markings1Button
-@onready var markings2_button = $Panel/MarginContainer/VBoxContainer/MarkingsContainer/Markings2Button
+@onready var color_picker_button = $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/BodyColorSection/ColorPickerButton
+@onready var eye_color_picker_button = $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/EyeColorSection/EyeColorPickerButton
+@onready var no_wings_button = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/NoWingsButton
+@onready var wings1_button = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/Wings1Button
+@onready var wings2_button = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/Wings2Button
+@onready var wings_color_picker = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsColorPicker
+@onready var no_horns_button = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsContainer/NoHornsButton
+@onready var horns1_button = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsContainer/Horns1Button
+@onready var horns_color_picker = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsColorPicker
+@onready var no_markings_button = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/NoMarkingsButton
+@onready var markings1_button = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/Markings1Button
+@onready var markings2_button = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/Markings2Button
+@onready var markings_color_picker = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsColorPicker
 @onready var apply_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/ApplyButton
 @onready var close_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/CloseButton
 
@@ -43,6 +49,9 @@ func _ready() -> void:
 	# Connect color picker changes for real-time preview
 	color_picker_button.color_changed.connect(_on_body_color_changed)
 	eye_color_picker_button.color_changed.connect(_on_eye_color_changed)
+	wings_color_picker.color_changed.connect(_on_wings_color_changed)
+	horns_color_picker.color_changed.connect(_on_horns_color_changed)
+	markings_color_picker.color_changed.connect(_on_markings_color_changed)
 	
 	# Set up focus navigation
 	apply_button.focus_neighbor_right = close_button.get_path()
@@ -52,6 +61,7 @@ func _ready() -> void:
 	_update_wings_buttons()
 	_update_horns_buttons()
 	_update_markings_buttons()
+	_update_color_pickers_visibility()
 
 func show_ui(current_color: Color = Color.WHITE, current_eye_color: Color = Color.WHITE) -> void:
 	panel.visible = true
@@ -81,6 +91,8 @@ func _update_wings_buttons() -> void:
 			wings1_button.disabled = true
 		2:
 			wings2_button.disabled = true
+	
+	_update_color_pickers_visibility()
 
 func _on_no_wings_pressed() -> void:
 	selected_wings = 0
@@ -108,6 +120,8 @@ func _update_horns_buttons() -> void:
 			no_horns_button.disabled = true
 		1:
 			horns1_button.disabled = true
+	
+	_update_color_pickers_visibility()
 
 func _on_no_horns_pressed() -> void:
 	selected_horns = 0
@@ -133,6 +147,8 @@ func _update_markings_buttons() -> void:
 			markings1_button.disabled = true
 		2:
 			markings2_button.disabled = true
+	
+	_update_color_pickers_visibility()
 
 func _on_no_markings_pressed() -> void:
 	selected_markings = 0
@@ -155,9 +171,27 @@ func _on_body_color_changed(color: Color) -> void:
 func _on_eye_color_changed(eye_color: Color) -> void:
 	eye_color_applied.emit(eye_color)
 
+func _on_wings_color_changed(color: Color) -> void:
+	wings_color_applied.emit(color)
+
+func _on_horns_color_changed(color: Color) -> void:
+	horns_color_applied.emit(color)
+
+func _on_markings_color_changed(color: Color) -> void:
+	markings_color_applied.emit(color)
+
+func _update_color_pickers_visibility() -> void:
+	# Show/hide color pickers based on feature selection
+	wings_color_picker.visible = (selected_wings > 0)
+	horns_color_picker.visible = (selected_horns > 0)
+	markings_color_picker.visible = (selected_markings > 0)
+
 func _on_apply_pressed() -> void:
 	color_applied.emit(color_picker_button.color)
 	eye_color_applied.emit(eye_color_picker_button.color)
+	wings_color_applied.emit(wings_color_picker.color)
+	horns_color_applied.emit(horns_color_picker.color)
+	markings_color_applied.emit(markings_color_picker.color)
 	hide_ui()
 
 func _on_close_pressed() -> void:

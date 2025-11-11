@@ -31,7 +31,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("ui_toggle_main_menu"):
 		if user_details_panel.visible:
 			hide_user_details()
 			show_menu()
