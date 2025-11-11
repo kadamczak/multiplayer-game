@@ -16,7 +16,10 @@ var player_username: String = ""
 var is_running: bool = false
 
 @onready var label = $Label
-@onready var sprite = $AnimatedSprite2D
+@onready var sprite_node = $Sprite
+@onready var animation_player = $Sprite/AnimationPlayer
+var current_animation: String = ""
+var is_flipped: bool = false
 
 func _ready():
 	if is_authority:
@@ -60,8 +63,9 @@ func _physics_process(delta: float) -> void:
 	if ClientNetworkGlobals.is_movement_blocking_ui_active:
 		velocity.x = move_toward(velocity.x, 0, WALK_SPEED)
 		move_and_slide()
-		if sprite.animation != "idle":
-			sprite.play("idle")
+		if current_animation != "idle":
+			animation_player.play("idle")
+			current_animation = "idle"
 		return
 	
 	# Handle jump
@@ -89,23 +93,26 @@ func _physics_process(delta: float) -> void:
 		target_animation = "idle"
 	
 	# Only play animation if it's different from current
-	if sprite.animation != target_animation:
-		sprite.play(target_animation)
+	if current_animation != target_animation:
+		animation_player.play(target_animation)
+		current_animation = target_animation
 	
 	# Handle horizontal movement and sprite flipping
 	if direction != 0:
 		velocity.x = direction * effective_speed
 		# Flip sprite based on movement direction
 		if direction > 0:
-			sprite.flip_h = true
+			sprite_node.scale.x = -1
+			is_flipped = true
 		elif direction < 0:
-			sprite.flip_h = false
+			sprite_node.scale.x = 1
+			is_flipped = false
 	else:
 		velocity.x = move_toward(velocity.x, 0, effective_speed)
 	
 	move_and_slide()
 	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
-	PlayerAnimation.create(owner_id, sprite.animation, sprite.flip_h).send(NetworkHandler.server_peer)
+	PlayerAnimation.create(owner_id, current_animation, is_flipped).send(NetworkHandler.server_peer)
 
 	
 # handles other players on the client
@@ -125,6 +132,12 @@ func client_handle_player_username(username_packet: PlayerUsername) -> void: #13
 func client_handle_player_animation(anim_packet: PlayerAnimation) -> void:
 	if is_authority || owner_id != anim_packet.id: return
 	# Only play animation if it's different from current
-	if sprite.animation != anim_packet.animation_name:
-		sprite.play(anim_packet.animation_name)
-	sprite.flip_h = anim_packet.flip_h
+	if current_animation != anim_packet.animation_name:
+		animation_player.play(anim_packet.animation_name)
+		current_animation = anim_packet.animation_name
+	# Handle sprite flipping
+	if anim_packet.flip_h:
+		sprite_node.scale.x = -1
+	else:
+		sprite_node.scale.x = 1
+	is_flipped = anim_packet.flip_h
