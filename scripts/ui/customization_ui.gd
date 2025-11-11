@@ -1,12 +1,20 @@
 extends CanvasLayer
 
 signal color_applied(color: Color)
+signal eye_color_applied(eye_color: Color)
+signal wings_changed(wings_type: int)  # 0 = none, 1 = wings1, 2 = wings2
 signal closed()
 
 @onready var panel = $Panel
 @onready var color_picker_button = $Panel/MarginContainer/VBoxContainer/ColorPickerButton
+@onready var eye_color_picker_button = $Panel/MarginContainer/VBoxContainer/EyeColorPickerButton
+@onready var no_wings_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/NoWingsButton
+@onready var wings1_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/Wings1Button
+@onready var wings2_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/Wings2Button
 @onready var apply_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/ApplyButton
 @onready var close_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/CloseButton
+
+var selected_wings: int = 1  # Default to Wings 1
 
 func _ready() -> void:
 	hide_ui()
@@ -14,14 +22,25 @@ func _ready() -> void:
 	# Connect signals
 	apply_button.pressed.connect(_on_apply_pressed)
 	close_button.pressed.connect(_on_close_pressed)
+	no_wings_button.pressed.connect(_on_no_wings_pressed)
+	wings1_button.pressed.connect(_on_wings1_pressed)
+	wings2_button.pressed.connect(_on_wings2_pressed)
+	
+	# Connect color picker changes for real-time preview
+	color_picker_button.color_changed.connect(_on_body_color_changed)
+	eye_color_picker_button.color_changed.connect(_on_eye_color_changed)
 	
 	# Set up focus navigation
 	apply_button.focus_neighbor_right = close_button.get_path()
 	close_button.focus_neighbor_left = apply_button.get_path()
+	
+	# Update button states
+	_update_wings_buttons()
 
-func show_ui(current_color: Color = Color.WHITE) -> void:
+func show_ui(current_color: Color = Color.WHITE, current_eye_color: Color = Color.WHITE) -> void:
 	panel.visible = true
 	color_picker_button.color = current_color
+	eye_color_picker_button.color = current_eye_color
 	ClientNetworkGlobals.is_movement_blocking_ui_active = true
 	apply_button.grab_focus()
 
@@ -32,8 +51,45 @@ func hide_ui() -> void:
 	# Only clear movement blocking if no other UI is visible
 	ClientNetworkGlobals.is_movement_blocking_ui_active = false
 
+func _update_wings_buttons() -> void:
+	# Reset all buttons
+	no_wings_button.disabled = false
+	wings1_button.disabled = false
+	wings2_button.disabled = false
+	
+	# Highlight selected button
+	match selected_wings:
+		0:
+			no_wings_button.disabled = true
+		1:
+			wings1_button.disabled = true
+		2:
+			wings2_button.disabled = true
+
+func _on_no_wings_pressed() -> void:
+	selected_wings = 0
+	_update_wings_buttons()
+	wings_changed.emit(0)
+
+func _on_wings1_pressed() -> void:
+	selected_wings = 1
+	_update_wings_buttons()
+	wings_changed.emit(1)
+
+func _on_wings2_pressed() -> void:
+	selected_wings = 2
+	_update_wings_buttons()
+	wings_changed.emit(2)
+
+func _on_body_color_changed(color: Color) -> void:
+	color_applied.emit(color)
+
+func _on_eye_color_changed(eye_color: Color) -> void:
+	eye_color_applied.emit(eye_color)
+
 func _on_apply_pressed() -> void:
 	color_applied.emit(color_picker_button.color)
+	eye_color_applied.emit(eye_color_picker_button.color)
 	hide_ui()
 
 func _on_close_pressed() -> void:
