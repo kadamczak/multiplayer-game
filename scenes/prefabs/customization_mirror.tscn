@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://d013gdjk671nj"]
+
+[ext_resource type="Script" uid="uid://wqyon71sutwr" path="res://scripts/prefabs/customization_mirror.gd" id="1_v6ac5"]
+[ext_resource type="Texture2D" uid="uid://itqxowgm6min" path="res://assets/sprites/mirror.png" id="1_vj1cf"]
+
+[node name="CustomizationMirror" type="Node2D"]
+script = ExtResource("1_v6ac5")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_vj1cf")

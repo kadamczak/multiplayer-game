@@ -12,6 +12,17 @@ static func refresh(refresh_token: String) -> Dictionary:
 	)
 
 
+static func logout(refresh_token: String) -> Dictionary:
+	var body: String = JSON.stringify(refresh_token)
+
+	return await ApiHelper.api_request(
+		ApiConfig.API_BASE_URL + "/v1/identity/logout",
+		HTTPClient.METHOD_POST,
+		["X-Client-Type: Game"],
+		body
+	)
+
+
 static func login(username: String, password: String) -> Dictionary:
 	var request_model = UserModels.LoginRequest.new(username, password)
 	var body = JSON.stringify(request_model.to_json())
