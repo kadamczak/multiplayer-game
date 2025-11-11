@@ -405,6 +405,7 @@ hframes = 4
 vframes = 3
 
 [node name="Body_Color" type="Sprite2D" parent="Sprite"]
+position = Vector2(1, 0)
 texture = ExtResource("6_mkdpo")
 hframes = 3
 vframes = 3

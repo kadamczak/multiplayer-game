@@ -1,10 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://d013gdjk671nj"]
+[gd_scene load_steps=5 format=3 uid="uid://d013gdjk671nj"]
 
 [ext_resource type="Script" uid="uid://wqyon71sutwr" path="res://scripts/prefabs/customization_mirror.gd" id="1_v6ac5"]
 [ext_resource type="Texture2D" uid="uid://itqxowgm6min" path="res://assets/sprites/mirror.png" id="1_vj1cf"]
+[ext_resource type="PackedScene" path="res://scenes/ui/customization_ui.tscn" id="3_customization_ui"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_interact"]
+size = Vector2(200, 250)
 
 [node name="CustomizationMirror" type="Node2D"]
 script = ExtResource("1_v6ac5")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_vj1cf")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(0, 25)
+shape = SubResource("RectangleShape2D_interact")
+
+[node name="CustomizationUI" parent="." instance=ExtResource("3_customization_ui")]

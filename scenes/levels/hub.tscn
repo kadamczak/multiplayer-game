@@ -242,8 +242,8 @@ position = Vector2(-426, 1217)
 position = Vector2(-271, 1222)
 
 [node name="CustomizationMirror" parent="Prefabs" instance=ExtResource("14_dvhlj")]
-position = Vector2(571, 1191.9999)
-scale = Vector2(0.5200024, 0.5600024)
+position = Vector2(671, 1201)
+scale = Vector2(0.52, 0.52)
 
 [node name="Level1_Portal" parent="." instance=ExtResource("8_portal")]
 position = Vector2(1726, 1166)

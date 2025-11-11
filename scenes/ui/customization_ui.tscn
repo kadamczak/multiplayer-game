@@ -1,0 +1,86 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5g7h8jaj0k1l"]
+
+[ext_resource type="Script" path="res://scripts/ui/customization_ui.gd" id="1_customization_ui"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 32
+font_color = Color(1, 0.6862745, 0.1882353, 1)
+
+[node name="CustomizationUI" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_customization_ui")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 100.0
+offset_top = 50.0
+offset_right = -100.0
+offset_bottom = 300.0
+grow_horizontal = 2
+
+[node name="ColorRect" type="ColorRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Character Customization"
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Character Color"
+horizontal_alignment = 1
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+color = Color(1, 1, 1, 1)
+edit_alpha = false
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ApplyButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(120, 50)
+layout_mode = 2
+text = "Apply"
+
+[node name="Spacer" type="Control" parent="Panel/MarginContainer/VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(120, 50)
+layout_mode = 2
+text = "Close"
