@@ -3,18 +3,27 @@ extends CanvasLayer
 signal color_applied(color: Color)
 signal eye_color_applied(eye_color: Color)
 signal wings_changed(wings_type: int)  # 0 = none, 1 = wings1, 2 = wings2
+signal horns_changed(horns_type: int)  # 0 = none, 1 = horns1
+signal markings_changed(markings_type: int)  # 0 = none, 1 = markings1, 2 = markings2
 signal closed()
 
 @onready var panel = $Panel
-@onready var color_picker_button = $Panel/MarginContainer/VBoxContainer/ColorPickerButton
-@onready var eye_color_picker_button = $Panel/MarginContainer/VBoxContainer/EyeColorPickerButton
+@onready var color_picker_button = $Panel/MarginContainer/VBoxContainer/ColorsContainer/BodyColorSection/ColorPickerButton
+@onready var eye_color_picker_button = $Panel/MarginContainer/VBoxContainer/ColorsContainer/EyeColorSection/EyeColorPickerButton
 @onready var no_wings_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/NoWingsButton
 @onready var wings1_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/Wings1Button
 @onready var wings2_button = $Panel/MarginContainer/VBoxContainer/WingsContainer/Wings2Button
+@onready var no_horns_button = $Panel/MarginContainer/VBoxContainer/HornsContainer/NoHornsButton
+@onready var horns1_button = $Panel/MarginContainer/VBoxContainer/HornsContainer/Horns1Button
+@onready var no_markings_button = $Panel/MarginContainer/VBoxContainer/MarkingsContainer/NoMarkingsButton
+@onready var markings1_button = $Panel/MarginContainer/VBoxContainer/MarkingsContainer/Markings1Button
+@onready var markings2_button = $Panel/MarginContainer/VBoxContainer/MarkingsContainer/Markings2Button
 @onready var apply_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/ApplyButton
 @onready var close_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/CloseButton
 
 var selected_wings: int = 1  # Default to Wings 1
+var selected_horns: int = 1  # Default to Horns 1
+var selected_markings: int = 0  # Default to No Markings
 
 func _ready() -> void:
 	hide_ui()
@@ -25,6 +34,11 @@ func _ready() -> void:
 	no_wings_button.pressed.connect(_on_no_wings_pressed)
 	wings1_button.pressed.connect(_on_wings1_pressed)
 	wings2_button.pressed.connect(_on_wings2_pressed)
+	no_horns_button.pressed.connect(_on_no_horns_pressed)
+	horns1_button.pressed.connect(_on_horns1_pressed)
+	no_markings_button.pressed.connect(_on_no_markings_pressed)
+	markings1_button.pressed.connect(_on_markings1_pressed)
+	markings2_button.pressed.connect(_on_markings2_pressed)
 	
 	# Connect color picker changes for real-time preview
 	color_picker_button.color_changed.connect(_on_body_color_changed)
@@ -36,6 +50,8 @@ func _ready() -> void:
 	
 	# Update button states
 	_update_wings_buttons()
+	_update_horns_buttons()
+	_update_markings_buttons()
 
 func show_ui(current_color: Color = Color.WHITE, current_eye_color: Color = Color.WHITE) -> void:
 	panel.visible = true
@@ -80,6 +96,58 @@ func _on_wings2_pressed() -> void:
 	selected_wings = 2
 	_update_wings_buttons()
 	wings_changed.emit(2)
+
+func _update_horns_buttons() -> void:
+	# Reset all buttons
+	no_horns_button.disabled = false
+	horns1_button.disabled = false
+	
+	# Highlight selected button
+	match selected_horns:
+		0:
+			no_horns_button.disabled = true
+		1:
+			horns1_button.disabled = true
+
+func _on_no_horns_pressed() -> void:
+	selected_horns = 0
+	_update_horns_buttons()
+	horns_changed.emit(0)
+
+func _on_horns1_pressed() -> void:
+	selected_horns = 1
+	_update_horns_buttons()
+	horns_changed.emit(1)
+
+func _update_markings_buttons() -> void:
+	# Reset all buttons
+	no_markings_button.disabled = false
+	markings1_button.disabled = false
+	markings2_button.disabled = false
+	
+	# Highlight selected button
+	match selected_markings:
+		0:
+			no_markings_button.disabled = true
+		1:
+			markings1_button.disabled = true
+		2:
+			markings2_button.disabled = true
+
+func _on_no_markings_pressed() -> void:
+	selected_markings = 0
+	_update_markings_buttons()
+	markings_changed.emit(0)
+
+func _on_markings1_pressed() -> void:
+	selected_markings = 1
+	_update_markings_buttons()
+	markings_changed.emit(1)
+
+func _on_markings2_pressed() -> void:
+	selected_markings = 2
+	_update_markings_buttons()
+	markings_changed.emit(2)
 
 func _on_body_color_changed(color: Color) -> void:
 	color_applied.emit(color)

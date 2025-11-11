@@ -496,9 +496,11 @@ texture = ExtResource("13_mv0qf")
 texture = ExtResource("13_0m5l2")
 
 [node name="Head_Item_Color" type="Sprite2D" parent="Sprite"]
+visible = false
 texture = ExtResource("15_lhyy0")
 
 [node name="Head_Item" type="Sprite2D" parent="Sprite"]
+visible = false
 texture = ExtResource("16_xl2sm")
 
 [node name="Wings_Color" type="Sprite2D" parent="Sprite"]

@@ -16,7 +16,7 @@ anchor_right = 1.0
 offset_left = 100.0
 offset_top = 50.0
 offset_right = -100.0
-offset_bottom = 300.0
+offset_bottom = 450.0
 grow_horizontal = 2
 
 [node name="ColorRect" type="ColorRect" parent="Panel"]
@@ -42,7 +42,7 @@ theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 10
 
 [node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -53,13 +53,40 @@ horizontal_alignment = 1
 [node name="HSeparator" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="ColorsContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Character Color"
+alignment = 1
+
+[node name="BodyColorSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/ColorsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="ColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/ColorsContainer/BodyColorSection"]
+layout_mode = 2
+text = "Body Color"
 horizontal_alignment = 1
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
+[node name="ColorPickerButton" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/ColorsContainer/BodyColorSection"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+color = Color(1, 1, 1, 1)
+edit_alpha = false
+
+[node name="Spacer" type="Control" parent="Panel/MarginContainer/VBoxContainer/ColorsContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="EyeColorSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/ColorsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="EyeColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/ColorsContainer/EyeColorSection"]
+layout_mode = 2
+text = "Eye Color"
+horizontal_alignment = 1
+
+[node name="EyeColorPickerButton" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/ColorsContainer/EyeColorSection"]
+custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 color = Color(1, 1, 1, 1)
 edit_alpha = false
@@ -67,18 +94,7 @@ edit_alpha = false
 [node name="HSeparator2" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="EyeColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Eye Color"
-horizontal_alignment = 1
-
-[node name="EyeColorPickerButton" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-color = Color(1, 1, 1, 1)
-edit_alpha = false
-
-[node name="HSeparator3" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="WingsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
@@ -91,21 +107,70 @@ layout_mode = 2
 alignment = 1
 
 [node name="NoWingsButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/WingsContainer"]
-custom_minimum_size = Vector2(100, 40)
+custom_minimum_size = Vector2(100, 35)
 layout_mode = 2
 text = "No Wings"
 
 [node name="Wings1Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/WingsContainer"]
-custom_minimum_size = Vector2(100, 40)
+custom_minimum_size = Vector2(100, 35)
 layout_mode = 2
-text = "Wings 1"
+text = "Classic Wings"
 
 [node name="Wings2Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/WingsContainer"]
-custom_minimum_size = Vector2(100, 40)
+custom_minimum_size = Vector2(100, 35)
 layout_mode = 2
-text = "Wings 2"
+text = "Feather Wings"
+
+[node name="HSeparator3" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HornsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Horns"
+horizontal_alignment = 1
+
+[node name="HornsContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="NoHornsButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/HornsContainer"]
+custom_minimum_size = Vector2(100, 35)
+layout_mode = 2
+text = "No Horns"
+
+[node name="Horns1Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/HornsContainer"]
+custom_minimum_size = Vector2(100, 35)
+layout_mode = 2
+text = "Horns"
 
 [node name="HSeparator4" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarkingsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Markings"
+horizontal_alignment = 1
+
+[node name="MarkingsContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="NoMarkingsButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/MarkingsContainer"]
+custom_minimum_size = Vector2(100, 35)
+layout_mode = 2
+text = "No Markings"
+
+[node name="Markings1Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/MarkingsContainer"]
+custom_minimum_size = Vector2(100, 35)
+layout_mode = 2
+text = "Markings 1"
+
+[node name="Markings2Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/MarkingsContainer"]
+custom_minimum_size = Vector2(100, 35)
+layout_mode = 2
+text = "Markings 2"
+
+[node name="HSeparator5" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
