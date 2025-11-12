@@ -2,9 +2,9 @@ extends CanvasLayer
 
 signal color_applied(color: Color)
 signal eye_color_applied(eye_color: Color)
-signal wings_changed(wings_type: int)  # 0 = none, 1 = wings1, 2 = wings2
+signal wings_changed(wing_type: int)  # 0 = none, 1 = wings1, 2 = wings2
 signal wings_color_applied(color: Color)
-signal horns_changed(horns_type: int)  # 0 = none, 1 = horns1
+signal horns_changed(horn_type: int)  # 0 = none, 1 = horns1
 signal horns_color_applied(color: Color)
 signal markings_changed(markings_type: int)  # 0 = none, 1 = markings1, 2 = markings2
 signal markings_color_applied(color: Color)

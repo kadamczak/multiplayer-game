@@ -18,6 +18,7 @@ var is_running: bool = false
 @onready var label = $Label
 @onready var sprite_node = $Sprite
 @onready var animation_player = $Sprite/AnimationPlayer
+@onready var customization = $PlayerCustomization
 var current_animation: String = ""
 var is_flipped: bool = false
 
