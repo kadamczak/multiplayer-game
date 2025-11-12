@@ -214,6 +214,24 @@ func _on_apply_pressed() -> void:
 	wings_color_applied.emit(wings_color_picker.color)
 	horns_color_applied.emit(horns_color_picker.color)
 	markings_color_applied.emit(markings_color_picker.color)
+	
+	# Send customization update to API
+	var result = await UserAPI.update_user_customization(
+		color_picker_button.color,
+		eye_color_picker_button.color,
+		wings_color_picker.color,
+		horns_color_picker.color,
+		markings_color_picker.color,
+		selected_wings,
+		selected_horns,
+		selected_markings
+	)
+	
+	if result.has("error"):
+		DebugLogger.error("Failed to update customization: " + str(result.error))
+	else:
+		DebugLogger.log("Customization updated successfully")
+	
 	hide_ui()
 
 func _on_close_pressed() -> void:
@@ -239,3 +257,4 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and panel.visible:
 		_on_close_pressed()
 		get_viewport().set_input_as_handled()
+
