@@ -70,3 +70,14 @@ func manage_ids(id_assignment: IDAssignment) -> void:
 	if id == -1:
 		id = id_assignment.id
 		handle_local_id_assignment.emit(id_assignment.id)
+
+
+func reset() -> void:
+	id = -1
+	username = ""
+	player_usernames = {}
+	current_scene = ""
+	previous_scene = ""
+	player_scenes = {}
+	is_movement_blocking_ui_active = false
+	balance = 0

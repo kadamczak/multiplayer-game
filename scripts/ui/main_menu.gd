@@ -76,7 +76,26 @@ func _on_user_details_pressed() -> void:
 
 
 func _on_logout_pressed() -> void:
+	var tree = get_tree()
+
+	if not AuthManager.refresh_token.is_empty():
+		var result = await IdentityAPI.logout(AuthManager.refresh_token)
+		if result.has("success") and result.success:
+			DebugLogger.log("Logout API call successful")
+		else:
+			DebugLogger.log("Logout API call failed, clearing tokens anyway")
+	
+	AuthManager.clear_tokens()
 	logout_clicked.emit()
+
+	if NetworkHandler.connection != null:
+		NetworkHandler.disconnect_client()
+		DebugLogger.log("Disconnected from multiplayer server")
+
+	ClientNetworkGlobals.reset()	
+
+	if tree:
+		tree.change_scene_to_file("res://scenes/levels/login_scene.tscn")
 
 
 func _on_close_pressed() -> void:
