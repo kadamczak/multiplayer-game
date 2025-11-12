@@ -44,7 +44,7 @@ func _on_login_button_pressed() -> void:
 		
 		if user_info_response.success:
 			var user_info: UserModels.ReadUserGameInfoResponse = user_info_response.data
-			_successfully_log_in(user_info.user_name, user_info.balance)
+			_successfully_log_in(user_info.account_guid, user_info.user_name, user_info.balance)
 		else:
 			DebugLogger.log("Failed to fetch user info: " + user_info_response.problem.title)
 			error_label.text = "Login successful but failed to fetch user info."
@@ -69,7 +69,7 @@ func _attempt_auto_login() -> void:
 		
 		if user_info_response.success:
 			var user_info: UserModels.ReadUserGameInfoResponse = user_info_response.data
-			_successfully_log_in(user_info.user_name, user_info.balance)
+			_successfully_log_in(user_info.account_guid, user_info.user_name, user_info.balance)
 		else:
 			DebugLogger.log("Failed to fetch user info: " + user_info_response.problem.title)
 			login_panel.visible = true
@@ -78,7 +78,8 @@ func _attempt_auto_login() -> void:
 		login_panel.visible = true
 
 
-func _successfully_log_in(username: String, balance: int) -> void:
+func _successfully_log_in(account_guid: String, username: String, balance: int) -> void:
+	ClientNetworkGlobals.account_guid = account_guid
 	ClientNetworkGlobals.username = username
 	ClientNetworkGlobals.balance = balance
 

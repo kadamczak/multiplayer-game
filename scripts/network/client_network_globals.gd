@@ -9,6 +9,7 @@ signal handle_player_scene_change(player_scene_change: PlayerSceneChange)
 signal balance_changed(new_balance: int)
 
 var id: int = -1
+var account_guid: String = ""
 
 var username: String = ""
 var player_usernames: Dictionary = {} # id -> username mapping
@@ -74,6 +75,7 @@ func manage_ids(id_assignment: IDAssignment) -> void:
 
 func reset() -> void:
 	id = -1
+	account_guid = ""
 	username = ""
 	player_usernames = {}
 	current_scene = ""

@@ -2,6 +2,7 @@ extends Node
 
 var peer_usernames: Dictionary = {} # peer_id -> username mapping
 var peer_scenes: Dictionary = {} # peer_id -> scene_path mapping
+var peer_guids: Dictionary = {} # peer_id -> guid mapping
 
 func _ready() -> void:
 	NetworkHandler.on_peer_connected.connect(on_peer_connected)

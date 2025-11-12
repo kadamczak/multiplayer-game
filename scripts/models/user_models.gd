@@ -31,10 +31,12 @@ class TokenResponse:
 
 
 class ReadUserGameInfoResponse:
+	var account_guid: String
 	var user_name: String
 	var balance: int
 	
 	func _init(data: Dictionary = {}) -> void:
+		account_guid = data.get("id")
 		user_name = data.get("userName")
 		balance = data.get("balance")
 	
