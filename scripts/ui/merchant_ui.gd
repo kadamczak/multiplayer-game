@@ -5,7 +5,7 @@ signal trade_clicked()
 signal back_from_trade_clicked()
 signal buy_clicked(offer_id: int, price: int)
 
-@onready var panel = $Panel
+@onready var talk_panel = $Panel
 @onready var dialogue_label = $Panel/HBoxContainer/RightSide/DialogueLabel
 @onready var talk_button = $Panel/HBoxContainer/RightSide/ButtonContainer/TalkButton
 @onready var trade_button = $Panel/HBoxContainer/RightSide/ButtonContainer/TradeButton
@@ -26,10 +26,14 @@ func _ready() -> void:
 	back_button.focus_mode = Control.FOCUS_ALL
 
 
+func is_ui_visible() -> bool:
+	return talk_panel.visible or trade_panel.visible
+
+
 func show_dialogue(text: String, button_selected: String) -> void:
 	ClientNetworkGlobals.is_movement_blocking_ui_active = true
 	dialogue_label.text = text
-	panel.visible = true
+	talk_panel.visible = true
 	trade_panel.visible = false
 
 	if button_selected == "Talk":
@@ -39,13 +43,13 @@ func show_dialogue(text: String, button_selected: String) -> void:
 
 
 func hide_dialogue() -> void:
-	panel.visible = false
+	talk_panel.visible = false
 	trade_panel.visible = false
 	ClientNetworkGlobals.is_movement_blocking_ui_active = false
 
 
 func show_trading_view() -> void:
-	panel.visible = false
+	talk_panel.visible = false
 	trade_panel.visible = true
 	error_label.visible = false
 	_clear_offers()

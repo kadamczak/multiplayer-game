@@ -79,7 +79,6 @@ func _on_buy_clicked(offer_id: int, price: int) -> void:
 		merchant_ui.show_error("Insufficient funds! You need " + str(price) + " gold but only have " + str(ClientNetworkGlobals.balance) + " gold.")
 		return
 	
-	# Make purchase request
 	var response = await MerchantAPI.purchase_offer(offer_id)
 	
 	if response.success:
