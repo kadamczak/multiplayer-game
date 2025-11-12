@@ -8,6 +8,7 @@ signal horns_changed(horn_type: int)  # 0 = none, 1 = horns1
 signal horns_color_applied(color: Color)
 signal markings_changed(markings_type: int)  # 0 = none, 1 = markings1, 2 = markings2
 signal markings_color_applied(color: Color)
+signal cancelled()
 signal closed()
 
 @onready var panel = $Panel
@@ -30,6 +31,16 @@ signal closed()
 var selected_wings: int = 1  # Default to Wings 1
 var selected_horns: int = 1  # Default to Horns 1
 var selected_markings: int = 0  # Default to No Markings
+
+# Store original state for cancel functionality
+var original_body_color: Color = Color.WHITE
+var original_eye_color: Color = Color.WHITE
+var original_wings_type: int = 1
+var original_wings_color: Color = Color.WHITE
+var original_horns_type: int = 1
+var original_horns_color: Color = Color.WHITE
+var original_markings_type: int = 0
+var original_markings_color: Color = Color.WHITE
 
 func _ready() -> void:
 	hide_ui()
@@ -67,6 +78,17 @@ func show_ui(current_color: Color = Color.WHITE, current_eye_color: Color = Colo
 	panel.visible = true
 	color_picker_button.color = current_color
 	eye_color_picker_button.color = current_eye_color
+	
+	# Store original state for cancel functionality
+	original_body_color = current_color
+	original_eye_color = current_eye_color
+	original_wings_type = selected_wings
+	original_wings_color = wings_color_picker.color
+	original_horns_type = selected_horns
+	original_horns_color = horns_color_picker.color
+	original_markings_type = selected_markings
+	original_markings_color = markings_color_picker.color
+	
 	ClientNetworkGlobals.is_movement_blocking_ui_active = true
 	apply_button.grab_focus()
 
@@ -195,6 +217,21 @@ func _on_apply_pressed() -> void:
 	hide_ui()
 
 func _on_close_pressed() -> void:
+	# Revert UI to original state
+	color_picker_button.color = original_body_color
+	eye_color_picker_button.color = original_eye_color
+	wings_color_picker.color = original_wings_color
+	horns_color_picker.color = original_horns_color
+	markings_color_picker.color = original_markings_color
+	selected_wings = original_wings_type
+	selected_horns = original_horns_type
+	selected_markings = original_markings_type
+	_update_wings_buttons()
+	_update_horns_buttons()
+	_update_markings_buttons()
+	
+	# Emit cancelled signal to restore original state
+	cancelled.emit()
 	closed.emit()
 	hide_ui()
 

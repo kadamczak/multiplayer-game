@@ -17,6 +17,7 @@ func _ready() -> void:
 	customization_ui.horns_color_applied.connect(_on_horns_color_applied)
 	customization_ui.markings_changed.connect(_on_markings_changed)
 	customization_ui.markings_color_applied.connect(_on_markings_color_applied)
+	customization_ui.cancelled.connect(_on_ui_cancelled)
 	customization_ui.closed.connect(_on_ui_closed)
 
 func _on_body_entered(body: Node2D) -> void:
@@ -110,6 +111,23 @@ func _on_markings_color_applied(color: Color) -> void:
 	var customization = player_in_range.get_node_or_null("PlayerCustomization")
 	if customization:
 		customization.apply_markings_color(color)
+
+func _on_ui_cancelled() -> void:
+	if not player_in_range:
+		return
+	var customization = player_in_range.get_node_or_null("PlayerCustomization")
+	if not customization:
+		return
+	
+	# Restore original state from the UI
+	customization.apply_body_color(customization_ui.original_body_color)
+	customization.apply_eye_color(customization_ui.original_eye_color)
+	customization.apply_wings(customization_ui.original_wings_type)
+	customization.apply_wings_color(customization_ui.original_wings_color)
+	customization.apply_horns(customization_ui.original_horns_type)
+	customization.apply_horns_color(customization_ui.original_horns_color)
+	customization.apply_markings(customization_ui.original_markings_type)
+	customization.apply_markings_color(customization_ui.original_markings_color)
 
 func _on_ui_closed() -> void:
 	pass
