@@ -3,7 +3,6 @@ extends Node2D
 @export var merchant_id: int = -1
 @export var greeting_text: String = "Greeting text!"
 @export var talk_text: String = "Talk text!"
-@export var trade_text: String = "Trade text!"
 
 var local_player_in_area: bool = false
 
@@ -31,17 +30,28 @@ func _on_body_exited(body: Node2D) -> void:
 		if body.is_authority:
 			local_player_in_area = false
 
+
 func _input(event: InputEvent) -> void:
-	if merchant_ui.panel.visible or merchant_ui.trade_panel.visible:
-		if event.is_action_pressed("ui_cancel"):
-			if merchant_ui.trade_panel.visible:
-				_on_back_from_trade_clicked()
-			else:
-				merchant_ui.hide_dialogue()
+	if event.is_action_pressed("ui_accept"):
+		if player_can_launch_ui():
+			merchant_ui.show_dialogue(greeting_text, "Talk")
 			get_viewport().set_input_as_handled()
-	elif local_player_in_area and event.is_action_pressed("ui_accept"):
-		merchant_ui.show_dialogue(greeting_text, "Talk")
-		get_viewport().set_input_as_handled()
+
+	if event.is_action_pressed("ui_cancel"):
+		if merchant_ui.is_ui_visible():
+			go_back_one_step()
+			get_viewport().set_input_as_handled()
+
+
+func player_can_launch_ui() -> bool:
+	return local_player_in_area and not merchant_ui.is_ui_visible()
+
+
+func go_back_one_step() -> void:
+	if merchant_ui.trade_panel.visible:
+		_on_back_from_trade_clicked()
+	else:
+		merchant_ui.hide_dialogue()
 
 
 func _on_talk_clicked() -> void:

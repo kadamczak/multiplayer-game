@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dhgky4w5olwah"]
+[gd_scene load_steps=5 format=3 uid="uid://dhgky4w5olwah"]
 
 [ext_resource type="Script" uid="uid://clhhi3y46xvh5" path="res://scripts/ui/merchant_ui.gd" id="1_sd0pw"]
 [ext_resource type="Texture2D" uid="uid://dfdra7gnx78gv" path="res://assets/sprites/rabbit_portrait.png" id="2_portrait"]
@@ -6,6 +6,10 @@
 [sub_resource type="LabelSettings" id="LabelSettings_j7bd3"]
 font_size = 32
 font_color = Color(1, 0.6862745, 0.1882353, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_sti4h"]
+font_size = 20
+font_color = Color(0.8546415, 0.4129259, 0.15518662, 1)
 
 [node name="MerchantUI" type="CanvasLayer"]
 layer = 100
@@ -136,6 +140,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
 theme_override_font_sizes/font_size = 24
 text = "Error message here"
+label_settings = SubResource("LabelSettings_sti4h")
 autowrap_mode = 2
 
 [node name="BackButton" type="Button" parent="TradePanel/MarginContainer/VBoxContainer"]
