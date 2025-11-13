@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dhgky4w5olwah"]
 
-[ext_resource type="Script" uid="uid://clhhi3y46xvh5" path="res://scripts/ui/merchant_ui.gd" id="1_sd0pw"]
-[ext_resource type="Texture2D" uid="uid://dfdra7gnx78gv" path="res://assets/sprites/rabbit_portrait.png" id="2_portrait"]
+[ext_resource type="Script" uid="uid://clhhi3y46xvh5" path="res://scripts/ui/merchant_ui/merchant_ui.gd" id="1_ugsxc"]
+[ext_resource type="Texture2D" uid="uid://dfdra7gnx78gv" path="res://assets/sprites/rabbit_portrait.png" id="2_wehq4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_j7bd3"]
 font_size = 32
@@ -13,9 +13,9 @@ font_color = Color(0.8546415, 0.4129259, 0.15518662, 1)
 
 [node name="MerchantUI" type="CanvasLayer"]
 layer = 100
-script = ExtResource("1_sd0pw")
+script = ExtResource("1_ugsxc")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="TalkPanel" type="Panel" parent="."]
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 65.0
@@ -24,7 +24,7 @@ offset_right = -135.0
 offset_bottom = 343.0
 grow_horizontal = 2
 
-[node name="ColorRect" type="ColorRect" parent="Panel"]
+[node name="ColorRect" type="ColorRect" parent="TalkPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,7 +33,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.5647059)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TalkPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,19 +46,19 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="Portrait" type="TextureRect" parent="Panel/HBoxContainer"]
+[node name="Portrait" type="TextureRect" parent="TalkPanel/HBoxContainer"]
 custom_minimum_size = Vector2(230, 230)
 layout_mode = 2
-texture = ExtResource("2_portrait")
+texture = ExtResource("2_wehq4")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="RightSide" type="VBoxContainer" parent="Panel/HBoxContainer"]
+[node name="RightSide" type="VBoxContainer" parent="TalkPanel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 15
 
-[node name="DialogueLabel" type="Label" parent="Panel/HBoxContainer/RightSide"]
+[node name="DialogueLabel" type="Label" parent="TalkPanel/HBoxContainer/RightSide"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -69,17 +69,17 @@ label_settings = SubResource("LabelSettings_j7bd3")
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ButtonContainer" type="HBoxContainer" parent="Panel/HBoxContainer/RightSide"]
+[node name="ButtonContainer" type="HBoxContainer" parent="TalkPanel/HBoxContainer/RightSide"]
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 2
 
-[node name="TalkButton" type="Button" parent="Panel/HBoxContainer/RightSide/ButtonContainer"]
+[node name="TalkButton" type="Button" parent="TalkPanel/HBoxContainer/RightSide/ButtonContainer"]
 custom_minimum_size = Vector2(120, 50)
 layout_mode = 2
 text = "Talk"
 
-[node name="TradeButton" type="Button" parent="Panel/HBoxContainer/RightSide/ButtonContainer"]
+[node name="TradeButton" type="Button" parent="TalkPanel/HBoxContainer/RightSide/ButtonContainer"]
 custom_minimum_size = Vector2(120, 50)
 layout_mode = 2
 text = "Trade"

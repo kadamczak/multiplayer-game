@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://ptj7368s7w4f" path="res://assets/spritesheets/rabbit_spritesheets/rabbit_idle.png" id="1_li4o6"]
 [ext_resource type="Script" uid="uid://dst5i7ttbj51g" path="res://scripts/prefabs/merchant.gd" id="1_shopkeeper"]
-[ext_resource type="PackedScene" uid="uid://dhgky4w5olwah" path="res://scenes/ui/merchant_ui.tscn" id="2_hfdix"]
+[ext_resource type="PackedScene" uid="uid://dhgky4w5olwah" path="res://scenes/ui/merchant_ui/merchant_ui.tscn" id="2_hfdix"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lo7ou"]
 atlas = ExtResource("1_li4o6")

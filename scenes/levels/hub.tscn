@@ -228,7 +228,6 @@ position = Vector2(-2628, 1213)
 merchant_id = 1
 greeting_text = "Hello! Wanna trade?"
 talk_text = "I'm just chilling..."
-trade_text = "Have a look!"
 
 [node name="Prefabs" type="Node" parent="."]
 

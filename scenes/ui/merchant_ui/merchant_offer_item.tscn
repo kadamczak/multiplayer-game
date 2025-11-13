@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3 uid="uid://cw8gy5xj2qv0r"]
+
+[ext_resource type="Script" uid="uid://dd61o6khfvxlt" path="res://scripts/ui/merchant_ui/merchant_offer_item.gd" id="1_merchant_offer"]
+
+[node name="MerchantOfferItem" type="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+script = ExtResource("1_merchant_offer")
+
+[node name="TopRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ItemNameLabel" type="Label" parent="TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Item Name"
+
+[node name="PriceLabel" type="Label" parent="TopRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "100 gold"
+
+[node name="BuyButton" type="Button" parent="TopRow"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+focus_mode = 2
+text = "Buy"
+
+[node name="DescriptionLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "Item description goes here"
+autowrap_mode = 3
