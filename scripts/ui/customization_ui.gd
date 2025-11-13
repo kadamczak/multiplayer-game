@@ -35,10 +35,10 @@ var selected_markings: int = 0  # Default to No Markings
 # Store original state for cancel functionality
 var original_body_color: Color = Color.WHITE
 var original_eye_color: Color = Color.WHITE
-var original_wings_type: int = 1
-var original_wings_color: Color = Color.WHITE
-var original_horns_type: int = 1
-var original_horns_color: Color = Color.WHITE
+var original_wing_type: int = 1
+var original_wing_color: Color = Color.WHITE
+var original_horn_type: int = 1
+var original_horn_color: Color = Color.WHITE
 var original_markings_type: int = 0
 var original_markings_color: Color = Color.WHITE
 
@@ -74,6 +74,14 @@ func _ready() -> void:
 	_update_markings_buttons()
 	_update_color_pickers_visibility()
 
+
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and panel.visible:
+		_on_close_pressed()
+		get_viewport().set_input_as_handled()
+
+
 func show_ui(current_color: Color = Color.WHITE, current_eye_color: Color = Color.WHITE) -> void:
 	panel.visible = true
 	color_picker_button.color = current_color
@@ -82,10 +90,10 @@ func show_ui(current_color: Color = Color.WHITE, current_eye_color: Color = Colo
 	# Store original state for cancel functionality
 	original_body_color = current_color
 	original_eye_color = current_eye_color
-	original_wings_type = selected_wings
-	original_wings_color = wings_color_picker.color
-	original_horns_type = selected_horns
-	original_horns_color = horns_color_picker.color
+	original_wing_type = selected_wings
+	original_wing_color = wings_color_picker.color
+	original_horn_type = selected_horns
+	original_horn_color = horns_color_picker.color
 	original_markings_type = selected_markings
 	original_markings_color = markings_color_picker.color
 	
@@ -238,11 +246,11 @@ func _on_close_pressed() -> void:
 	# Revert UI to original state
 	color_picker_button.color = original_body_color
 	eye_color_picker_button.color = original_eye_color
-	wings_color_picker.color = original_wings_color
-	horns_color_picker.color = original_horns_color
+	wings_color_picker.color = original_wing_color
+	horns_color_picker.color = original_horn_color
 	markings_color_picker.color = original_markings_color
-	selected_wings = original_wings_type
-	selected_horns = original_horns_type
+	selected_wings = original_wing_type
+	selected_horns = original_horn_type
 	selected_markings = original_markings_type
 	_update_wings_buttons()
 	_update_horns_buttons()
@@ -253,8 +261,4 @@ func _on_close_pressed() -> void:
 	closed.emit()
 	hide_ui()
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel") and panel.visible:
-		_on_close_pressed()
-		get_viewport().set_input_as_handled()
 
