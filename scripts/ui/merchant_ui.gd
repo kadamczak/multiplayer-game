@@ -5,10 +5,10 @@ signal trade_clicked()
 signal back_from_trade_clicked()
 signal buy_clicked(offer_id: int, price: int)
 
-@onready var talk_panel = $Panel
-@onready var dialogue_label = $Panel/HBoxContainer/RightSide/DialogueLabel
-@onready var talk_button = $Panel/HBoxContainer/RightSide/ButtonContainer/TalkButton
-@onready var trade_button = $Panel/HBoxContainer/RightSide/ButtonContainer/TradeButton
+@onready var talk_panel = $TalkPanel
+@onready var dialogue_label = $TalkPanel/HBoxContainer/RightSide/DialogueLabel
+@onready var talk_button = $TalkPanel/HBoxContainer/RightSide/ButtonContainer/TalkButton
+@onready var trade_button = $TalkPanel/HBoxContainer/RightSide/ButtonContainer/TradeButton
 
 @onready var trade_panel = $TradePanel
 @onready var offers_container = $TradePanel/MarginContainer/VBoxContainer/OffersScrollContainer/OffersContainer
@@ -17,11 +17,10 @@ signal buy_clicked(offer_id: int, price: int)
 
 
 func _ready() -> void:
-	hide_dialogue()
-	hide_trade_panel()
+	hide_ui()
 	talk_button.pressed.connect(_on_talk_pressed)
 	trade_button.pressed.connect(_on_trade_pressed)
-	back_button.pressed.connect(_on_back_pressed)
+	back_button.pressed.connect(_on_back_from_trade_pressed)
 	talk_button.focus_mode = Control.FOCUS_ALL
 	back_button.focus_mode = Control.FOCUS_ALL
 
@@ -30,7 +29,7 @@ func is_ui_visible() -> bool:
 	return talk_panel.visible or trade_panel.visible
 
 
-func show_dialogue(text: String, button_selected: String) -> void:
+func show_talk_panel(text: String, button_selected: String) -> void:
 	ClientNetworkGlobals.is_movement_blocking_ui_active = true
 	dialogue_label.text = text
 	talk_panel.visible = true
@@ -42,17 +41,17 @@ func show_dialogue(text: String, button_selected: String) -> void:
 		trade_button.call_deferred("grab_focus")
 
 
-func hide_dialogue() -> void:
+func show_trade_panel() -> void:
+	clear_error()
+	_clear_offers()
+	talk_panel.visible = false
+	trade_panel.visible = true
+
+
+func hide_ui() -> void:
 	talk_panel.visible = false
 	trade_panel.visible = false
 	ClientNetworkGlobals.is_movement_blocking_ui_active = false
-
-
-func show_trading_view() -> void:
-	talk_panel.visible = false
-	trade_panel.visible = true
-	error_label.visible = false
-	_clear_offers()
 
 
 func hide_trade_panel() -> void:
@@ -61,8 +60,6 @@ func hide_trade_panel() -> void:
 
 func display_offers(offers: Array) -> void:
 	_clear_offers()
-	error_label.visible = false
-	
 	var previous_button: Button = null
 	
 	for i in range(offers.size()):
@@ -73,11 +70,9 @@ func display_offers(offers: Array) -> void:
 		var buy_button = offer_item.get_node("TopRow/BuyButton")
 		buy_button.pressed.connect(_on_buy_button_pressed.bind(offer.id, offer.price))
 		
-		# Set up focus navigation
 		if previous_button:
-			previous_button.focus_neighbor_bottom = buy_button.get_path()
-			buy_button.focus_neighbor_top = previous_button.get_path()
-		
+			_setup_focus_navigation(previous_button, buy_button)		
+			
 		previous_button = buy_button
 		
 		# Set focus for first buy button
@@ -86,13 +81,12 @@ func display_offers(offers: Array) -> void:
 	
 	# Connect last buy button to back button
 	if previous_button:
-		previous_button.focus_neighbor_bottom = back_button.get_path()
-		back_button.focus_neighbor_top = previous_button.get_path()
+		_setup_focus_navigation(previous_button, back_button)
 
 
-func show_error(message: String) -> void:
-	error_label.text = message
-	error_label.visible = true
+func _setup_focus_navigation(previous_button: Button, next_button: Button):
+	previous_button.focus_neighbor_bottom = next_button.get_path()
+	next_button.focus_neighbor_top = previous_button.get_path()
 
 
 func _clear_offers() -> void:
@@ -142,6 +136,16 @@ func _create_offer_item(offer) -> Control:
 	return item_container
 
 
+func show_error(message: String) -> void:
+	error_label.text = message
+	error_label.visible = true
+
+
+func clear_error() -> void:
+	error_label.text = ""
+	error_label.visible = false
+
+
 func _on_talk_pressed() -> void:
 	talk_clicked.emit()
 
@@ -150,7 +154,7 @@ func _on_trade_pressed() -> void:
 	trade_clicked.emit()
 
 
-func _on_back_pressed() -> void:
+func _on_back_from_trade_pressed() -> void:
 	back_from_trade_clicked.emit()
 
 

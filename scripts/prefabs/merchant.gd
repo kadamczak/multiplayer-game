@@ -34,7 +34,7 @@ func _on_body_exited(body: Node2D) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
 		if player_can_launch_ui():
-			merchant_ui.show_dialogue(greeting_text, "Talk")
+			merchant_ui.show_talk_panel(greeting_text, "Talk")
 			get_viewport().set_input_as_handled()
 
 	if event.is_action_pressed("ui_cancel"):
@@ -51,15 +51,15 @@ func go_back_one_step() -> void:
 	if merchant_ui.trade_panel.visible:
 		_on_back_from_trade_clicked()
 	else:
-		merchant_ui.hide_dialogue()
+		merchant_ui.hide_ui()
 
 
 func _on_talk_clicked() -> void:
-	merchant_ui.show_dialogue(talk_text, "Talk")
+	merchant_ui.show_talk_panel(talk_text, "Talk")
 
 
 func _on_trade_clicked() -> void:
-	merchant_ui.show_trading_view()
+	merchant_ui.show_trade_panel()
 	
 	var response = await MerchantAPI.get_merchant_offers(merchant_id)
 	
@@ -71,7 +71,7 @@ func _on_trade_clicked() -> void:
 
 
 func _on_back_from_trade_clicked() -> void:
-	merchant_ui.show_dialogue(greeting_text, "Trade")
+	merchant_ui.show_talk_panel(greeting_text, "Trade")
 
 
 func _on_buy_clicked(offer_id: int, price: int) -> void:
@@ -82,6 +82,7 @@ func _on_buy_clicked(offer_id: int, price: int) -> void:
 	var response = await MerchantAPI.purchase_offer(offer_id)
 	
 	if response.success:
+		merchant_ui.clear_error()
 		ClientNetworkGlobals.balance -= price
 	else:
 		var problem: ApiResponse.ProblemDetails = response.problem
