@@ -166,7 +166,7 @@ func _on_apply_pressed() -> void:
 	if result.has("error"):
 		DebugLogger.error("Failed to update customization: " + str(result.error))
 	else:
-		DebugLogger.log("Customization updated successfully")
+		DebugLogger.log("CustomizationConstants updated successfully")
 	
 	hide_ui()
 

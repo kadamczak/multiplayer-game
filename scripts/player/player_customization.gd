@@ -1,79 +1,70 @@
 extends Node
 class_name PlayerCustomization
 
+
+class Part:
+	var line_type: int
+	var line_node: Node
+
+	var color: Color
+	var color_node: Node
+	
+	
+	func _init(name: String,
+			   player: CharacterBody2D,
+			   default_line_type: int,	
+			   default_color: Color) -> void:
+		self.line_type = default_line_type
+		self.color = default_color
+
+		self.line_node = player.get_node_or_null("Sprite/" + name)
+		self.color_node = player.get_node_or_null("Sprite/" + name + "_Color")
+
+
 var player: CharacterBody2D
-
-
-var parts: Dictionary = {
-	"Body": Customization.Part.new("Body", 1, Color.DARK_GRAY,
-		{
-			1: {
-				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Body_1.png"),
-				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Body_1_Color.png")
-			}
-		}
-	),
-	"Head": Customization.Part.new("Head", 1, Color.DARK_GRAY,
-		{
-			1: {
-				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Head_1.png"),
-				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Head_1_Color.png")
-			}
-		}
-	),
-	"Eyes": Customization.Part.new("Eyes", 1, Color.DARK_GRAY,
-		{
-			1: {
-				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Eyes_1.png"),
-				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Eyes_1_Color.png")
-			}
-		}
-	),
-	"Tail": Customization.Part.new("Tail", 1, Color.DARK_GRAY,
-		{
-			1: {
-				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Tail_1.png"),
-				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Tail_1_Color.png")
-			}
-		}
-	),
-	"Wings": Customization.Part.new("Wings", 1, Color.DARK_GRAY,
-		{
-			1: {
-				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1.png"),
-				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1_Color.png")
-			},
-			2: {
-				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_2.png"),
-				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_2_Color.png")
-			}
-		}
-	),
-	"Horns": Customization.Part.new("Horns", 1, Color.DARK_GRAY,
-		{
-			1: {
-				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1.png"),
-				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1_Color.png")
-			}
-		}
-	)
-}
+var active_player_customization: Dictionary = {}
 
 
 func _ready() -> void:
 	player = get_parent() as CharacterBody2D
+
+	active_player_customization = {
+		"Head": Part.new("Head", player, CustomizationConstants.Head_Type.CLASSIC, Color.DARK_GRAY),
+		"Body": Part.new("Body", player, CustomizationConstants.Body_Type.CLASSIC, Color.DARK_GRAY),
+		"Eyes": Part.new("Eyes", player, CustomizationConstants.Eyes_Type.CLASSIC, Color.DARK_GRAY),
+		"Tail": Part.new("Tail", player, CustomizationConstants.Tail_Type.CLASSIC, Color.DARK_GRAY),
+		"Wings": Part.new("Wings", player, CustomizationConstants.Wings_Type.CLASSIC, Color.DARK_GRAY),
+		"Horns": Part.new("Horns", player, CustomizationConstants.Horns_Type.CLASSIC, Color.DARK_GRAY)
+	}
+
 	call_deferred("apply_all_customization")
 
 
 func apply_all_customization() -> void:
-	apply_color("body_color")
-	apply_color("eye_color")
-	apply_color("wing_color")
-	apply_color("horn_color")
-	apply_color("markings_color")
-	apply_feature("wings")
-	apply_feature("horns")
-	apply_feature("markings")
+	for part_name in active_player_customization:
+		apply_customization(part_name, active_player_customization[part_name])
+
+
+func apply_customization(part_name: String, part: Part) -> void:
+	# Apply color modulation
+	if part.color_node:
+		part.color_node.self_modulate = part.color
+
+	# Apply line type and texture
+	if part.line_node:
+		# Change visibility
+		if part.line_type == 0:
+			part.line_node.visible = false
+			part.color_node.visible = false
+		else:
+			part.line_node.visible = true
+			part.color_node.visible = true
+
+			# change texture
+			part.line_node.texture = CustomizationConstants.textures[part_name][part.line_type]["line"]
+			part.color_node.texture = CustomizationConstants.textures[part_name][part.line_type]["color"]
+			
+
 
 
 func apply_color(color_key: String) -> void:
