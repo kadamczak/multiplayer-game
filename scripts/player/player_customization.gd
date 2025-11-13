@@ -1,62 +1,63 @@
 extends Node
 class_name PlayerCustomization
 
-
 var player: CharacterBody2D
 
 
-var customization_data := {
-	"body_color": Color.DARK_GRAY,
-	"eye_color": Color.DARK_GRAY,
-	"wing_color": Color.DARK_GRAY,
-	"horn_color": Color.DARK_GRAY,
-	"markings_color": Color.DARK_GRAY,
-	"wing_type": 1,
-	"horn_type": 1,
-	"markings_type": 0
+var parts: Dictionary = {
+	"Body": Customization.Part.new("Body", 1, Color.DARK_GRAY,
+		{
+			1: {
+				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Body_1.png"),
+				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Body_1_Color.png")
+			}
+		}
+	),
+	"Head": Customization.Part.new("Head", 1, Color.DARK_GRAY,
+		{
+			1: {
+				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Head_1.png"),
+				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Head_1_Color.png")
+			}
+		}
+	),
+	"Eyes": Customization.Part.new("Eyes", 1, Color.DARK_GRAY,
+		{
+			1: {
+				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Eyes_1.png"),
+				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Eyes_1_Color.png")
+			}
+		}
+	),
+	"Tail": Customization.Part.new("Tail", 1, Color.DARK_GRAY,
+		{
+			1: {
+				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Tail_1.png"),
+				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Tail_1_Color.png")
+			}
+		}
+	),
+	"Wings": Customization.Part.new("Wings", 1, Color.DARK_GRAY,
+		{
+			1: {
+				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1.png"),
+				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1_Color.png")
+			},
+			2: {
+				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_2.png"),
+				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_2_Color.png")
+			}
+		}
+	),
+	"Horns": Customization.Part.new("Horns", 1, Color.DARK_GRAY,
+		{
+			1: {
+				"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1.png"),
+				"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1_Color.png")
+			}
+		}
+	)
 }
-
-
-const SPRITE_PATHS := {
-	"body_color": ["Sprite/Tail_Color", "Sprite/Body_Color", "Sprite/Head_Color"],
-	"eye_color": ["Sprite/Eyes_Color"],
-	"wing_color": ["Sprite/Wings_Color"],
-	"horn_color": ["Sprite/Horns_Color"],
-	"markings_color": ["Sprite/Markings"]
-}
-
-const FEATURE_NODES := {
-	"wings": {"base": "Sprite/Wings", "color": "Sprite/Wings_Color"},
-	"horns": {"base": "Sprite/Horns", "color": "Sprite/Horns_Color"},
-	"markings": {"base": "Sprite/Markings", "color": null}
-}
-
-
-var wings_textures := {
-	1: {
-		"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1.png"),
-		"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1_Color.png")
-	},
-	2: {
-		"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_2.png"),
-		"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_2_Color.png")
-	}
-}
-
-
-var horns_textures := {
-	1: {
-		"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1.png"),
-		"color": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1_Color.png")
-	}
-}
-
-
-var markings_textures := {
-	1: preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Markings_1.png"),
-	2: preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Markings_2.png")
-}
-
 
 
 func _ready() -> void:
@@ -67,12 +68,12 @@ func _ready() -> void:
 func apply_all_customization() -> void:
 	apply_color("body_color")
 	apply_color("eye_color")
-	apply_feature("wings")
 	apply_color("wing_color")
-	apply_feature("horns")
 	apply_color("horn_color")
-	apply_feature("markings")
 	apply_color("markings_color")
+	apply_feature("wings")
+	apply_feature("horns")
+	apply_feature("markings")
 
 
 func apply_color(color_key: String) -> void:
@@ -119,9 +120,9 @@ func apply_feature(feature_name: String) -> void:
 	var texture_dict: Dictionary
 	match feature_name:
 		"wings":
-			texture_dict = wings_textures
+			texture_dict = wing_textures
 		"horns":
-			texture_dict = horns_textures
+			texture_dict = horn_textures
 		"markings":
 			texture_dict = markings_textures
 	
@@ -137,65 +138,22 @@ func apply_feature(feature_name: String) -> void:
 			base_node.texture = texture_dict[type]
 
 
-func set_body_color(color: Color) -> void:
-	customization_data["body_color"] = color
-	apply_color("body_color")
-
-func set_eye_color(color: Color) -> void:
-	customization_data["eye_color"] = color
-	apply_color("eye_color")
-
-func set_wing_color(color: Color) -> void:
-	customization_data["wing_color"] = color
-	apply_color("wing_color")
-
-func set_horn_color(color: Color) -> void:
-	customization_data["horn_color"] = color
-	apply_color("horn_color")
-
-func set_markings_color(color: Color) -> void:
-	customization_data["markings_color"] = color
-	apply_color("markings_color")
-
-func set_wing_type(type: int) -> void:
-	customization_data["wing_type"] = type
-	apply_feature("wings")
-	apply_color("wing_color")
-
-func set_horn_type(type: int) -> void:
-	customization_data["horn_type"] = type
-	apply_feature("horns")
-	apply_color("horn_color")
-
-func set_markings_type(type: int) -> void:
-	customization_data["markings_type"] = type
-	apply_feature("markings")
-	apply_color("markings_color")
+func get_color(body_part: String) -> Color: return customization_data[body_part] 
+func get_feature_type(body_part: String) -> int: return customization_data[body_part] 
 
 
-func get_body_color() -> Color:
-	return customization_data["body_color"]
-
-func get_eye_color() -> Color:
-	return customization_data["eye_color"]
-
-func get_wing_color() -> Color:
-	return customization_data["wing_color"]
-
-func get_horn_color() -> Color:
-	return customization_data["horn_color"]
-
-func get_markings_color() -> Color:
-	return customization_data["markings_color"]
-
-func get_wing_type() -> int:
-	return customization_data["wing_type"]
-
-func get_horn_type() -> int:
-	return customization_data["horn_type"]
-
-func get_markings_type() -> int:
-	return customization_data["markings_type"]
+func set_customization(key: String, value) -> void:
+	if key not in customization_data:
+		return
+	
+	customization_data[key] = value
+	
+	if key.ends_with("_color"):
+		apply_color(key)
+	elif key.ends_with("_type"):
+		var feature_name = key.replace("_type", "") + "s" if key != "markings_type" else "markings"
+		apply_feature(feature_name)
+		apply_color(key.replace("_type", "_color"))
 
 
 func apply_from_dict(data: Dictionary) -> void:
@@ -216,8 +174,8 @@ func read_from_player() -> void:
 			if node:
 				customization_data[color_key] = node.self_modulate
 	
-	_read_feature_type("wings", wings_textures)
-	_read_feature_type("horns", horns_textures)
+	_read_feature_type("wings", wing_textures)
+	_read_feature_type("horns", horn_textures)
 	_read_feature_type("markings", markings_textures)
 
 

@@ -5,16 +5,16 @@ extends Node2D
 
 var player_in_range: CharacterBody2D = null
 
-# Map UI signals to PlayerCustomization setter methods
-const SIGNAL_TO_METHOD := {
-	"color_applied": "set_body_color",
-	"eye_color_applied": "set_eye_color",
-	"wings_changed": "set_wing_type",
-	"wings_color_applied": "set_wing_color",
-	"horns_changed": "set_horn_type",
-	"horns_color_applied": "set_horn_color",
-	"markings_changed": "set_markings_type",
-	"markings_color_applied": "set_markings_color"
+# Map UI signals to customization data keys
+const SIGNAL_TO_KEY := {
+	"color_applied": "body_color",
+	"eye_color_applied": "eye_color",
+	"wings_changed": "wing_type",
+	"wings_color_applied": "wing_color",
+	"horns_changed": "horn_type",
+	"horns_color_applied": "horn_color",
+	"markings_changed": "markings_type",
+	"markings_color_applied": "markings_color"
 }
 
 
@@ -23,8 +23,8 @@ func _ready() -> void:
 	interaction_area.body_exited.connect(_on_body_exited)
 	
 	# Connect all customization signals dynamically
-	for signal_name in SIGNAL_TO_METHOD:
-		customization_ui.get(signal_name).connect(_apply_customization.bind(SIGNAL_TO_METHOD[signal_name]))
+	for signal_name in SIGNAL_TO_KEY:
+		customization_ui.get(signal_name).connect(_apply_customization.bind(SIGNAL_TO_KEY[signal_name]))
 	
 	customization_ui.cancelled.connect(_on_ui_cancelled)
 
@@ -52,14 +52,14 @@ func _input(event: InputEvent) -> void:
 	if player_in_range and event.is_action_pressed("ui_accept"):
 		var customization = _get_customization()
 		if customization:
-			customization_ui.show_ui(customization.get_body_color(), customization.get_eye_color())
+			customization_ui.show_ui(customization.get_color("body_color"), customization.get_color("eye_color"))
 			get_viewport().set_input_as_handled()
 
 
-func _apply_customization(value, method_name: String) -> void:
+func _apply_customization(value, key: String) -> void:
 	var customization = _get_customization()
 	if customization:
-		customization.call(method_name, value)
+		customization.set_customization(key, value)
 
 
 func _on_ui_cancelled() -> void:
@@ -82,12 +82,12 @@ func _get_customization() -> PlayerCustomization:
 
 
 func _sync_ui_with_customization(customization: PlayerCustomization) -> void:
-	customization_ui.selected_wings = customization.get_wing_type()
-	customization_ui.selected_horns = customization.get_horn_type()
-	customization_ui.selected_markings = customization.get_markings_type()
+	customization_ui.selected_wings = customization.get_feature_type("wing_type")
+	customization_ui.selected_horns = customization.get_feature_type("horn_type")
+	customization_ui.selected_markings = customization.get_feature_type("markings_type")
 	
-	customization_ui.wings_color_picker.color = customization.get_wing_color()
-	customization_ui.horns_color_picker.color = customization.get_horn_color()
-	customization_ui.markings_color_picker.color = customization.get_markings_color()
+	customization_ui.wings_color_picker.color = customization.get_color("wing_color")
+	customization_ui.horns_color_picker.color = customization.get_color("horn_color")
+	customization_ui.markings_color_picker.color = customization.get_color("markings_color")
 	
 	customization_ui._update_all_buttons()
