@@ -1,7 +1,10 @@
 extends Node
 class_name PlayerCustomization
 
-# Customization data structure
+
+var player: CharacterBody2D
+
+
 var customization_data := {
 	"body_color": Color.DARK_GRAY,
 	"eye_color": Color.DARK_GRAY,
@@ -13,7 +16,7 @@ var customization_data := {
 	"markings_type": 0
 }
 
-# Sprite node paths for each customization type
+
 const SPRITE_PATHS := {
 	"body_color": ["Sprite/Tail_Color", "Sprite/Body_Color", "Sprite/Head_Color"],
 	"eye_color": ["Sprite/Eyes_Color"],
@@ -28,7 +31,7 @@ const FEATURE_NODES := {
 	"markings": {"base": "Sprite/Markings", "color": null}
 }
 
-# Texture resources
+
 var wings_textures := {
 	1: {
 		"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1.png"),
@@ -40,6 +43,7 @@ var wings_textures := {
 	}
 }
 
+
 var horns_textures := {
 	1: {
 		"base": preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1.png"),
@@ -47,12 +51,12 @@ var horns_textures := {
 	}
 }
 
+
 var markings_textures := {
 	1: preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Markings_1.png"),
 	2: preload("res://assets/spritesheets/dragon_spritesheets/Dragon_Markings_2.png")
 }
 
-var player: CharacterBody2D
 
 
 func _ready() -> void:
@@ -60,7 +64,6 @@ func _ready() -> void:
 	call_deferred("apply_all_customization")
 
 
-# Apply all customization at once
 func apply_all_customization() -> void:
 	apply_color("body_color")
 	apply_color("eye_color")
@@ -72,7 +75,6 @@ func apply_all_customization() -> void:
 	apply_color("markings_color")
 
 
-# Generic color application
 func apply_color(color_key: String) -> void:
 	if not player or color_key not in SPRITE_PATHS:
 		return
@@ -86,12 +88,10 @@ func apply_color(color_key: String) -> void:
 			node.self_modulate = color
 
 
-# Generic feature application (wings, horns, markings)
 func apply_feature(feature_name: String) -> void:
 	if not player or feature_name not in FEATURE_NODES:
 		return
 	
-	# Map feature names to their type keys (handle singular/plural)
 	var type_key_map := {
 		"wings": "wing_type",
 		"horns": "horn_type",
@@ -106,7 +106,6 @@ func apply_feature(feature_name: String) -> void:
 	if not base_node:
 		return
 	
-	# Handle visibility
 	if type == 0:
 		base_node.visible = false
 		if nodes["color"]:
@@ -115,10 +114,8 @@ func apply_feature(feature_name: String) -> void:
 				color_node.visible = false
 		return
 	
-	# Show and set texture
 	base_node.visible = true
 	
-	# Get appropriate texture dictionary
 	var texture_dict: Dictionary
 	match feature_name:
 		"wings":
@@ -130,7 +127,6 @@ func apply_feature(feature_name: String) -> void:
 	
 	if type in texture_dict:
 		if texture_dict[type] is Dictionary:
-			# Has base and color textures
 			base_node.texture = texture_dict[type]["base"]
 			if nodes["color"]:
 				var color_node = player.get_node_or_null(nodes["color"])
@@ -138,11 +134,9 @@ func apply_feature(feature_name: String) -> void:
 					color_node.visible = true
 					color_node.texture = texture_dict[type]["color"]
 		else:
-			# Single texture (markings)
 			base_node.texture = texture_dict[type]
 
 
-# Setters for individual properties
 func set_body_color(color: Color) -> void:
 	customization_data["body_color"] = color
 	apply_color("body_color")
@@ -179,7 +173,6 @@ func set_markings_type(type: int) -> void:
 	apply_color("markings_color")
 
 
-# Getters
 func get_body_color() -> Color:
 	return customization_data["body_color"]
 
@@ -205,7 +198,6 @@ func get_markings_type() -> int:
 	return customization_data["markings_type"]
 
 
-# Apply all customization from a data dictionary
 func apply_from_dict(data: Dictionary) -> void:
 	for key in data:
 		if key in customization_data:
@@ -213,12 +205,10 @@ func apply_from_dict(data: Dictionary) -> void:
 	apply_all_customization()
 
 
-# Read current customization from player sprite
 func read_from_player() -> void:
 	if not player:
 		return
 	
-	# Read colors
 	for color_key in ["body_color", "eye_color", "wing_color", "horn_color", "markings_color"]:
 		if color_key in SPRITE_PATHS:
 			var path = SPRITE_PATHS[color_key][0]
@@ -226,7 +216,6 @@ func read_from_player() -> void:
 			if node:
 				customization_data[color_key] = node.self_modulate
 	
-	# Read feature types
 	_read_feature_type("wings", wings_textures)
 	_read_feature_type("horns", horns_textures)
 	_read_feature_type("markings", markings_textures)
@@ -239,7 +228,6 @@ func _read_feature_type(feature_name: String, texture_dict: Dictionary) -> void:
 	if not base_node:
 		return
 	
-	# Map feature names to their type keys (handle singular/plural)
 	var type_key_map := {
 		"wings": "wing_type",
 		"horns": "horn_type",
@@ -252,7 +240,6 @@ func _read_feature_type(feature_name: String, texture_dict: Dictionary) -> void:
 		customization_data[type_key] = 0
 		return
 	
-	# Check which texture is active
 	var current_texture = base_node.texture
 	for type in texture_dict:
 		var texture_to_compare
@@ -265,5 +252,4 @@ func _read_feature_type(feature_name: String, texture_dict: Dictionary) -> void:
 			customization_data[type_key] = type
 			return
 	
-	# Default to first type if no match
 	customization_data[type_key] = texture_dict.keys()[0] if not texture_dict.is_empty() else 0
