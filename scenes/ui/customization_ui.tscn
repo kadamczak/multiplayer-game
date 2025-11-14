@@ -88,6 +88,21 @@ horizontal_alignment = 1
 [node name="ColorsSeparator" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection"]
 layout_mode = 2
 
+[node name="HeadColorSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/HeadColorSection"]
+layout_mode = 2
+text = "Head Color"
+horizontal_alignment = 1
+
+[node name="HeadColorPicker" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/HeadColorSection"]
+custom_minimum_size = Vector2(180, 45)
+layout_mode = 2
+color = Color(1, 1, 1, 1)
+edit_alpha = false
+
 [node name="BodyColorSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection"]
 layout_mode = 2
 theme_override_constants/separation = 6
@@ -97,22 +112,37 @@ layout_mode = 2
 text = "Body Color"
 horizontal_alignment = 1
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/BodyColorSection"]
+[node name="BodyColorPicker" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/BodyColorSection"]
 custom_minimum_size = Vector2(180, 45)
 layout_mode = 2
 color = Color(1, 1, 1, 1)
 edit_alpha = false
 
-[node name="EyeColorSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection"]
+[node name="EyesColorSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="EyeColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/EyeColorSection"]
+[node name="ColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/EyesColorSection"]
 layout_mode = 2
-text = "Eye Color"
+text = "Eyes Color"
 horizontal_alignment = 1
 
-[node name="EyeColorPickerButton" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/EyeColorSection"]
+[node name="EyesColorPicker" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/EyesColorSection"]
+custom_minimum_size = Vector2(180, 45)
+layout_mode = 2
+color = Color(1, 1, 1, 1)
+edit_alpha = false
+
+[node name="TailColorSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ColorLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/TailColorSection"]
+layout_mode = 2
+text = "Tail Color"
+horizontal_alignment = 1
+
+[node name="TailColorPicker" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/TailColorSection"]
 custom_minimum_size = Vector2(180, 45)
 layout_mode = 2
 color = Color(1, 1, 1, 1)
@@ -195,40 +225,6 @@ layout_mode = 2
 text = "Horns"
 
 [node name="HornsColorPicker" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow"]
-custom_minimum_size = Vector2(80, 38)
-layout_mode = 2
-color = Color(1, 1, 1, 1)
-edit_alpha = false
-
-[node name="MarkingsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid"]
-layout_mode = 2
-text = "Markings:"
-horizontal_alignment = 2
-
-[node name="MarkingsRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="MarkingsContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="NoMarkingsButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer"]
-custom_minimum_size = Vector2(90, 38)
-layout_mode = 2
-text = "None"
-
-[node name="Markings1Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer"]
-custom_minimum_size = Vector2(90, 38)
-layout_mode = 2
-text = "Style 1"
-
-[node name="Markings2Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer"]
-custom_minimum_size = Vector2(90, 38)
-layout_mode = 2
-text = "Style 2"
-
-[node name="MarkingsColorPicker" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow"]
 custom_minimum_size = Vector2(80, 38)
 layout_mode = 2
 color = Color(1, 1, 1, 1)

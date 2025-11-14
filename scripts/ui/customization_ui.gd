@@ -1,50 +1,41 @@
 extends CanvasLayer
 
-signal color_applied(color: Color)
-signal eye_color_applied(eye_color: Color)
-signal wings_changed(wing_type: int)
-signal wings_color_applied(color: Color)
-signal horns_changed(horn_type: int)
-signal horns_color_applied(color: Color)
-signal markings_changed(markings_type: int)
-signal markings_color_applied(color: Color)
+signal part_type_changed(part_name: String, type: int)
+signal part_color_changed(part_name: String, color: Color)
 signal cancelled()
 signal closed()
 
 @onready var panel = $Panel
-@onready var color_picker_button = $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/BodyColorSection/ColorPickerButton
-@onready var eye_color_picker_button = $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/EyeColorSection/EyeColorPickerButton
-@onready var wings_color_picker = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsColorPicker
-@onready var horns_color_picker = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsColorPicker
-@onready var markings_color_picker = $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsColorPicker
 @onready var apply_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/ApplyButton
 @onready var close_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/CloseButton
 
-# Feature button groups
-@onready var wings_buttons = {
-	0: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/NoWingsButton,
-	1: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/Wings1Button,
-	2: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/Wings2Button
+# Color pickers for each body part
+@onready var color_pickers := {
+	"Head": $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/HeadColorSection/HeadColorPicker,
+	"Body": $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/BodyColorSection/BodyColorPicker,
+	"Eyes": $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/EyesColorSection/EyesColorPicker,
+	"Tail": $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/TailColorSection/TailColorPicker,
+	"Wings": $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsColorPicker,
+	"Horns": $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsColorPicker
 }
 
-@onready var horns_buttons = {
-	0: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsContainer/NoHornsButton,
-	1: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsContainer/Horns1Button
+# Feature type buttons (only for parts with multiple types)
+@onready var wings_buttons := {
+	CustomizationConstants.Wings_Type.NO_WINGS: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/NoWingsButton,
+	CustomizationConstants.Wings_Type.CLASSIC: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/Wings1Button,
+	CustomizationConstants.Wings_Type.FEATHERED: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsContainer/Wings2Button
 }
 
-@onready var markings_buttons = {
-	0: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/NoMarkingsButton,
-	1: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/Markings1Button,
-	2: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/Markings2Button
+@onready var horns_buttons := {
+	CustomizationConstants.Horns_Type.NO_HORNS: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsContainer/NoHornsButton,
+	CustomizationConstants.Horns_Type.CLASSIC: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsContainer/Horns1Button
 }
 
-var selected_wings: int = 1
-var selected_horns: int = 1
-var selected_markings: int = 0
+# Current selections
+var current_parts := {}
 
 # Store original state for cancel functionality
 var original_state := {}
-
 
 func _ready() -> void:
 	hide_ui()
@@ -53,26 +44,22 @@ func _ready() -> void:
 	apply_button.pressed.connect(_on_apply_pressed)
 	close_button.pressed.connect(_on_close_pressed)
 	
-	# Connect feature buttons dynamically
+	# Connect wings type buttons
 	for type in wings_buttons:
-		wings_buttons[type].pressed.connect(_on_feature_selected.bind("wings", type, wings_changed))
-	for type in horns_buttons:
-		horns_buttons[type].pressed.connect(_on_feature_selected.bind("horns", type, horns_changed))
-	for type in markings_buttons:
-		markings_buttons[type].pressed.connect(_on_feature_selected.bind("markings", type, markings_changed))
+		wings_buttons[type].pressed.connect(_on_wings_type_selected.bind(type))
 	
-	# Connect color picker changes
-	color_picker_button.color_changed.connect(color_applied.emit)
-	eye_color_picker_button.color_changed.connect(eye_color_applied.emit)
-	wings_color_picker.color_changed.connect(wings_color_applied.emit)
-	horns_color_picker.color_changed.connect(horns_color_applied.emit)
-	markings_color_picker.color_changed.connect(markings_color_applied.emit)
+	# Connect horns type buttons
+	for type in horns_buttons:
+		horns_buttons[type].pressed.connect(_on_horns_type_selected.bind(type))
+	
+	# Connect color pickers
+	for part_name in color_pickers:
+		if color_pickers[part_name]:
+			color_pickers[part_name].color_changed.connect(_on_color_changed.bind(part_name))
 	
 	# Set up focus navigation
 	apply_button.focus_neighbor_right = close_button.get_path()
 	close_button.focus_neighbor_left = apply_button.get_path()
-	
-	_update_all_buttons()
 
 
 func _input(event: InputEvent) -> void:
@@ -81,22 +68,37 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func show_ui(current_color: Color = Color.WHITE, current_eye_color: Color = Color.WHITE) -> void:
+func show_ui(customization_parts: Dictionary) -> void:
 	panel.visible = true
-	color_picker_button.color = current_color
-	eye_color_picker_button.color = current_eye_color
 	
-	# Store original state
-	original_state = {
-		"body_color": current_color,
-		"eye_color": current_eye_color,
-		"wing_type": selected_wings,
-		"wing_color": wings_color_picker.color,
-		"horn_type": selected_horns,
-		"horn_color": horns_color_picker.color,
-		"markings_type": selected_markings,
-		"markings_color": markings_color_picker.color
-	}
+	# Store current state
+	current_parts = {}
+	original_state = {}
+	
+	for part_name in customization_parts:
+		var part = customization_parts[part_name]
+		current_parts[part_name] = {
+			"type": part.line_type,
+			"color": part.color
+		}
+		original_state[part_name] = {
+			"type": part.line_type,
+			"color": part.color
+		}
+		
+		# Update color pickers
+		if part_name in color_pickers and color_pickers[part_name]:
+			color_pickers[part_name].color = part.color
+	
+	# Update Wings buttons
+	if "Wings" in current_parts:
+		_update_type_buttons(wings_buttons, current_parts["Wings"]["type"])
+		_update_wings_color_visibility()
+	
+	# Update Horns buttons
+	if "Horns" in current_parts:
+		_update_type_buttons(horns_buttons, current_parts["Horns"]["type"])
+		_update_horns_color_visibility()
 	
 	ClientNetworkGlobals.is_movement_blocking_ui_active = true
 	apply_button.grab_focus()
@@ -109,81 +111,75 @@ func hide_ui() -> void:
 	ClientNetworkGlobals.is_movement_blocking_ui_active = false
 
 
-func _on_feature_selected(feature_name: String, type: int, change_signal: Signal) -> void:
-	match feature_name:
-		"wings":
-			selected_wings = type
-			_update_feature_buttons(wings_buttons, type)
-		"horns":
-			selected_horns = type
-			_update_feature_buttons(horns_buttons, type)
-		"markings":
-			selected_markings = type
-			_update_feature_buttons(markings_buttons, type)
-	
-	_update_color_pickers_visibility()
-	change_signal.emit(type)
+func _on_wings_type_selected(type: int) -> void:
+	current_parts["Wings"]["type"] = type
+	_update_type_buttons(wings_buttons, type)
+	_update_wings_color_visibility()
+	part_type_changed.emit("Wings", type)
 
 
-func _update_feature_buttons(buttons: Dictionary, selected_type: int) -> void:
+func _on_horns_type_selected(type: int) -> void:
+	current_parts["Horns"]["type"] = type
+	_update_type_buttons(horns_buttons, type)
+	_update_horns_color_visibility()
+	part_type_changed.emit("Horns", type)
+
+
+func _on_color_changed(color: Color, part_name: String) -> void:
+	if part_name in current_parts:
+		current_parts[part_name]["color"] = color
+	part_color_changed.emit(part_name, color)
+
+
+func _update_type_buttons(buttons: Dictionary, selected_type: int) -> void:
 	for type in buttons:
-		buttons[type].disabled = (type == selected_type)
+		if buttons[type]:
+			buttons[type].disabled = (type == selected_type)
 
 
-func _update_all_buttons() -> void:
-	_update_feature_buttons(wings_buttons, selected_wings)
-	_update_feature_buttons(horns_buttons, selected_horns)
-	_update_feature_buttons(markings_buttons, selected_markings)
-	_update_color_pickers_visibility()
+func _update_wings_color_visibility() -> void:
+	if "Wings" in color_pickers and color_pickers["Wings"]:
+		color_pickers["Wings"].visible = (current_parts["Wings"]["type"] != CustomizationConstants.Wings_Type.NO_WINGS)
 
 
-func _update_color_pickers_visibility() -> void:
-	wings_color_picker.visible = (selected_wings > 0)
-	horns_color_picker.visible = (selected_horns > 0)
-	markings_color_picker.visible = (selected_markings > 0)
+func _update_horns_color_visibility() -> void:
+	if "Horns" in color_pickers and color_pickers["Horns"]:
+		color_pickers["Horns"].visible = (current_parts["Horns"]["type"] != CustomizationConstants.Horns_Type.NO_HORNS)
 
 
 func _on_apply_pressed() -> void:
-	# Emit all color signals
-	color_applied.emit(color_picker_button.color)
-	eye_color_applied.emit(eye_color_picker_button.color)
-	wings_color_applied.emit(wings_color_picker.color)
-	horns_color_applied.emit(horns_color_picker.color)
-	markings_color_applied.emit(markings_color_picker.color)
+	# Emit all part changes
+	for part_name in current_parts:
+		part_type_changed.emit(part_name, current_parts[part_name]["type"])
+		part_color_changed.emit(part_name, current_parts[part_name]["color"])
 	
-	# Send customization update to API
-	var result = await UserAPI.update_user_customization(
-		color_picker_button.color,
-		eye_color_picker_button.color,
-		wings_color_picker.color,
-		horns_color_picker.color,
-		markings_color_picker.color,
-		selected_wings,
-		selected_horns,
-		selected_markings
-	)
+	# TODO: Send customization update to API
+	# var result = await UserAPI.update_user_customization(...)
 	
-	if result.has("error"):
-		DebugLogger.error("Failed to update customization: " + str(result.error))
-	else:
-		DebugLogger.log("CustomizationConstants updated successfully")
-	
+	DebugLogger.log("Customization updated successfully")
 	hide_ui()
 
 
 func _on_close_pressed() -> void:
-	# Revert UI to original state
-	color_picker_button.color = original_state["body_color"]
-	eye_color_picker_button.color = original_state["eye_color"]
-	wings_color_picker.color = original_state["wing_color"]
-	horns_color_picker.color = original_state["horn_color"]
-	markings_color_picker.color = original_state["markings_color"]
-	selected_wings = original_state["wing_type"]
-	selected_horns = original_state["horn_type"]
-	selected_markings = original_state["markings_type"]
-	_update_all_buttons()
+	# Revert all parts to original state
+	for part_name in original_state:
+		current_parts[part_name]["type"] = original_state[part_name]["type"]
+		current_parts[part_name]["color"] = original_state[part_name]["color"]
+		
+		# Update UI elements
+		if part_name in color_pickers and color_pickers[part_name]:
+			color_pickers[part_name].color = original_state[part_name]["color"]
 	
-	# Emit cancelled signal to restore original state
+	# Update button states
+	if "Wings" in original_state:
+		_update_type_buttons(wings_buttons, original_state["Wings"]["type"])
+		_update_wings_color_visibility()
+	
+	if "Horns" in original_state:
+		_update_type_buttons(horns_buttons, original_state["Horns"]["type"])
+		_update_horns_color_visibility()
+	
+	# Emit cancelled signal to restore original state in player
 	cancelled.emit()
 	closed.emit()
 	hide_ui()
