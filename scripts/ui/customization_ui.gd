@@ -8,6 +8,7 @@ signal closed()
 @onready var panel = $Panel
 @onready var apply_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/ApplyButton
 @onready var close_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/CloseButton
+@onready var lock_colors_checkbox = $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/LockColorsCheckbox
 
 # Color pickers for each body part
 @onready var color_pickers := {
@@ -56,6 +57,9 @@ func _ready() -> void:
 	for part_name in color_pickers:
 		if color_pickers[part_name]:
 			color_pickers[part_name].color_changed.connect(_on_color_changed.bind(part_name))
+	
+	# Connect lock colors checkbox
+	lock_colors_checkbox.toggled.connect(_on_lock_colors_toggled)
 	
 	# Set up focus navigation
 	apply_button.focus_neighbor_right = close_button.get_path()
@@ -128,7 +132,38 @@ func _on_horns_type_selected(type: int) -> void:
 func _on_color_changed(color: Color, part_name: String) -> void:
 	if part_name in current_parts:
 		current_parts[part_name]["color"] = color
+	
+	# If colors are locked and this is one of the body parts, sync them
+	if lock_colors_checkbox.button_pressed and part_name in ["Head", "Body", "Tail"]:
+		_sync_locked_colors(color, part_name)
+	
 	part_color_changed.emit(part_name, color)
+
+
+func _on_lock_colors_toggled(is_pressed: bool) -> void:
+	# When toggled on, sync all body colors to Head color
+	if is_pressed and "Head" in current_parts:
+		var head_color = current_parts["Head"]["color"]
+		_sync_locked_colors(head_color, "Head")
+
+
+func _sync_locked_colors(color: Color, source_part: String) -> void:
+	# Sync Head, Body, and Tail to the same color
+	var locked_parts = ["Head", "Body", "Tail"]
+	
+	for part_name in locked_parts:
+		if part_name == source_part:
+			continue
+		
+		if part_name in current_parts:
+			current_parts[part_name]["color"] = color
+			
+			# Update the color picker UI
+			if part_name in color_pickers and color_pickers[part_name]:
+				color_pickers[part_name].color = color
+			
+			# Emit signal for visual update
+			part_color_changed.emit(part_name, color)
 
 
 func _update_type_buttons(buttons: Dictionary, selected_type: int) -> void:
