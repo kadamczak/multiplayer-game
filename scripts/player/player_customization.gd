@@ -3,6 +3,8 @@ class_name PlayerCustomization
 
 
 class Part:
+	var name: String
+
 	var line_type: int
 	var line_node: Node
 
@@ -14,6 +16,7 @@ class Part:
 			   player: CharacterBody2D,
 			   line: int,	
 			   color: Color) -> void:
+		self.name = name
 		self.line_type = line
 		self.color = color
 
@@ -27,7 +30,11 @@ var active_player_customization: Dictionary = {}
 
 func _ready() -> void:
 	player = get_parent() as CharacterBody2D
+	_set_default_customization()
+	call_deferred("apply_all_customization")
 
+
+func _set_default_customization() -> void:
 	active_player_customization = {
 		"Head": Part.new("Head", player, CustomizationConstants.Head_Type.CLASSIC, Color.DARK_GRAY),
 		"Body": Part.new("Body", player, CustomizationConstants.Body_Type.CLASSIC, Color.DARK_GRAY),
@@ -36,8 +43,6 @@ func _ready() -> void:
 		"Wings": Part.new("Wings", player, CustomizationConstants.Wings_Type.CLASSIC, Color.DARK_SLATE_GRAY),
 		"Horns": Part.new("Horns", player, CustomizationConstants.Horns_Type.CLASSIC, Color.GRAY)
 	}
-
-	call_deferred("apply_all_customization")
 
 
 func apply_all_customization() -> void:
@@ -50,21 +55,24 @@ func apply_customization(part_name: String, part: Part) -> void:
 	if part.color_node:
 		part.color_node.self_modulate = part.color
 
-	# Apply line type and texture
+	# Apply part visibility and used texture
 	if part.line_node:
-		# Change visibility
 		if part.line_type == 0:
-			part.line_node.visible = false
-			part.color_node.visible = false
-		else:
-			part.line_node.visible = true
-			part.color_node.visible = true
-
-			# change texture
-			part.line_node.texture = CustomizationConstants.textures[part_name][part.line_type]["line"]
-			part.color_node.texture = CustomizationConstants.textures[part_name][part.line_type]["color"]
+			_change_part_visibility(part, false)
+			return
+		
+		_change_part_visibility(part, true)
+		_change_part_texture(part)
 			
 
+func _change_part_visibility(part: Part, is_visible: bool) -> void:
+	part.line_node.visible = is_visible
+	part.color_node.visible = is_visible
+
+
+func _change_part_texture(part: Part):
+	part.line_node.texture = CustomizationConstants.textures[part.name][part.line_type]["line"]
+	part.color_node.texture = CustomizationConstants.textures[part.name][part.line_type]["color"]
 
 
 # func apply_color(color_key: String) -> void:
