@@ -1,6 +1,6 @@
 class_name PlayerCustomizationPacket extends PacketInfo
 
-const PART_NAMES = ["Head", "Body", "Tail", "Eyes", "Wings", "Horns"]
+const PART_NAMES = ["Head", "Body", "Tail", "Eyes", "Wings", "Horns", "Markings"]
 
 var player_id: int
 var colors: Dictionary = {}
@@ -28,8 +28,8 @@ static func create_from_data(data: PackedByteArray) -> PlayerCustomizationPacket
 
 func encode() -> PackedByteArray:
 	var data: PackedByteArray = super.encode()
-	# 1 byte type + 1 byte id + (6 parts * (12 bytes color + 1 byte type)) = 1 + 1 + 78 = 80 bytes
-	data.resize(80)
+	# 1 byte type + 1 byte id + (7 parts * (12 bytes color + 1 byte type)) = 1 + 1 + 91 = 93 bytes
+	data.resize(93)
 	
 	data.encode_u8(1, player_id)
 	
