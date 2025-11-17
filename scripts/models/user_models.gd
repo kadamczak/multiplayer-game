@@ -101,23 +101,39 @@ class UpdateUserCustomizationRequest:
 
 
 class ReadUserCustomizationResponse:
+	var head_color: Color
 	var body_color: Color
+	var tail_color: Color
 	var eye_color: Color
 	var wing_color: Color
 	var horn_color: Color
 	var markings_color: Color
+
+	var head_type: int
+	var body_type: int
+	var tail_type: int
+	var eye_type: int
 	var wing_type: int
 	var horn_type: int
 	var markings_type: int
+
 	var user_id: String
 	
 	func _init(data: Dictionary = {}) -> void:
+		head_color = Color(data.get("headColor"))
 		body_color = Color(data.get("bodyColor"))
+		tail_color = Color(data.get("tailColor"))
 		eye_color = Color(data.get("eyeColor"))
 		wing_color = Color(data.get("wingColor"))
 		horn_color = Color(data.get("hornColor"))
 		markings_color = Color(data.get("markingsColor"))
+
+		head_type = data.get("headType")
+		body_type = data.get("bodyType")
+		tail_type = data.get("tailType")
+		eye_type = data.get("eyeType")
 		wing_type = data.get("wingType")
 		horn_type = data.get("hornType")
 		markings_type = data.get("markingsType")
+		
 		user_id = data.get("userId")
