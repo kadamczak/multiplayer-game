@@ -43,6 +43,9 @@ func _on_local_id_assignment(local_id: int) -> void:
 	
 	# After ID assignment, spawn the local player and any remote players in the same scene
 	_refresh_players()
+	
+	# Send local customization after player is spawned
+	call_deferred("_send_initial_customization")
 
 
 func _index_spawn_areas(scene_root: Node) -> void:
@@ -236,6 +239,67 @@ func _send_username(player_id: int) -> void:
 func _send_scene_change(player_id: int, scene_path: String) -> void:
 	DebugLogger.log("Sending scene change for player " + str(player_id) + " to scene " + scene_path)
 	PlayerSceneChange.create(player_id, scene_path).send(NetworkHandler.server_peer)
+
+
+func _send_initial_customization() -> void:
+	# Check if we have customization data from login
+	if ClientNetworkGlobals.customization == null:
+		DebugLogger.log("No customization data available at login")
+		return
+	
+	if player_container == null:
+		DebugLogger.log("Player container not ready for initial customization send")
+		return
+	
+	var local_player = player_container.get_node_or_null(str(ClientNetworkGlobals.id))
+	if not local_player:
+		DebugLogger.log("Local player not found for initial customization send")
+		return
+	
+	var player_customization = local_player.get_node_or_null("PlayerCustomization") as PlayerCustomization
+	if not player_customization:
+		DebugLogger.log("PlayerCustomization component not found on local player")
+		return
+	
+	# Apply the customization from login to the local player first
+	_apply_login_customization_to_local_player(player_customization)
+	
+	# Create and send customization packet to other players
+	var packet = PlayerCustomizationPacket.create(
+		ClientNetworkGlobals.id,
+		player_customization.active_player_customization
+	)
+	packet.send(NetworkHandler.server_peer)
+	
+	# Store in local cache
+	ClientNetworkGlobals.player_customizations[ClientNetworkGlobals.id] = packet
+	
+	DebugLogger.log("Sent initial customization to other players")
+
+
+func _apply_login_customization_to_local_player(player_customization: PlayerCustomization) -> void:
+	var customization = ClientNetworkGlobals.customization
+	
+	# Map customization response to player parts
+	var part_mappings = {
+		"Head": {"color": customization.head_color, "type": customization.head_type},
+		"Body": {"color": customization.body_color, "type": customization.body_type},
+		"Tail": {"color": customization.tail_color, "type": customization.tail_type},
+		"Eyes": {"color": customization.eye_color, "type": customization.eye_type},
+		"Wings": {"color": customization.wing_color, "type": customization.wing_type},
+		"Horns": {"color": customization.horn_color, "type": customization.horn_type},
+		"Markings": {"color": customization.markings_color, "type": customization.markings_type}
+	}
+	
+	# Apply each part's customization
+	for part_name in part_mappings.keys():
+		if part_name in player_customization.active_player_customization:
+			var part = player_customization.active_player_customization[part_name]
+			part.color = part_mappings[part_name]["color"]
+			part.line_type = part_mappings[part_name]["type"]
+			player_customization.apply_customization(part)
+	
+	DebugLogger.log("Applied login customization to local player")
 
 
 func _send_local_customization() -> void:
