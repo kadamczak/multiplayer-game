@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 signal part_changed(part_name: String)
+signal applied()
 signal cancelled()
 
 @onready var panel = $Panel
@@ -156,11 +157,8 @@ func _sync_locked_colors(color: Color, source_part: String) -> void:
 
 
 func _on_apply_pressed() -> void:	
-	# TODO: Send customization update to API
-	# var result = await UserAPI.update_user_customization(...)
-	
-	DebugLogger.log("Customization updated successfully")
-	hide_ui()
+	applied.emit()
+	#hide_ui()
 
 
 func _on_close_pressed() -> void:

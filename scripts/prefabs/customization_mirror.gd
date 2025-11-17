@@ -13,6 +13,7 @@ func _ready() -> void:
 	
 	customization_ui.part_changed.connect(_on_part_changed)
 	customization_ui.cancelled.connect(_on_ui_cancelled)
+	customization_ui.applied.connect(_on_customization_applied)
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -45,6 +46,17 @@ func _on_part_changed(part_name: String) -> void:
 
 func _on_ui_cancelled() -> void:
 	local_customization.apply_all_customization()
+
+
+func _on_customization_applied() -> void:
+	var applied_customization = UserModels.UpdateUserCustomizationRequest.new(local_customization.active_player_customization)
+	var response = await UserAPI.update_user_customization(applied_customization)
+	
+	if response.success:
+		customization_ui.hide_ui()
+	else:
+		var problem: ApiResponse.ProblemDetails = response.problem
+		#merchant_ui.show_error("Purchase failed: " + problem.title)
 
 
 func _is_local_player(body: Node2D) -> bool:

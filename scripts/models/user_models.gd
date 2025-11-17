@@ -45,39 +45,54 @@ class ReadUserGameInfoResponse:
 
 
 class UpdateUserCustomizationRequest:
+	var head_color: String
 	var body_color: String
+	var tail_color: String
 	var eye_color: String
 	var wing_color: String
 	var horn_color: String
 	var markings_color: String
+
+	var head_type: int
+	var body_type: int
+	var tail_type: int
+	var eye_type: int
 	var wing_type: int
 	var horn_type: int
 	var markings_type: int
 
-	func _init(body_color: Color,
-			eye_color: Color,
-			wing_color: Color,
-			horn_color: Color,
-			markings_color: Color,
-			wing_type: int,
-			horn_type: int,
-			markings_type: int) -> void:
-		self.body_color =  "#" + body_color.to_html()
-		self.eye_color = "#" + eye_color.to_html()
-		self.wing_color = "#" + wing_color.to_html()
-		self.horn_color = "#" + horn_color.to_html()
-		self.markings_color = "#" + markings_color.to_html()
-		self.wing_type = wing_type
-		self.horn_type = horn_type
-		self.markings_type = markings_type
-	
+	func _init(user_customization: Dictionary) -> void:
+		self.head_color = "#" + user_customization["Head"].color.to_html()
+		self.body_color = "#" + user_customization["Body"].color.to_html()
+		self.tail_color = "#" + user_customization["Tail"].color.to_html()
+		self.eye_color = "#" + user_customization["Eyes"].color.to_html()
+		self.wing_color = "#" + user_customization["Wings"].color.to_html()
+		self.horn_color = "#" + user_customization["Horns"].color.to_html()
+		self.markings_color = "#" + user_customization["Markings"].color.to_html()
+
+		self.head_type = user_customization["Head"].line_type
+		self.body_type = user_customization["Body"].line_type
+		self.tail_type = user_customization["Tail"].line_type
+		self.eye_type = user_customization["Eyes"].line_type
+		self.wing_type = user_customization["Wings"].line_type
+		self.horn_type = user_customization["Horns"].line_type
+		self.markings_type = user_customization["Markings"].line_type
+		
+
 	func to_json() -> Dictionary:
 		return {
+			"headColor": head_color,
 			"bodyColor": body_color,
+			"tailColor": tail_color,
 			"eyeColor": eye_color,
 			"wingColor": wing_color,
 			"hornColor": horn_color,
 			"markingsColor": markings_color,
+
+			"headType": head_type,
+			"bodyType": body_type,
+			"tailType": tail_type,
+			"eyeType": eye_type,
 			"wingType": wing_type,
 			"hornType": horn_type,
 			"markingsType": markings_type
