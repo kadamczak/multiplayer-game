@@ -6,10 +6,8 @@ class Part:
 	var name: String
 
 	var line_type: int
-	var line_node: Node
-
 	var color: Color
-	var color_node: Node
+	var node: Node
 	
 	
 	func _init(name: String,
@@ -20,8 +18,7 @@ class Part:
 		self.line_type = line
 		self.color = color
 
-		self.line_node = player.get_node_or_null("Sprite/" + name)
-		self.color_node = player.get_node_or_null("Sprite/" + name + "_Color")
+		self.node = player.get_node_or_null("Sprite/" + name)
 
 
 var player: CharacterBody2D
@@ -52,11 +49,9 @@ func apply_all_customization() -> void:
 
 func apply_customization(part: Part) -> void:
 	# Apply color modulation
-	if part.color_node:
-		part.color_node.self_modulate = part.color
+	if part.node:
+		part.node.self_modulate = part.color
 
-	# Apply part visibility and used texture
-	if part.line_node:
 		if part.line_type == 0:
 			_change_part_visibility(part, false)
 			return
@@ -66,12 +61,10 @@ func apply_customization(part: Part) -> void:
 			
 
 func _change_part_visibility(part: Part, is_visible: bool) -> void:
-	part.line_node.visible = is_visible
-	part.color_node.visible = is_visible
+	part.node.visible = is_visible
 
 
 func _change_part_texture(part: Part):
-	part.line_node.texture = CustomizationConstants.textures[part.name][part.line_type]["line"]
-	part.color_node.texture = CustomizationConstants.textures[part.name][part.line_type]["color"]
+	part.node.texture = CustomizationConstants.textures[part.name][part.line_type]
 
 

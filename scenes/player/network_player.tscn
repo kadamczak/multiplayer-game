@@ -1,24 +1,18 @@
-[gd_scene load_steps=50 format=3 uid="uid://ifha2oyc3bqr"]
+[gd_scene load_steps=44 format=3 uid="uid://ifha2oyc3bqr"]
 
 [ext_resource type="Script" uid="uid://dmw6hayj3ypqb" path="res://scripts/player/network_player.gd" id="1_5l5im"]
 [ext_resource type="Texture2D" uid="uid://cs0011278dnun" path="res://assets/spritesheets/cat_spritesheets/playercat.png" id="2_5l5im"]
 [ext_resource type="Script" uid="uid://dj8ieqvsy2052" path="res://scripts/player/player_customization.gd" id="2_customization"]
 [ext_resource type="Texture2D" uid="uid://blcuohioo4202" path="res://assets/spritesheets/cat_spritesheets/cat_air.png" id="2_hc1dv"]
 [ext_resource type="Texture2D" uid="uid://cwdk6c2tkhcqt" path="res://assets/spritesheets/cat_spritesheets/cat_walk2.png" id="3_dtrl1"]
-[ext_resource type="Texture2D" uid="uid://cghjbp4v6kb8c" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Body_1.png" id="5_l3ng8"]
-[ext_resource type="Texture2D" uid="uid://dn8fvhlobnu32" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Body_1_Color.png" id="6_mkdpo"]
-[ext_resource type="Texture2D" uid="uid://dvenwvgw4aqf4" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Tail_1.png" id="7_27sux"]
-[ext_resource type="Texture2D" uid="uid://cosioe7ye5c6v" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Tail_1_Color.png" id="7_ac163"]
-[ext_resource type="Texture2D" uid="uid://cj1ylbsj28wkb" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Head_1_Color.png" id="9_bc8gd"]
-[ext_resource type="Texture2D" uid="uid://b5a560d6pu2fq" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1_Color.png" id="9_sc6jo"]
-[ext_resource type="Texture2D" uid="uid://b83io775yrlhk" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Head_1.png" id="10_rh7eq"]
-[ext_resource type="Texture2D" uid="uid://cshymfqjvhp78" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1.png" id="10_xbkfl"]
-[ext_resource type="Texture2D" uid="uid://c50w4wy5ifhmc" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Eyes_1_Color.png" id="11_p2s4j"]
-[ext_resource type="Texture2D" uid="uid://bbgqedugy4j4e" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Eyes_1.png" id="11_rh7eq"]
-[ext_resource type="Texture2D" uid="uid://ckvn0kd0e8fks" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1.png" id="13_0m5l2"]
-[ext_resource type="Texture2D" uid="uid://byb7q8q88tb3" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1_Color.png" id="13_mv0qf"]
-[ext_resource type="Texture2D" uid="uid://cfc0goh2f5jtl" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Item_3_Color.png" id="15_lhyy0"]
-[ext_resource type="Texture2D" uid="uid://d1ibo1bwkdoq0" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Item_3.png" id="16_xl2sm"]
+[ext_resource type="Texture2D" uid="uid://8bdat858y3iw" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Body_1.png" id="5_l3ng8"]
+[ext_resource type="Texture2D" uid="uid://b3byu71nhsjc8" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Tail_1.png" id="7_27sux"]
+[ext_resource type="Texture2D" uid="uid://c4d0xs0cpb0wc" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Markings_1.png" id="7_rh7eq"]
+[ext_resource type="Texture2D" uid="uid://dwjkyks0gq8h1" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Head_1.png" id="10_rh7eq"]
+[ext_resource type="Texture2D" uid="uid://b16kk05huttpq" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Wings_1.png" id="10_xbkfl"]
+[ext_resource type="Texture2D" uid="uid://bbdcitr24hduy" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Eyes_1.png" id="11_rh7eq"]
+[ext_resource type="Texture2D" uid="uid://1kbulvrqdyqm" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Horns_1.png" id="13_0m5l2"]
+[ext_resource type="Texture2D" uid="uid://4yc7xclgraml" path="res://assets/spritesheets/dragon_spritesheets/Dragon_Item_3.png" id="16_xl2sm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1v4lf"]
 atlas = ExtResource("2_hc1dv")
@@ -216,7 +210,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Tail_Color:frame")
+tracks/1/path = NodePath("Body:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -228,46 +222,10 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Body_Color:frame")
+tracks/2/path = NodePath("Eyes:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Body:frame")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Eyes:frame")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Eyes_Color:frame")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -284,18 +242,6 @@ tracks/0/path = NodePath("Tail:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [7, 8, 9]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Tail_Color:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
@@ -321,59 +267,23 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Tail_Color:frame")
+tracks/1/path = NodePath("Body:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.16666667, 0.33333334, 0.5, 0.6666667),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0, 1, 2, 3, 4]
+"values": [0]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Body:frame")
+tracks/2/path = NodePath("Eyes:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Body_Color:frame")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Eyes:frame")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
 "times": PackedFloat32Array(0.03333333, 0.5, 0.8666667),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [0, 2, 0]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Eyes_Color:frame")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0.033333335, 0.5, 0.8666667),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [0, 2, 0]
@@ -386,22 +296,10 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Body_Color:frame")
+tracks/0/path = NodePath("Body:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [5, 6]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Body:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
@@ -454,61 +352,34 @@ libraries = {
 &"": SubResource("AnimationLibrary_rrqu0")
 }
 
-[node name="Tail_Color" type="Sprite2D" parent="Sprite"]
-texture = ExtResource("7_ac163")
-hframes = 4
-vframes = 3
-
 [node name="Tail" type="Sprite2D" parent="Sprite"]
 texture = ExtResource("7_27sux")
 hframes = 4
 vframes = 3
 
-[node name="Body_Color" type="Sprite2D" parent="Sprite"]
-position = Vector2(1, 0)
-texture = ExtResource("6_mkdpo")
-hframes = 3
-vframes = 3
-
 [node name="Markings" type="Sprite2D" parent="Sprite"]
+visible = false
+texture = ExtResource("7_rh7eq")
 
 [node name="Body" type="Sprite2D" parent="Sprite"]
 texture = ExtResource("5_l3ng8")
-hframes = 3
+hframes = 4
 vframes = 3
-
-[node name="Head_Color" type="Sprite2D" parent="Sprite"]
-texture = ExtResource("9_bc8gd")
 
 [node name="Head" type="Sprite2D" parent="Sprite"]
 texture = ExtResource("10_rh7eq")
-
-[node name="Eyes_Color" type="Sprite2D" parent="Sprite"]
-texture = ExtResource("11_p2s4j")
-hframes = 3
-vframes = 2
 
 [node name="Eyes" type="Sprite2D" parent="Sprite"]
 texture = ExtResource("11_rh7eq")
 hframes = 3
 vframes = 2
 
-[node name="Horns_Color" type="Sprite2D" parent="Sprite"]
-texture = ExtResource("13_mv0qf")
-
 [node name="Horns" type="Sprite2D" parent="Sprite"]
 texture = ExtResource("13_0m5l2")
-
-[node name="Head_Item_Color" type="Sprite2D" parent="Sprite"]
-visible = false
-texture = ExtResource("15_lhyy0")
 
 [node name="Head_Item" type="Sprite2D" parent="Sprite"]
 visible = false
 texture = ExtResource("16_xl2sm")
-
-[node name="Wings_Color" type="Sprite2D" parent="Sprite"]
-texture = ExtResource("9_sc6jo")
 
 [node name="Wings" type="Sprite2D" parent="Sprite"]
 position = Vector2(1, 0)
