@@ -69,7 +69,9 @@ func _input(event: InputEvent) -> void:
 
 func show_ui(customization_parts: Dictionary) -> void:
 	ClientNetworkGlobals.is_movement_blocking_ui_active = true
+	lock_colors_checkbox.button_pressed = false
 	panel.visible = true
+	
 	active_player_customization = customization_parts
 	original_state = {}
 	
