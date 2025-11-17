@@ -14,7 +14,8 @@ signal cancelled()
 	"Eyes": $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/EyesColorSection/EyesColorPicker,
 	"Tail": $Panel/MarginContainer/VBoxContainer/MainContent/ColorsSection/TailColorSection/TailColorPicker,
 	"Wings": $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/WingsRow/WingsColorPicker,
-	"Horns": $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsColorPicker
+	"Horns": $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsColorPicker,
+	"Markings": $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsColorPicker
 }
 
 @onready var line_type_buttons := {
@@ -26,7 +27,12 @@ signal cancelled()
 	"Horns": {
 		CustomizationConstants.Horns_Type.NO_HORNS: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsContainer/NoHornsButton,
 		CustomizationConstants.Horns_Type.CLASSIC: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/HornsRow/HornsContainer/Horns1Button
-	}
+	},
+	"Markings": {
+		CustomizationConstants.Markings_Type.NO_MARKINGS: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/NoMarkingsButton,
+		CustomizationConstants.Markings_Type.STRIPES: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/Markings1Button,
+		CustomizationConstants.Markings_Type.DOTS: $Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer/Markings2Button
+	},
 }
 
 var syncable_body_parts := [ "Head", "Body", "Tail"]

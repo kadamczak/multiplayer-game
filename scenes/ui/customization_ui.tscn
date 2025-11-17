@@ -234,6 +234,40 @@ layout_mode = 2
 color = Color(1, 1, 1, 1)
 edit_alpha = false
 
+[node name="MarkingsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid"]
+layout_mode = 2
+text = "Markings:"
+horizontal_alignment = 2
+
+[node name="MarkingsRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MarkingsContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="NoMarkingsButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer"]
+custom_minimum_size = Vector2(90, 38)
+layout_mode = 2
+text = "None"
+
+[node name="Markings1Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer"]
+custom_minimum_size = Vector2(90, 38)
+layout_mode = 2
+text = "Stripes"
+
+[node name="Markings2Button" type="Button" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow/MarkingsContainer"]
+custom_minimum_size = Vector2(90, 38)
+layout_mode = 2
+text = "Dots"
+
+[node name="MarkingsColorPicker" type="ColorPickerButton" parent="Panel/MarginContainer/VBoxContainer/MainContent/FeaturesSection/FeaturesGrid/MarkingsRow"]
+custom_minimum_size = Vector2(80, 38)
+layout_mode = 2
+color = Color(1, 1, 1, 1)
+edit_alpha = false
+
 [node name="Spacer2" type="Control" parent="Panel/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2

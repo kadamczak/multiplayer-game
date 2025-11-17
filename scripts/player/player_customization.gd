@@ -38,7 +38,8 @@ func _set_default_customization() -> void:
 		"Eyes": Part.new("Eyes", player, CustomizationConstants.Eyes_Type.CLASSIC, Color.LIGHT_BLUE),
 		"Tail": Part.new("Tail", player, CustomizationConstants.Tail_Type.CLASSIC, Color.DARK_GRAY),
 		"Wings": Part.new("Wings", player, CustomizationConstants.Wings_Type.CLASSIC, Color.DARK_SLATE_GRAY),
-		"Horns": Part.new("Horns", player, CustomizationConstants.Horns_Type.CLASSIC, Color.GRAY)
+		"Horns": Part.new("Horns", player, CustomizationConstants.Horns_Type.CLASSIC, Color.GRAY),
+		"Markings": Part.new("Markings", player, CustomizationConstants.Markings_Type.DOTS, Color.GRAY)
 	}
 
 
