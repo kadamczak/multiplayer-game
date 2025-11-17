@@ -6,6 +6,7 @@ signal handle_player_username(player_username: PlayerUsername)
 signal handle_player_disconnect(player_id: int)
 signal handle_player_animation(player_animation: PlayerAnimation)
 signal handle_player_scene_change(player_scene_change: PlayerSceneChange)
+signal handle_player_customization(player_customization: PlayerCustomizationPacket)
 signal balance_changed(new_balance: int)
 
 var id: int = -1
@@ -63,6 +64,12 @@ func on_client_packet(data: PackedByteArray) -> void:
 			DebugLogger.log("ClientNetworkGlobals received scene change - ID: " + str(scene_change.id) + " Scene: " + scene_change.scene_path)
 			player_scenes[scene_change.id] = scene_change.scene_path
 			handle_player_scene_change.emit(scene_change)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_CUSTOMIZATION:
+			var customization = PlayerCustomizationPacket.create_from_data(data)
+			DebugLogger.log("ClientNetworkGlobals received customization - ID: " + str(customization.player_id))
+			handle_player_customization.emit(customization)
+			
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")
 

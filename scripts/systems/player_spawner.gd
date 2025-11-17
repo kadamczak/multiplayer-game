@@ -11,6 +11,7 @@ func _ready() -> void:
 	ClientNetworkGlobals.handle_local_id_assignment.connect(_on_local_id_assignment)
 	ClientNetworkGlobals.handle_player_disconnect.connect(despawn_player)
 	ClientNetworkGlobals.handle_player_scene_change.connect(_on_player_scene_change)
+	ClientNetworkGlobals.handle_player_customization.connect(_on_player_customization)
 	
 
 # Called when a new scene is loaded - find spawn areas and container
@@ -228,3 +229,36 @@ func _send_username(player_id: int) -> void:
 func _send_scene_change(player_id: int, scene_path: String) -> void:
 	DebugLogger.log("Sending scene change for player " + str(player_id) + " to scene " + scene_path)
 	PlayerSceneChange.create(player_id, scene_path).send(NetworkHandler.server_peer)
+
+
+func _on_player_customization(customization_packet: PlayerCustomizationPacket) -> void:
+	var player_id = customization_packet.player_id
+	
+	# Skip if it's the local player (they already see their own changes)
+	if player_id == ClientNetworkGlobals.id:
+		return
+	
+	# Find the player in the current scene
+	if player_container == null:
+		return
+	
+	var player = player_container.get_node_or_null(str(player_id))
+	if not player:
+		DebugLogger.log("Player " + str(player_id) + " not found for customization update")
+		return
+	
+	# Get the PlayerCustomization component
+	var player_customization = player.get_node_or_null("PlayerCustomization") as PlayerCustomization
+	if not player_customization:
+		DebugLogger.log("PlayerCustomization component not found for player " + str(player_id))
+		return
+	
+	# Apply the customization changes
+	for part_name in customization_packet.colors.keys():
+		if part_name in player_customization.active_player_customization:
+			var part = player_customization.active_player_customization[part_name]
+			part.color = customization_packet.colors[part_name]
+			part.line_type = customization_packet.types[part_name]
+			player_customization.apply_customization(part)
+	
+	DebugLogger.log("Applied customization update for player " + str(player_id))

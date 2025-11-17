@@ -3,6 +3,7 @@ extends Node
 var peer_usernames: Dictionary = {} # peer_id -> username mapping
 var peer_scenes: Dictionary = {} # peer_id -> scene_path mapping
 var peer_guids: Dictionary = {} # peer_id -> guid mapping
+var peer_customizations: Dictionary = {} # peer_id -> customization data
 
 func _ready() -> void:
 	NetworkHandler.on_peer_connected.connect(on_peer_connected)
@@ -25,9 +26,16 @@ func on_peer_connected(peer_id: int) -> void:
 		DebugLogger.log("Sending existing scene to new client: ID " + str(existing_peer_id) + " -> " + scene_path)
 		PlayerSceneChange.create(existing_peer_id, scene_path).send(NetworkHandler.client_peers[peer_id])
 	
+	# Send all existing customizations to the new client
+	for existing_peer_id in peer_customizations:
+		var customization = peer_customizations[existing_peer_id]
+		DebugLogger.log("Sending existing customization to new client: ID " + str(existing_peer_id))
+		customization.send(NetworkHandler.client_peers[peer_id])
+	
 func on_peer_disconnected(peer_id: int) -> void:
 	peer_usernames.erase(peer_id)
 	peer_scenes.erase(peer_id)
+	peer_customizations.erase(peer_id)
 	DebugLogger.log("Broadcasting disconnect for peer " + str(peer_id))
 	PlayerDisconnect.create(peer_id).broadcast(NetworkHandler.connection)
 	
@@ -55,5 +63,13 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			peer_scenes[scene_change.id] = scene_change.scene_path
 			DebugLogger.log("Broadcasting to all clients")
 			scene_change.broadcast(NetworkHandler.connection)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_CUSTOMIZATION:
+			var customization = PlayerCustomizationPacket.create_from_data(data)
+			DebugLogger.log("Server received customization from peer " + str(peer_id) + " - ID: " + str(customization.player_id))
+			peer_customizations[customization.player_id] = customization
+			DebugLogger.log("Broadcasting to all clients")
+			customization.broadcast(NetworkHandler.connection)
+			
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")

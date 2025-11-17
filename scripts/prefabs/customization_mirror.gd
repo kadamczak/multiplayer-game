@@ -54,9 +54,17 @@ func _on_customization_applied() -> void:
 	
 	if response.success:
 		customization_ui.hide_ui()
+		
+		# Send customization update to other players
+		var packet = PlayerCustomizationPacket.create(
+			ClientNetworkGlobals.id,
+			local_customization.active_player_customization
+		)
+		packet.send(NetworkHandler.server_peer)
+		DebugLogger.log("Sent customization update to server")
 	else:
 		var problem: ApiResponse.ProblemDetails = response.problem
-		#merchant_ui.show_error("Purchase failed: " + problem.title)
+		DebugLogger.error("Customization update failed: " + problem.title)
 
 
 func _is_local_player(body: Node2D) -> bool:
