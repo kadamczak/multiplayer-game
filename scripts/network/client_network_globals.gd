@@ -19,6 +19,8 @@ var current_scene: String = ""
 var previous_scene: String = ""  # Track where local player came from
 var player_scenes: Dictionary = {} # id -> scene_path mapping
 
+var player_customizations: Dictionary = {} # id -> PlayerCustomizationPacket mapping
+
 var is_movement_blocking_ui_active: bool = false
 
 var balance: int = 0:
@@ -53,6 +55,7 @@ func on_client_packet(data: PackedByteArray) -> void:
 			var disconnected_id = player_disconnect.id
 			player_usernames.erase(disconnected_id)
 			player_scenes.erase(disconnected_id)
+			player_customizations.erase(disconnected_id)
 			handle_player_disconnect.emit(disconnected_id)
 
 		PacketInfo.PACKET_TYPE.PLAYER_ANIMATION:
@@ -68,6 +71,7 @@ func on_client_packet(data: PackedByteArray) -> void:
 		PacketInfo.PACKET_TYPE.PLAYER_CUSTOMIZATION:
 			var customization = PlayerCustomizationPacket.create_from_data(data)
 			DebugLogger.log("ClientNetworkGlobals received customization - ID: " + str(customization.player_id))
+			player_customizations[customization.player_id] = customization
 			handle_player_customization.emit(customization)
 			
 		_:
@@ -88,5 +92,6 @@ func reset() -> void:
 	current_scene = ""
 	previous_scene = ""
 	player_scenes = {}
+	player_customizations = {}
 	is_movement_blocking_ui_active = false
 	balance = 0

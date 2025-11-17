@@ -26,6 +26,9 @@ func on_scene_ready(scene_root: Node) -> void:
 	if ClientNetworkGlobals.id != -1:
 		DebugLogger.log("Scene ready with assigned ID, refreshing players")
 		_refresh_players()
+		
+		# Send local player's customization to new players in this scene
+		call_deferred("_send_local_customization")
 
 
 func _on_node_added(node: Node) -> void:
@@ -178,6 +181,10 @@ func spawn_player(id: int) -> void:
 	
 	player_container.add_child(player)
 	DebugLogger.log("Spawned player " + str(id) + " at position: " + str(player.global_position))
+	
+	# Apply stored customization if available
+	if id in ClientNetworkGlobals.player_customizations:
+		call_deferred("_apply_stored_customization", id)
 
 
 func despawn_player(id: int) -> void:
@@ -231,6 +238,33 @@ func _send_scene_change(player_id: int, scene_path: String) -> void:
 	PlayerSceneChange.create(player_id, scene_path).send(NetworkHandler.server_peer)
 
 
+func _send_local_customization() -> void:
+	if player_container == null:
+		return
+	
+	var local_player = player_container.get_node_or_null(str(ClientNetworkGlobals.id))
+	if not local_player:
+		DebugLogger.log("Local player not found, cannot send customization")
+		return
+	
+	var player_customization = local_player.get_node_or_null("PlayerCustomization") as PlayerCustomization
+	if not player_customization:
+		DebugLogger.log("PlayerCustomization component not found on local player")
+		return
+	
+	# Create and send customization packet
+	var packet = PlayerCustomizationPacket.create(
+		ClientNetworkGlobals.id,
+		player_customization.active_player_customization
+	)
+	packet.send(NetworkHandler.server_peer)
+	
+	# Store in local cache
+	ClientNetworkGlobals.player_customizations[ClientNetworkGlobals.id] = packet
+	
+	DebugLogger.log("Sent local customization after scene change")
+
+
 func _on_player_customization(customization_packet: PlayerCustomizationPacket) -> void:
 	var player_id = customization_packet.player_id
 	
@@ -262,3 +296,30 @@ func _on_player_customization(customization_packet: PlayerCustomizationPacket) -
 			player_customization.apply_customization(part)
 	
 	DebugLogger.log("Applied customization update for player " + str(player_id))
+
+
+func _apply_stored_customization(player_id: int) -> void:
+	if player_container == null:
+		return
+	
+	var player = player_container.get_node_or_null(str(player_id))
+	if not player:
+		return
+	
+	var player_customization = player.get_node_or_null("PlayerCustomization") as PlayerCustomization
+	if not player_customization:
+		return
+	
+	var customization_packet = ClientNetworkGlobals.player_customizations.get(player_id)
+	if not customization_packet:
+		return
+	
+	DebugLogger.log("Applying stored customization for player " + str(player_id))
+	
+	# Apply the stored customization
+	for part_name in customization_packet.colors.keys():
+		if part_name in player_customization.active_player_customization:
+			var part = player_customization.active_player_customization[part_name]
+			part.color = customization_packet.colors[part_name]
+			part.line_type = customization_packet.types[part_name]
+			player_customization.apply_customization(part)
