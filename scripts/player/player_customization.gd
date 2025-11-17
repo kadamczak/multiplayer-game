@@ -49,7 +49,6 @@ func apply_all_customization() -> void:
 
 
 func apply_customization(part: Part) -> void:
-	# Apply color modulation
 	if part.node:
 		part.node.self_modulate = part.color
 

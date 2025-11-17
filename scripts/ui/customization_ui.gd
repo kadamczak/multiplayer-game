@@ -1,9 +1,5 @@
 extends CanvasLayer
 
-signal part_changed(part_name: String)
-signal applied()
-signal cancelled()
-
 @onready var panel = $Panel
 @onready var apply_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/ApplyButton
 @onready var close_button = $Panel/MarginContainer/VBoxContainer/ButtonsContainer/CloseButton
@@ -38,7 +34,7 @@ signal cancelled()
 
 var syncable_body_parts := [ "Head", "Body", "Tail"]
 
-var active_player_customization := {}
+var customization: PlayerCustomization
 var original_state := {}
 
 func _ready() -> void:
@@ -74,16 +70,16 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func show_ui(customization_parts: Dictionary) -> void:
+func show_ui(player_customization: PlayerCustomization) -> void:
 	ClientNetworkGlobals.is_movement_blocking_ui_active = true
 	lock_colors_checkbox.button_pressed = false
 	panel.visible = true
 	
-	active_player_customization = customization_parts
+	customization = player_customization
 	original_state = {}
 	
-	for part_name in customization_parts:
-		var part = customization_parts[part_name]	
+	for part_name in customization.active_player_customization:
+		var part = customization.active_player_customization[part_name]	
 		_save_original_part(part)
 		_set_color_picker_value(part)
 		
@@ -105,7 +101,7 @@ func _set_color_picker_value(part: PlayerCustomization.Part) -> void:
 
 
 func _select_line_type_button(part_name: String) -> void:
-	_update_type_buttons(line_type_buttons[part_name], active_player_customization[part_name].line_type)
+	_update_type_buttons(line_type_buttons[part_name], customization.active_player_customization[part_name].line_type)
 	_update_color_picker_visibility(part_name)
 
 
@@ -116,7 +112,7 @@ func _update_type_buttons(buttons: Dictionary, selected_type: int) -> void:
 
 
 func _update_color_picker_visibility(part_name: String) -> void:
-	color_pickers[part_name].visible = (active_player_customization[part_name].line_type != 0)
+	color_pickers[part_name].visible = (customization.active_player_customization[part_name].line_type != 0)
 
 
 func hide_ui() -> void:
@@ -125,24 +121,24 @@ func hide_ui() -> void:
 
 
 func on_line_type_selected(part_name: String, line_type: int) -> void:
-	active_player_customization[part_name].line_type = line_type
+	customization.active_player_customization[part_name].line_type = line_type
 	_update_type_buttons(line_type_buttons[part_name], line_type)
 	_update_color_picker_visibility(part_name)
-	part_changed.emit(part_name)
+	_apply_customization(part_name)
 
 
 func _on_color_changed(color: Color, part_name: String) -> void:
-	active_player_customization[part_name].color = color
+	customization.active_player_customization[part_name].color = color
 	
 	if lock_colors_checkbox.button_pressed and part_name in syncable_body_parts:
 		_sync_locked_colors(color, part_name)
 	
-	part_changed.emit(part_name)
+	_apply_customization(part_name)
 
 
 func _on_lock_colors_toggled(is_pressed: bool) -> void:
 	if is_pressed:
-		var body_color = active_player_customization["Body"].color
+		var body_color = customization.active_player_customization["Body"].color
 		_sync_locked_colors(body_color, "Body")
 
 
@@ -151,20 +147,38 @@ func _sync_locked_colors(color: Color, source_part: String) -> void:
 		if part_name == source_part:
 			continue
 		
-		active_player_customization[part_name].color = color
+		customization.active_player_customization[part_name].color = color
 		color_pickers[part_name].color = color
-		part_changed.emit(part_name)
+		_apply_customization(part_name)
 
 
 func _on_apply_pressed() -> void:	
-	applied.emit()
-	#hide_ui()
+	var applied_customization = UserModels.UpdateUserCustomizationRequest.new(customization.active_player_customization)
+	var response = await UserAPI.update_user_customization(applied_customization)
+	
+	if response.success:
+		hide_ui()
+		
+		var packet = PlayerCustomizationPacket.create(
+			ClientNetworkGlobals.id,
+			customization.active_player_customization
+		)
+		packet.send(NetworkHandler.server_peer)
+		DebugLogger.log("Sent customization update to server")
+	else:
+		var problem: ApiResponse.ProblemDetails = response.problem
+		DebugLogger.error("Customization update failed: " + problem.title)
 
 
 func _on_close_pressed() -> void:
 	for part_name in original_state:
-		active_player_customization[part_name].line_type = original_state[part_name].line_type
-		active_player_customization[part_name].color = original_state[part_name].color
+		customization.active_player_customization[part_name].line_type = original_state[part_name].line_type
+		customization.active_player_customization[part_name].color = original_state[part_name].color
 
-	cancelled.emit()
+	customization.apply_all_customization()
 	hide_ui()
+
+
+func _apply_customization(part_name: String) -> void:
+	var part = customization.active_player_customization[part_name]
+	customization.apply_customization(part)
