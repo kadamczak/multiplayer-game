@@ -47,10 +47,10 @@ func _set_default_customization() -> void:
 
 func apply_all_customization() -> void:
 	for part_name in active_player_customization:
-		apply_customization(part_name, active_player_customization[part_name])
+		apply_customization(active_player_customization[part_name])
 
 
-func apply_customization(part_name: String, part: Part) -> void:
+func apply_customization(part: Part) -> void:
 	# Apply color modulation
 	if part.color_node:
 		part.color_node.self_modulate = part.color
