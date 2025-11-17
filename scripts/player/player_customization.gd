@@ -33,13 +33,13 @@ func _ready() -> void:
 
 func _set_default_customization() -> void:
 	active_player_customization = {
-		"Head": Part.new("Head", player, CustomizationConstants.Head_Type.CLASSIC, Color.DARK_GRAY),
-		"Body": Part.new("Body", player, CustomizationConstants.Body_Type.CLASSIC, Color.DARK_GRAY),
-		"Eyes": Part.new("Eyes", player, CustomizationConstants.Eyes_Type.CLASSIC, Color.LIGHT_BLUE),
-		"Tail": Part.new("Tail", player, CustomizationConstants.Tail_Type.CLASSIC, Color.DARK_GRAY),
-		"Wings": Part.new("Wings", player, CustomizationConstants.Wings_Type.CLASSIC, Color.DARK_SLATE_GRAY),
-		"Horns": Part.new("Horns", player, CustomizationConstants.Horns_Type.CLASSIC, Color.GRAY),
-		"Markings": Part.new("Markings", player, CustomizationConstants.Markings_Type.DOTS, Color.GRAY)
+		"Head": Part.new("Head", player, ClientNetworkGlobals.customization.head_type, ClientNetworkGlobals.customization.head_color),
+		"Body": Part.new("Body", player, ClientNetworkGlobals.customization.body_type, ClientNetworkGlobals.customization.body_color),
+		"Eyes": Part.new("Eyes", player, ClientNetworkGlobals.customization.eye_type, ClientNetworkGlobals.customization.eye_color),
+		"Tail": Part.new("Tail", player, ClientNetworkGlobals.customization.tail_type, ClientNetworkGlobals.customization.tail_color),
+		"Wings": Part.new("Wings", player, ClientNetworkGlobals.customization.wing_type, ClientNetworkGlobals.customization.wing_color),
+		"Horns": Part.new("Horns", player, ClientNetworkGlobals.customization.horn_type, ClientNetworkGlobals.customization.horn_color),
+		"Markings": Part.new("Markings", player, ClientNetworkGlobals.customization.markings_type, ClientNetworkGlobals.customization.markings_color)
 	}
 
 

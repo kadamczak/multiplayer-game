@@ -34,11 +34,20 @@ class ReadUserGameInfoResponse:
 	var account_guid: String
 	var user_name: String
 	var balance: int
+	var customization: ReadUserCustomizationResponse
 	
 	func _init(data: Dictionary = {}) -> void:
 		account_guid = data.get("id")
 		user_name = data.get("userName")
 		balance = data.get("balance")
+
+		var customization_data = data.get("customization")
+		if customization_data == null:
+			customization = ReadUserCustomizationResponse.new()
+		elif customization_data is Dictionary:
+			customization = ReadUserCustomizationResponse.from_json(customization_data)
+		else:
+			customization = ReadUserCustomizationResponse.new()
 	
 	static func from_json(data: Dictionary) -> ReadUserGameInfoResponse:
 		return ReadUserGameInfoResponse.new(data)
@@ -116,8 +125,6 @@ class ReadUserCustomizationResponse:
 	var wing_type: int
 	var horn_type: int
 	var markings_type: int
-
-	var user_id: String
 	
 	func _init(data: Dictionary = {}) -> void:
 		head_color = Color(data.get("headColor"))
@@ -135,5 +142,6 @@ class ReadUserCustomizationResponse:
 		wing_type = data.get("wingType")
 		horn_type = data.get("hornType")
 		markings_type = data.get("markingsType")
-		
-		user_id = data.get("userId")
+
+	static func from_json(data: Dictionary) -> ReadUserCustomizationResponse:
+		return ReadUserCustomizationResponse.new(data)
