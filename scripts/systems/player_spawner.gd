@@ -269,10 +269,8 @@ func _send_initial_customization() -> void:
 		ClientNetworkGlobals.id,
 		player_customization.active_player_customization
 	)
-	packet.send(NetworkHandler.server_peer)
-	
-	# Store in local cache
 	ClientNetworkGlobals.player_customizations[ClientNetworkGlobals.id] = packet
+	packet.send(NetworkHandler.server_peer)
 	
 	DebugLogger.log("Sent initial customization to other players")
 
@@ -325,7 +323,6 @@ func _send_local_customization() -> void:
 	
 	# Store in local cache
 	ClientNetworkGlobals.player_customizations[ClientNetworkGlobals.id] = packet
-	
 	DebugLogger.log("Sent local customization after scene change")
 
 
@@ -351,14 +348,7 @@ func _on_player_customization(customization_packet: PlayerCustomizationPacket) -
 		DebugLogger.log("PlayerCustomization component not found for player " + str(player_id))
 		return
 	
-	# Apply the customization changes
-	for part_name in customization_packet.colors.keys():
-		if part_name in player_customization.active_player_customization:
-			var part = player_customization.active_player_customization[part_name]
-			part.color = customization_packet.colors[part_name]
-			part.line_type = customization_packet.types[part_name]
-			player_customization.apply_customization(part)
-	
+	_apply_customization_packet_to_player(player_customization, customization_packet)
 	DebugLogger.log("Applied customization update for player " + str(player_id))
 
 
@@ -379,8 +369,10 @@ func _apply_stored_customization(player_id: int) -> void:
 		return
 	
 	DebugLogger.log("Applying stored customization for player " + str(player_id))
-	
-	# Apply the stored customization
+	_apply_customization_packet_to_player(player_customization, customization_packet)
+
+
+func _apply_customization_packet_to_player(player_customization: PlayerCustomization, customization_packet: PlayerCustomizationPacket) -> void:
 	for part_name in customization_packet.colors.keys():
 		if part_name in player_customization.active_player_customization:
 			var part = player_customization.active_player_customization[part_name]
