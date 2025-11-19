@@ -2,7 +2,7 @@ class_name UserAPI
 
 static func get_user_game_info() -> Dictionary:
 	return await ApiHelper.authenticated_request_with_refresh(
-		ApiConfig.API_BASE_URL + "/v1/users/me/game-info?includeCustomization=true",
+		ApiConfig.API_BASE_URL + "/v1/users/me/game-info?includeCustomization=true&includeItems=true",
 		HTTPClient.METHOD_GET,
 		[],
 		"",
