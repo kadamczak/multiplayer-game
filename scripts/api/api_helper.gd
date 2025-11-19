@@ -164,4 +164,91 @@ func authenticated_request_with_refresh(url: String,
 	return response
 
 
+# Image cache storage
+# Key: URL, Value: { "texture": ImageTexture, "etag": String, "last_modified": String }
+var _image_cache: Dictionary = {}
 
+
+# Download image from URL with caching support
+# Uses ETag and Last-Modified headers for cache validation
+# Returns null if the download fails or the image cannot be loaded
+func download_image(url: String) -> ImageTexture:
+	var http_request = HTTPRequest.new()
+	http_request.set_tls_options(TLSOptions.client_unsafe())
+	add_child(http_request)
+	
+	var headers = []
+	
+	# Check if we have cached version and add conditional headers
+	if _image_cache.has(url):
+		var cache_entry = _image_cache[url]
+		if cache_entry.has("etag") and not cache_entry.etag.is_empty():
+			headers.append("If-None-Match: " + cache_entry.etag)
+		if cache_entry.has("last_modified") and not cache_entry.last_modified.is_empty():
+			headers.append("If-Modified-Since: " + cache_entry.last_modified)
+	
+	var error = http_request.request(url, headers)
+	
+	if error != OK:
+		http_request.queue_free()
+		return null
+	
+	var response = await http_request.request_completed
+	http_request.queue_free()
+	
+	var result = response[0]
+	var response_code = response[1]
+	var response_headers = response[2]
+	var response_body = response[3]
+	
+	if result != OK:
+		return null
+	
+	# 304 Not Modified - return cached texture
+	if response_code == 304:
+		if _image_cache.has(url):
+			return _image_cache[url].texture
+		return null
+	
+	if response_code < 200 or response_code >= 300:
+		return null
+	
+	# Try to load the image from the downloaded bytes
+	var image = Image.new()
+	var load_error = image.load_png_from_buffer(response_body)
+	
+	if load_error != OK:
+		load_error = image.load_jpg_from_buffer(response_body)
+	
+	if load_error != OK:
+		load_error = image.load_webp_from_buffer(response_body)
+	
+	if load_error != OK:
+		return null
+	
+	# Create the texture
+	var texture = ImageTexture.create_from_image(image)
+	
+	# Extract caching headers from response
+	var etag = ""
+	var last_modified = ""
+	
+	for header in response_headers:
+		var header_lower = header.to_lower()
+		if header_lower.begins_with("etag:"):
+			etag = header.split(":", true, 1)[1].strip_edges()
+		elif header_lower.begins_with("last-modified:"):
+			last_modified = header.split(":", true, 1)[1].strip_edges()
+	
+	# Cache the texture with headers
+	_image_cache[url] = {
+		"texture": texture,
+		"etag": etag,
+		"last_modified": last_modified
+	}
+	
+	return texture
+
+
+func clear_image_cache() -> void:
+	_image_cache.clear()
