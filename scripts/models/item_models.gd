@@ -1,5 +1,46 @@
 class_name ItemModels
 
+enum ItemType {
+	CONSUMABLE,
+	EQUIPPABLE_ON_HEAD,
+	EQUIPPABLE_ON_BODY
+}
+
+
+static func string_to_item_type(type_str: String) -> ItemType:
+	match type_str:
+		"Consumable":
+			return ItemType.CONSUMABLE
+		"EquippableOnHead":
+			return ItemType.EQUIPPABLE_ON_HEAD
+		"EquippableOnBody":
+			return ItemType.EQUIPPABLE_ON_BODY
+		_:
+			return ItemType.CONSUMABLE
+
+static func item_type_to_display_string(item_type: ItemType) -> String:
+	match item_type:
+		ItemType.CONSUMABLE:
+			return "Consumable"
+		ItemType.EQUIPPABLE_ON_HEAD:
+			return "Equippable on Head"
+		ItemType.EQUIPPABLE_ON_BODY:
+			return "Equippable on Body"
+		_:
+			return "Unknown"
+
+static func type_string_to_display(type_str: String) -> String:
+	match type_str:
+		"Consumable":
+			return "Consumable"
+		"EquippableOnHead":
+			return "Equippable on Head"
+		"EquippableOnBody":
+			return "Equippable on Body"
+		_:
+			return type_str
+
+
 class ReadItemResponse:
 	var id: int
 	var name: String

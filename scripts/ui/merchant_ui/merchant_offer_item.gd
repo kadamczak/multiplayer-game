@@ -9,6 +9,7 @@ var price: int = 0
 @onready var item_name_label = $TopRow/VBoxContainer/HBoxContainer/ItemNameLabel
 @onready var price_label = $TopRow/VBoxContainer/HBoxContainer/PriceLabel
 @onready var buy_button = $TopRow/VBoxContainer/HBoxContainer/BuyButton
+@onready var type_label = $TopRow/VBoxContainer/TypeLabel
 @onready var description_label = $TopRow/VBoxContainer/DescriptionLabel
 
 
@@ -22,9 +23,9 @@ func setup(offer) -> void:
 	
 	item_name_label.text = offer.item.name
 	price_label.text = str(offer.price) + " gold"
+	type_label.text = ItemModels.type_string_to_display(offer.item.type)
 	description_label.text = offer.item.description
-	
-	# Load thumbnail image if URL is provided
+
 	if offer.item.thumbnailUrl and not offer.item.thumbnailUrl.is_empty():
 		_load_thumbnail(offer.item.thumbnailUrl)
 

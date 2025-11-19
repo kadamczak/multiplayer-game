@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://cw8gy5xj2qv0r"]
+[gd_scene load_steps=3 format=3 uid="uid://cw8gy5xj2qv0r"]
 
 [ext_resource type="Script" uid="uid://dd61o6khfvxlt" path="res://scripts/ui/merchant_ui/merchant_offer_item.gd" id="1_merchant_offer"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0n5db"]
+font_color = Color(0, 0.87052155, 0.8705213, 1)
 
 [node name="MerchantOfferItem" type="HBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
@@ -40,9 +43,17 @@ custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
 text = "Buy"
 
+[node name="TypeLabel" type="Label" parent="TopRow/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "Item type"
+label_settings = SubResource("LabelSettings_0n5db")
+autowrap_mode = 3
+
 [node name="DescriptionLabel" type="Label" parent="TopRow/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_font_sizes/font_size = 16
-text = "Item description goes here"
+text = "Item description"
 autowrap_mode = 3
