@@ -35,7 +35,7 @@ class ReadUserGameInfoResponse:
 	var user_name: String
 	var balance: int
 	var customization: ReadUserCustomizationResponse
-	var user_items: Array[ItemModels.ReadUserItemsSimplifiedResponse] = []
+	var user_items: Array[ItemModels.ReadUserItemSimplifiedResponse] = []
 	
 	func _init(data: Dictionary = {}) -> void:
 		account_guid = data.get("id")
@@ -54,7 +54,7 @@ class ReadUserGameInfoResponse:
 		if user_items_data is Array:
 			for item_data in user_items_data:
 				if item_data is Dictionary:
-					user_items.append(ItemModels.ReadUserItemsSimplifiedResponse.from_json(item_data))
+					user_items.append(ItemModels.ReadUserItemSimplifiedResponse.from_json(item_data))
 	
 	static func from_json(data: Dictionary) -> ReadUserGameInfoResponse:
 		return ReadUserGameInfoResponse.new(data)

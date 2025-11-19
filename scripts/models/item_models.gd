@@ -59,7 +59,7 @@ class ReadItemResponse:
 		return ReadItemResponse.new(data)
 
 
-class ReadUserItemsSimplifiedResponse:
+class ReadUserItemSimplifiedResponse:
 	var id: String
 	var item: ReadItemResponse
 
@@ -74,5 +74,5 @@ class ReadUserItemsSimplifiedResponse:
 		else:
 			item = ReadItemResponse.new()
 
-	static func from_json(data: Dictionary) -> ReadUserItemsSimplifiedResponse:
-		return ReadUserItemsSimplifiedResponse.new(data)
+	static func from_json(data: Dictionary) -> ReadUserItemSimplifiedResponse:
+		return ReadUserItemSimplifiedResponse.new(data)
