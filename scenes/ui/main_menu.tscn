@@ -119,7 +119,7 @@ text = "Username: Player"
 [node name="BalanceLabel" type="Label" parent="UserDetailsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Balance: 0 gold"
+text = "Balance: 0 Gems"
 
 [node name="Spacer" type="Control" parent="UserDetailsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2

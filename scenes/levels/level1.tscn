@@ -1,10 +1,12 @@
-[gd_scene load_steps=11 format=4 uid="uid://doq81fipgn8m"]
+[gd_scene load_steps=13 format=4 uid="uid://doq81fipgn8m"]
 
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="1_x6ivy"]
+[ext_resource type="PackedScene" uid="uid://kg1j3uam65wf" path="res://scenes/prefabs/merchant.tscn" id="2_1seuy"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_spawner"]
 [ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/ui/player_ui.tscn" id="3_ui"]
 [ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="4_portal"]
 [ext_resource type="PackedScene" uid="uid://bu6wjhx3yjq3v" path="res://scenes/ui/player_list_overlay.tscn" id="5_overlay"]
+[ext_resource type="SpriteFrames" uid="uid://8w5wv7rslbfe" path="res://assets/spriteframes/rat.tres" id="7_2r1tl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1seuy"]
 size = Vector2(879, 229)
@@ -83,3 +85,11 @@ tile_map_data = PackedByteArray("AADd/xgAAQAAAAAAAADe/xgAAQAAAAAAAADf/xgAAQAAAAA
 tile_set = SubResource("TileSet_dd0lh")
 
 [node name="Players" type="Node" parent="."]
+
+[node name="Merchant" parent="." instance=ExtResource("2_1seuy")]
+position = Vector2(-62.000004, 689)
+merchant_id = 2
+greeting_text = "Hello... >:3"
+talk_text = "I'm just mousing around..."
+sprite_frames = ExtResource("7_2r1tl")
+portrait_sprite_path = "res://assets/sprites/rat_portrait.png"

@@ -62,7 +62,7 @@ func show_user_details() -> void:
 	
 	# Update labels with current data
 	username_label.text = "Username: " + ClientNetworkGlobals.username
-	balance_label.text = "Balance: " + str(ClientNetworkGlobals.balance) + " gold"
+	balance_label.text = "Balance: " + str(ClientNetworkGlobals.balance) + " Gems"
 	
 	back_button.call_deferred("grab_focus")
 

@@ -22,7 +22,7 @@ func setup(offer) -> void:
 	price = offer.price
 	
 	item_name_label.text = offer.item.name
-	price_label.text = str(offer.price) + " gold"
+	price_label.text = str(offer.price) + " Gems"
 	type_label.text = ItemModels.type_string_to_display(offer.item.type)
 	description_label.text = offer.item.description
 

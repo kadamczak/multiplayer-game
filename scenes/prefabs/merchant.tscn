@@ -1,100 +1,7 @@
-[gd_scene load_steps=18 format=3 uid="uid://kg1j3uam65wf"]
+[gd_scene load_steps=4 format=3 uid="uid://kg1j3uam65wf"]
 
-[ext_resource type="Texture2D" uid="uid://ptj7368s7w4f" path="res://assets/spritesheets/rabbit_spritesheets/rabbit_idle.png" id="1_li4o6"]
 [ext_resource type="Script" uid="uid://dst5i7ttbj51g" path="res://scripts/prefabs/merchant.gd" id="1_shopkeeper"]
 [ext_resource type="PackedScene" uid="uid://dhgky4w5olwah" path="res://scenes/ui/merchant_ui/merchant_ui.tscn" id="2_hfdix"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lo7ou"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(0, 0, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dvhlj"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(334, 0, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_15q0k"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(668, 0, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ri0r0"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(1002, 0, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_l1bwd"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(0, 179, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qn4st"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(334, 179, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_reyj4"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(668, 179, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_x65ym"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(1002, 179, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5argd"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(0, 358, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_8b621"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(334, 358, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hkoyt"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(668, 358, 334, 179)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_rehqc"]
-atlas = ExtResource("1_li4o6")
-region = Rect2(1002, 358, 334, 179)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_2ej64"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_lo7ou")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dvhlj")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_15q0k")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ri0r0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_l1bwd")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qn4st")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_reyj4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_x65ym")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5argd")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_8b621")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_hkoyt")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_rehqc")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 4.0
-}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_li4o6"]
 size = Vector2(471.66666, 220.83333)
@@ -107,10 +14,7 @@ script = ExtResource("1_shopkeeper")
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
 position = Vector2(-0.83325195, 6.6666665)
-sprite_frames = SubResource("SpriteFrames_2ej64")
 animation = &"idle"
-autoplay = "idle"
-frame_progress = 0.88847136
 
 [node name="Area2D" type="Area2D" parent="."]
 

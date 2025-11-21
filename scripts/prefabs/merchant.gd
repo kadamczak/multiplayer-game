@@ -3,14 +3,25 @@ extends Node2D
 @export var merchant_id: int = -1
 @export var greeting_text: String = "Greeting text!"
 @export var talk_text: String = "Talk text!"
+@export var sprite_frames: SpriteFrames
+@export var portrait_sprite_path: String = ""
 
 var local_player_in_area: bool = false
 
 @onready var merchant_ui: CanvasLayer = $MerchantUI
 @onready var area_2d = $Area2D
+@onready var animated_sprite: AnimatedSprite2D = $sprite
+@onready var portrait_sprite: TextureRect = $MerchantUI/TalkPanel/HBoxContainer/Portrait
 
 
 func _ready() -> void:
+	if sprite_frames:
+		animated_sprite.sprite_frames = sprite_frames
+		animated_sprite.play("idle")
+	if portrait_sprite_path != "":
+		var portrait_texture = load(portrait_sprite_path)
+		portrait_sprite.texture = portrait_texture
+	
 	area_2d.body_entered.connect(_on_body_entered)
 	area_2d.body_exited.connect(_on_body_exited)
 	merchant_ui.talk_clicked.connect(_on_talk_clicked)
@@ -76,7 +87,7 @@ func _on_back_from_trade_clicked() -> void:
 
 func _on_buy_clicked(offer_id: int, price: int) -> void:
 	if ClientNetworkGlobals.balance < price:
-		merchant_ui.show_error("Insufficient funds! You need " + str(price) + " gold but only have " + str(ClientNetworkGlobals.balance) + " gold.")
+		merchant_ui.show_error("Insufficient funds! You need " + str(price) + " Gems but only have " + str(ClientNetworkGlobals.balance) + " Gems.")
 		return
 	
 	var response = await MerchantAPI.purchase_offer(offer_id)
