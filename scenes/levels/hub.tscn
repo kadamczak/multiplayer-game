@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://bnt1b1mk5qsuk"]
+[gd_scene load_steps=28 format=4 uid="uid://bnt1b1mk5qsuk"]
 
 [ext_resource type="Script" uid="uid://qywerb0mvc48" path="res://scripts/levels/hub.gd" id="1_hub"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_e13io"]
@@ -11,7 +11,9 @@
 [ext_resource type="Texture2D" uid="uid://dt5w2emvs8q4u" path="res://assets/sprites/tree1.png" id="5_pu6vg"]
 [ext_resource type="PackedScene" uid="uid://c8x4w5olwah" path="res://scenes/ui/main_menu.tscn" id="6_main_menu"]
 [ext_resource type="PackedScene" uid="uid://yg8t2bt4prdq" path="res://scenes/prefabs/small_bag.tscn" id="7_ignxr"]
+[ext_resource type="Texture2D" uid="uid://8salp5220oah" path="res://assets/sprites/stump1.png" id="7_l1bwd"]
 [ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="8_portal"]
+[ext_resource type="Texture2D" uid="uid://cv5rvj6ofxbr5" path="res://assets/sprites/branch1.png" id="8_ri0r0"]
 [ext_resource type="PackedScene" uid="uid://kg1j3uam65wf" path="res://scenes/prefabs/merchant.tscn" id="9_x0xvm"]
 [ext_resource type="SpriteFrames" uid="uid://bydiy3gel03n1" path="res://assets/spriteframes/rabbit.tres" id="12_15q0k"]
 [ext_resource type="PackedScene" uid="uid://d013gdjk671nj" path="res://scenes/prefabs/customization_mirror.tscn" id="14_dvhlj"]
@@ -129,6 +131,11 @@ layer = -2
 follow_viewport_enabled = true
 follow_viewport_scale = 0.8
 
+[node name="TileMapLayer2" type="TileMapLayer" parent="Environment/-2"]
+position = Vector2(1992, -187.5)
+tile_map_data = PackedByteArray("AADn/wsAAAABAAAAAADo/wsAAAABAAAAAADp/wsAAAABAAAAAADq/wsAAAABAAAAAADr/wsAAAABAAAAAADs/wsAAAABAAAAAADt/wsAAAABAAAAAADu/wsAAAABAAAAAADv/wsAAAABAAAAAADw/wsAAAABAAAAAADx/wsAAAABAAAAAADy/wsAAAABAAAAAADz/wsAAAABAAAAAAD0/wsAAAABAAAAAAD1/wsAAAABAAAAAAD2/wsAAAABAAAAAAD3/wsAAAABAAAAAAD4/wsAAAABAAAAAAD5/wsAAAABAAAAAAD6/wsAAAABAAAAAAD7/wsAAAABAAAAAAD8/wsAAAABAAAAAAD9/wsAAAABAAAAAAD+/wsAAAABAAAAAAD//wsAAAABAAAAAAAAAAsAAAABAAAAAADm/wwAAAAAAAEAAADm/wsAAAAAAAAAAADm/w0AAAAAAAEAAADm/w4AAAAAAAEAAADm/w8AAAAAAAEAAAABAAsAAAACAAAAAAABAAwAAAACAAEAAAABAA0AAAACAAEAAAABAA4AAAACAAEAAAABAA8AAAACAAEAAAABABAAAAACAAIAAADm/xAAAAAAAAIAAADn/xAAAAABAAIAAADo/xAAAAABAAIAAADp/xAAAAABAAIAAADq/xAAAAABAAIAAADr/w8AAAABAAEAAADs/w8AAAABAAEAAADt/w8AAAABAAEAAADu/w8AAAABAAEAAADv/w8AAAABAAEAAADw/w8AAAABAAEAAADx/w8AAAABAAEAAADy/w8AAAABAAEAAADz/w8AAAABAAEAAAD0/w8AAAABAAEAAAD1/w8AAAABAAEAAAD2/w8AAAABAAEAAAD3/w8AAAABAAEAAAD4/w8AAAABAAEAAAD5/w8AAAABAAEAAAD6/w8AAAABAAEAAAD7/w8AAAABAAEAAAD8/w8AAAABAAEAAAD9/w8AAAABAAEAAAD+/w8AAAABAAEAAAD//w8AAAABAAEAAAD//xAAAAABAAIAAAD+/xAAAAABAAIAAAD9/xAAAAABAAIAAAD8/xAAAAABAAIAAAD7/xAAAAABAAIAAAD6/xAAAAABAAIAAAD5/xAAAAABAAIAAAD4/xAAAAABAAIAAAD3/xAAAAABAAIAAAD2/xAAAAABAAIAAAD1/xAAAAABAAIAAAD0/xAAAAABAAIAAADz/xAAAAABAAIAAADy/xAAAAABAAIAAADx/xAAAAABAAIAAADw/xAAAAABAAIAAADv/xAAAAABAAIAAADu/xAAAAABAAIAAADt/xAAAAABAAIAAADs/xAAAAABAAIAAADr/xAAAAABAAIAAAAAABAAAAABAAIAAADn/wwAAAABAAEAAADo/wwAAAABAAEAAADp/wwAAAABAAEAAADq/wwAAAABAAEAAADr/wwAAAABAAEAAADs/wwAAAABAAEAAADt/wwAAAABAAEAAADu/wwAAAABAAEAAADv/wwAAAABAAEAAADw/wwAAAABAAEAAADx/wwAAAABAAEAAADy/wwAAAABAAEAAADz/wwAAAABAAEAAAD0/wwAAAABAAEAAAD1/wwAAAABAAEAAAD2/wwAAAABAAEAAAD3/wwAAAABAAEAAAAAAA8AAAABAAEAAAAAAA4AAAABAAEAAAAAAA0AAAABAAEAAAAAAAwAAAABAAEAAAD//wwAAAABAAEAAAD+/wwAAAABAAEAAAD9/wwAAAABAAEAAAD8/wwAAAABAAEAAAD7/wwAAAABAAEAAAD6/wwAAAABAAEAAAD5/wwAAAABAAEAAAD4/wwAAAABAAEAAAD4/w0AAAABAAEAAAD3/w0AAAABAAEAAAD2/w0AAAABAAEAAAD1/w0AAAABAAEAAAD0/w0AAAABAAEAAADz/w0AAAABAAEAAADy/w0AAAABAAEAAADx/w0AAAABAAEAAADw/w0AAAABAAEAAADv/w0AAAABAAEAAADu/w0AAAABAAEAAADt/w0AAAABAAEAAADs/w0AAAABAAEAAADr/w0AAAABAAEAAADq/w0AAAABAAEAAADp/w0AAAABAAEAAADo/w0AAAABAAEAAADn/w0AAAABAAEAAADn/w4AAAABAAEAAADn/w8AAAABAAEAAADo/w8AAAABAAEAAADo/w4AAAABAAEAAADp/w4AAAABAAEAAADp/w8AAAABAAEAAADq/w8AAAABAAEAAADq/w4AAAABAAEAAADr/w4AAAABAAEAAADs/w4AAAABAAEAAADt/w4AAAABAAEAAADu/w4AAAABAAEAAADv/w4AAAABAAEAAADw/w4AAAABAAEAAADx/w4AAAABAAEAAADy/w4AAAABAAEAAADz/w4AAAABAAEAAAD0/w4AAAABAAEAAAD1/w4AAAABAAEAAAD2/w4AAAABAAEAAAD3/w4AAAABAAEAAAD4/w4AAAABAAEAAAD5/w4AAAABAAEAAAD5/w0AAAABAAEAAAD6/w0AAAABAAEAAAD6/w4AAAABAAEAAAD7/w4AAAABAAEAAAD7/w0AAAABAAEAAAD8/w0AAAABAAEAAAD8/w4AAAABAAEAAAD9/w4AAAABAAEAAAD9/w0AAAABAAEAAAD+/w0AAAABAAEAAAD+/w4AAAABAAEAAAD//w4AAAABAAEAAAD//w0AAAABAAEAAAA=")
+tile_set = SubResource("TileSet_x0xvm")
+
 [node name="flower" type="Sprite2D" parent="Environment/-2"]
 visible = false
 position = Vector2(-2150, 1167.5)
@@ -143,6 +150,14 @@ texture = ExtResource("2_wrbqh")
 position = Vector2(-3070.0002, 925.00006)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("5_pu6vg")
+
+[node name="Branch1" type="Sprite2D" parent="Environment/-2"]
+position = Vector2(1119.5, 1146.25)
+texture = ExtResource("8_ri0r0")
+
+[node name="Stump1" type="Sprite2D" parent="Environment/-2"]
+position = Vector2(2032.5, 1152.5)
+texture = ExtResource("7_l1bwd")
 
 [node name="-1" type="CanvasLayer" parent="Environment"]
 layer = -1
@@ -185,6 +200,11 @@ z_index = -1
 position = Vector2(-3108.182, 1269.0908)
 scale = Vector2(0.76828086, 0.8472644)
 texture = ExtResource("4_hgdgd")
+
+[node name="Branch1" type="Sprite2D" parent="Environment/1"]
+position = Vector2(-4.545454, 1277.2727)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("8_ri0r0")
 
 [node name="2" type="CanvasLayer" parent="Environment"]
 layer = 2
