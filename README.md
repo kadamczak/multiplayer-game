@@ -1,4 +1,4 @@
-# Multiplayer Dragon Game
+# Barvon - Multiplayer Game
 
 A small 2D MMO game built with Godot where you play as a dragon. Explore the world, customize your character, and trade with other players.
 
