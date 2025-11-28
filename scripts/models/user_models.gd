@@ -133,6 +133,7 @@ class ReadUserCustomizationResponse:
 	var horn_type: int
 	var markings_type: int
 	
+	
 	func _init(data: Dictionary = {}) -> void:
 		head_color = Color(data.get("headColor"))
 		body_color = Color(data.get("bodyColor"))
