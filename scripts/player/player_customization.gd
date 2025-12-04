@@ -32,6 +32,23 @@ func _ready() -> void:
 
 
 func _set_default_customization() -> void:
+	
+	var equipped_head_user_item = ClientNetworkGlobals.user_items.filter(func(user_item: ItemModels.ReadUserItemResponse) -> bool:
+		return user_item.id == ClientNetworkGlobals.customization.equipped_head_user_item_id).front()
+
+	var equipped_head_item_id = equipped_head_user_item.item.id if equipped_head_user_item != null else 0
+
+	var equipped_body_user_item = ClientNetworkGlobals.user_items.filter(func(user_item: ItemModels.ReadUserItemResponse) -> bool:
+		return user_item.id == ClientNetworkGlobals.customization.equipped_body_user_item_id).front()
+
+	var equipped_body_item_id = equipped_body_user_item.item.id if equipped_body_user_item != null else 0
+
+	print("Head User Item ID: " + str(ClientNetworkGlobals.customization.equipped_head_user_item_id))
+	print("Body User Item ID: " + str(ClientNetworkGlobals.customization.equipped_body_user_item_id))
+
+	print("Equipped Head Item ID: " + str(equipped_head_item_id))
+	print("Equipped Body Item ID: " + str(equipped_body_item_id))
+
 	active_player_customization = {
 		"Head": Part.new("Head", player, ClientNetworkGlobals.customization.head_type, ClientNetworkGlobals.customization.head_color),
 		"Body": Part.new("Body", player, ClientNetworkGlobals.customization.body_type, ClientNetworkGlobals.customization.body_color),
@@ -39,7 +56,9 @@ func _set_default_customization() -> void:
 		"Tail": Part.new("Tail", player, ClientNetworkGlobals.customization.tail_type, ClientNetworkGlobals.customization.tail_color),
 		"Wings": Part.new("Wings", player, ClientNetworkGlobals.customization.wing_type, ClientNetworkGlobals.customization.wing_color),
 		"Horns": Part.new("Horns", player, ClientNetworkGlobals.customization.horn_type, ClientNetworkGlobals.customization.horn_color),
-		"Markings": Part.new("Markings", player, ClientNetworkGlobals.customization.markings_type, ClientNetworkGlobals.customization.markings_color)
+		"Markings": Part.new("Markings", player, ClientNetworkGlobals.customization.markings_type, ClientNetworkGlobals.customization.markings_color),
+		"Head_Item": Part.new("Head_Item", player, equipped_head_item_id, Color.WHITE),
+		"Body_Item": Part.new("Body_Item", player, equipped_body_item_id, Color.WHITE),
 	}
 
 
@@ -66,5 +85,3 @@ func _change_part_visibility(part: Part, is_visible: bool) -> void:
 
 func _change_part_texture(part: Part):
 	part.node.texture = CustomizationConstants.textures[part.name][part.line_type]
-
-

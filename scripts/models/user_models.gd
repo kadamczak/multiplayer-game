@@ -51,6 +51,7 @@ class ReadUserGameInfoResponse:
 			customization = ReadUserCustomizationResponse.new()
 
 		var user_items_data = data.get("userItems", [])
+
 		if user_items_data is Array:
 			for item_data in user_items_data:
 				if item_data is Dictionary:
