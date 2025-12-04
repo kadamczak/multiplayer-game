@@ -35,7 +35,7 @@ class ReadUserGameInfoResponse:
 	var user_name: String
 	var balance: int
 	var customization: ReadUserCustomizationResponse
-	var user_items: Array[ItemModels.ReadUserItemSimplifiedResponse] = []
+	var user_items: Array[ItemModels.ReadUserItemResponse] = []
 	
 	func _init(data: Dictionary = {}) -> void:
 		account_guid = data.get("id")
@@ -54,13 +54,13 @@ class ReadUserGameInfoResponse:
 		if user_items_data is Array:
 			for item_data in user_items_data:
 				if item_data is Dictionary:
-					user_items.append(ItemModels.ReadUserItemSimplifiedResponse.from_json(item_data))
+					user_items.append(ItemModels.ReadUserItemResponse.from_json(item_data))
 	
 	static func from_json(data: Dictionary) -> ReadUserGameInfoResponse:
 		return ReadUserGameInfoResponse.new(data)
 
 
-class UpdateUserCustomizationRequest:
+class UpdateUserAppearanceRequest:
 	var head_color: String
 	var body_color: String
 	var tail_color: String
@@ -77,22 +77,22 @@ class UpdateUserCustomizationRequest:
 	var horn_type: int
 	var markings_type: int
 
-	func _init(user_customization: Dictionary) -> void:
-		self.head_color = "#" + user_customization["Head"].color.to_html()
-		self.body_color = "#" + user_customization["Body"].color.to_html()
-		self.tail_color = "#" + user_customization["Tail"].color.to_html()
-		self.eye_color = "#" + user_customization["Eyes"].color.to_html()
-		self.wing_color = "#" + user_customization["Wings"].color.to_html()
-		self.horn_color = "#" + user_customization["Horns"].color.to_html()
-		self.markings_color = "#" + user_customization["Markings"].color.to_html()
+	func _init(user_appearance: Dictionary) -> void:
+		self.head_color = "#" + user_appearance["Head"].color.to_html()
+		self.body_color = "#" + user_appearance["Body"].color.to_html()
+		self.tail_color = "#" + user_appearance["Tail"].color.to_html()
+		self.eye_color = "#" + user_appearance["Eyes"].color.to_html()
+		self.wing_color = "#" + user_appearance["Wings"].color.to_html()
+		self.horn_color = "#" + user_appearance["Horns"].color.to_html()
+		self.markings_color = "#" + user_appearance["Markings"].color.to_html()
 
-		self.head_type = user_customization["Head"].line_type
-		self.body_type = user_customization["Body"].line_type
-		self.tail_type = user_customization["Tail"].line_type
-		self.eye_type = user_customization["Eyes"].line_type
-		self.wing_type = user_customization["Wings"].line_type
-		self.horn_type = user_customization["Horns"].line_type
-		self.markings_type = user_customization["Markings"].line_type
+		self.head_type = user_appearance["Head"].line_type
+		self.body_type = user_appearance["Body"].line_type
+		self.tail_type = user_appearance["Tail"].line_type
+		self.eye_type = user_appearance["Eyes"].line_type
+		self.wing_type = user_appearance["Wings"].line_type
+		self.horn_type = user_appearance["Horns"].line_type
+		self.markings_type = user_appearance["Markings"].line_type
 		
 
 	func to_json() -> Dictionary:
@@ -133,6 +133,8 @@ class ReadUserCustomizationResponse:
 	var horn_type: int
 	var markings_type: int
 	
+	var equipped_head_user_item_id: String
+	var equipped_body_user_item_id: String
 	
 	func _init(data: Dictionary = {}) -> void:
 		head_color = Color(data.get("headColor"))
@@ -150,6 +152,11 @@ class ReadUserCustomizationResponse:
 		wing_type = data.get("wingType")
 		horn_type = data.get("hornType")
 		markings_type = data.get("markingsType")
+
+		equipped_head_user_item_id = data.get("equippedHeadUserItemId")
+		equipped_body_user_item_id = data.get("equippedBodyUserItemId")
+
+
 
 	static func from_json(data: Dictionary) -> ReadUserCustomizationResponse:
 		return ReadUserCustomizationResponse.new(data)

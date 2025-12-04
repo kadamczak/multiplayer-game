@@ -83,6 +83,7 @@ func _successfully_log_in(user_info: UserModels.ReadUserGameInfoResponse) -> voi
 	ClientNetworkGlobals.username = user_info.user_name
 	ClientNetworkGlobals.balance = user_info.balance
 	ClientNetworkGlobals.customization = user_info.customization
+	ClientNetworkGlobals.user_items = user_info.user_items
 	
 	if ClientNetworkGlobals.customization == null:
 		pass #todo

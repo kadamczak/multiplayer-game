@@ -9,8 +9,8 @@ static func get_user_game_info() -> Dictionary:
 		UserModels.ReadUserGameInfoResponse.from_json
 	)
 	
-static func update_user_customization(
-	request: UserModels.UpdateUserCustomizationRequest
+static func update_user_appearance(
+	request: UserModels.UpdateUserAppearanceRequest
 ) -> Dictionary:
 	var body: String = JSON.stringify(request.to_json())
 

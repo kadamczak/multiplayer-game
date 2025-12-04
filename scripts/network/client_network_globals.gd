@@ -18,6 +18,8 @@ var player_usernames: Dictionary = {} # id -> username mapping
 var customization: UserModels.ReadUserCustomizationResponse
 var player_customizations: Dictionary = {} # id -> PlayerCustomizationPacket mapping
 
+var user_items: Array[ItemModels.ReadUserItemResponse] = []
+
 var current_scene: String = ""
 var previous_scene: String = ""  # Track where local player came from
 var player_scenes: Dictionary = {} # id -> scene_path mapping

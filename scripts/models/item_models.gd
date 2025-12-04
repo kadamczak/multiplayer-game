@@ -59,12 +59,16 @@ class ReadItemResponse:
 		return ReadItemResponse.new(data)
 
 
-class ReadUserItemSimplifiedResponse:
+class ReadUserItemResponse:
 	var id: String
 	var item: ReadItemResponse
+	var activeOfferId: Variant = null
+	var activeOfferPrice: Variant = null
 
 	func _init(data: Dictionary = {}) -> void:
 		id = data.get("id")
+		activeOfferId = data.get("activeOfferId")
+		activeOfferPrice = data.get("activeOfferPrice")
 
 		var item_data = data.get("item")
 		if item_data == null:
@@ -74,5 +78,5 @@ class ReadUserItemSimplifiedResponse:
 		else:
 			item = ReadItemResponse.new()
 
-	static func from_json(data: Dictionary) -> ReadUserItemSimplifiedResponse:
-		return ReadUserItemSimplifiedResponse.new(data)
+	static func from_json(data: Dictionary) -> ReadUserItemResponse:
+		return ReadUserItemResponse.new(data)

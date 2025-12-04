@@ -153,8 +153,8 @@ func _sync_locked_colors(color: Color, source_part: String) -> void:
 
 
 func _on_apply_pressed() -> void:	
-	var applied_customization = UserModels.UpdateUserCustomizationRequest.new(customization.active_player_customization)
-	var response = await UserAPI.update_user_customization(applied_customization)
+	var applied_customization = UserModels.UpdateUserAppearanceRequest.new(customization.active_player_customization)
+	var response = await UserAPI.update_user_appearance(applied_customization)
 	
 	if response.success:
 		hide_ui()
