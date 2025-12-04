@@ -363,6 +363,7 @@ texture = ExtResource("11_rh7eq")
 texture = ExtResource("13_0m5l2")
 
 [node name="Head_Item" type="Sprite2D" parent="Sprite"]
+position = Vector2(1, 0)
 
 [node name="Body_Item" type="Sprite2D" parent="Sprite"]
 
