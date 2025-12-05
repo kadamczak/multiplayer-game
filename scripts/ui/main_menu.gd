@@ -225,10 +225,29 @@ func _equip_item(user_item_id: String, slot: String) -> void:
 	# TODO: Call API to equip item
 	DebugLogger.log("Equipping item %s in %s slot" % [user_item_id, slot])
 	
+	# Find the user item to get the actual item ID
+	var user_item = ClientNetworkGlobals.user_items.filter(func(item):
+		return item.id == user_item_id).front()
+	
+	if not user_item:
+		return
+	
+	var item_id = user_item.item.id
+	
 	if slot == "head":
 		ClientNetworkGlobals.customization.equipped_head_user_item_id = user_item_id
+		# Apply customization to local player
+		var player_customization = _get_local_player_customization()
+		if player_customization:
+			player_customization.active_player_customization["Head_Item"].line_type = item_id
+			player_customization.apply_customization(player_customization.active_player_customization["Head_Item"])
 	elif slot == "body":
 		ClientNetworkGlobals.customization.equipped_body_user_item_id = user_item_id
+		# Apply customization to local player
+		var player_customization = _get_local_player_customization()
+		if player_customization:
+			player_customization.active_player_customization["Body_Item"].line_type = item_id
+			player_customization.apply_customization(player_customization.active_player_customization["Body_Item"])
 	
 	_update_equipment_slots()
 	_refresh_items_list()
@@ -240,11 +259,43 @@ func _unequip_item(slot: String) -> void:
 	
 	if slot == "head":
 		ClientNetworkGlobals.customization.equipped_head_user_item_id = ""
+		# Remove item customization from local player
+		var player_customization = _get_local_player_customization()
+		if player_customization:
+			player_customization.active_player_customization["Head_Item"].line_type = 0
+			player_customization.apply_customization(player_customization.active_player_customization["Head_Item"])
 	elif slot == "body":
 		ClientNetworkGlobals.customization.equipped_body_user_item_id = ""
+		# Remove item customization from local player
+		var player_customization = _get_local_player_customization()
+		if player_customization:
+			player_customization.active_player_customization["Body_Item"].line_type = 0
+			player_customization.apply_customization(player_customization.active_player_customization["Body_Item"])
 	
 	_update_equipment_slots()
 	_refresh_items_list()
+
+
+func _get_local_player_customization() -> PlayerCustomization:
+	# Find the Players container in the current scene
+	var scene_root = get_tree().current_scene
+	if not scene_root:
+		return null
+	
+	var player_container = scene_root.find_child("Players", false, false)
+	if not player_container:
+		return null
+	
+	# Get the local player using the client's ID
+	var local_player = player_container.get_node_or_null(str(ClientNetworkGlobals.id))
+	if not local_player:
+		return null
+	
+	var player_customization = local_player.get_node_or_null("PlayerCustomization")
+	if player_customization:
+		return player_customization as PlayerCustomization
+	
+	return null
 
 
 func _refresh_items_list() -> void:
