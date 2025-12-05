@@ -5,6 +5,13 @@ signal logout_clicked()
 
 const USER_ITEM_DISPLAY = preload("res://scenes/ui/user_item_display.tscn")
 
+enum EquipmentSlot { HEAD_ITEM, BODY_ITEM }
+
+const CUSTOMIZATION_PARTS = {
+	EquipmentSlot.HEAD_ITEM: "Head_Item",
+	EquipmentSlot.BODY_ITEM: "Body_Item"
+}
+
 @onready var menu_panel = $MenuPanel
 @onready var user_details_button = $MenuPanel/MarginContainer/VBoxContainer/UserDetailsButton
 @onready var items_button = $MenuPanel/MarginContainer/VBoxContainer/ItemsButton
@@ -181,99 +188,107 @@ func _on_items_back_pressed() -> void:
 
 
 func _update_equipment_slots() -> void:
-	# Update head slot
-	var head_item = ClientNetworkGlobals.user_items.filter(func(item):
-		return item.id == ClientNetworkGlobals.customization.equipped_head_user_item_id).front()
+	_update_slot_label(EquipmentSlot.HEAD_ITEM, head_slot_label)
+	_update_slot_label(EquipmentSlot.BODY_ITEM, body_slot_label)
+
+
+func _update_slot_label(slot: EquipmentSlot, label: Label) -> void:
+	var equipped_id = _get_equipped_item_id(slot)
+	var user_item = _find_user_item_by_id(equipped_id)
 	
-	if head_item:
-		head_slot_label.text = head_item.item.name
+	if user_item:
+		label.text = user_item.item.name
 	else:
-		head_slot_label.text = "Empty"
+		label.text = "Empty"
+
+
+func _get_equipped_item_id(slot: EquipmentSlot) -> String:
+	match slot:
+		EquipmentSlot.HEAD_ITEM:
+			return ClientNetworkGlobals.customization.equipped_head_user_item_id
+		EquipmentSlot.BODY_ITEM:
+			return ClientNetworkGlobals.customization.equipped_body_user_item_id
+		_:
+			return ""
+
+
+func _set_equipped_item_id(slot: EquipmentSlot, item_id: String) -> void:
+	match slot:
+		EquipmentSlot.HEAD_ITEM:
+			ClientNetworkGlobals.customization.equipped_head_user_item_id = item_id
+		EquipmentSlot.BODY_ITEM:
+			ClientNetworkGlobals.customization.equipped_body_user_item_id = item_id
+
+
+func _find_user_item_by_id(user_item_id: String) -> ItemModels.ReadUserItemResponse:
+	if user_item_id.is_empty():
+		return null
 	
-	# Update body slot
-	var body_item = ClientNetworkGlobals.user_items.filter(func(item):
-		return item.id == ClientNetworkGlobals.customization.equipped_body_user_item_id).front()
-	
-	if body_item:
-		body_slot_label.text = body_item.item.name
-	else:
-		body_slot_label.text = "Empty"
+	return ClientNetworkGlobals.user_items.filter(func(item):
+		return item.id == user_item_id).front()
 
 
 func _on_item_right_clicked(user_item: ItemModels.ReadUserItemResponse) -> void:
-	var item_type = user_item.item.type
-	
-	if item_type == "EquippableOnHead":
-		_equip_item(user_item.id, "head")
-	elif item_type == "EquippableOnBody":
-		_equip_item(user_item.id, "body")
+	var slot = _get_slot_for_item_type(user_item.item.type)
+	if slot != null:
+		_equip_item(user_item.id, slot)
+
+
+func _get_slot_for_item_type(item_type: String) -> Variant:
+	match item_type:
+		"EquippableOnHead":
+			return EquipmentSlot.HEAD_ITEM
+		"EquippableOnBody":
+			return EquipmentSlot.BODY_ITEM
+		_:
+			return null
 
 
 func _on_head_slot_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			_unequip_item("head")
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		_unequip_item(EquipmentSlot.HEAD_ITEM)
 
 
 func _on_body_slot_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			_unequip_item("body")
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		_unequip_item(EquipmentSlot.BODY_ITEM)
 
 
-func _equip_item(user_item_id: String, slot: String) -> void:
+func _equip_item(user_item_id: String, slot: EquipmentSlot) -> void:
 	# TODO: Call API to equip item
-	DebugLogger.log("Equipping item %s in %s slot" % [user_item_id, slot])
 	
-	# Find the user item to get the actual item ID
-	var user_item = ClientNetworkGlobals.user_items.filter(func(item):
-		return item.id == user_item_id).front()
-	
+	var user_item = _find_user_item_by_id(user_item_id)
 	if not user_item:
+		DebugLogger.log("Failed to find user item %s" % user_item_id)
 		return
 	
 	var item_id = user_item.item.id
-	
-	if slot == "head":
-		ClientNetworkGlobals.customization.equipped_head_user_item_id = user_item_id
-		# Apply customization to local player
-		var player_customization = _get_local_player_customization()
-		if player_customization:
-			player_customization.active_player_customization["Head_Item"].line_type = item_id
-			player_customization.apply_customization(player_customization.active_player_customization["Head_Item"])
-	elif slot == "body":
-		ClientNetworkGlobals.customization.equipped_body_user_item_id = user_item_id
-		# Apply customization to local player
-		var player_customization = _get_local_player_customization()
-		if player_customization:
-			player_customization.active_player_customization["Body_Item"].line_type = item_id
-			player_customization.apply_customization(player_customization.active_player_customization["Body_Item"])
-	
+	_set_equipped_item_id(slot, user_item_id)
+	_apply_item_to_player(slot, item_id)
 	_update_equipment_slots()
 	_refresh_items_list()
 
 
-func _unequip_item(slot: String) -> void:
+func _unequip_item(slot: EquipmentSlot) -> void:
 	# TODO: Call API to unequip item
-	DebugLogger.log("Unequipping %s slot" % slot)
 	
-	if slot == "head":
-		ClientNetworkGlobals.customization.equipped_head_user_item_id = ""
-		# Remove item customization from local player
-		var player_customization = _get_local_player_customization()
-		if player_customization:
-			player_customization.active_player_customization["Head_Item"].line_type = 0
-			player_customization.apply_customization(player_customization.active_player_customization["Head_Item"])
-	elif slot == "body":
-		ClientNetworkGlobals.customization.equipped_body_user_item_id = ""
-		# Remove item customization from local player
-		var player_customization = _get_local_player_customization()
-		if player_customization:
-			player_customization.active_player_customization["Body_Item"].line_type = 0
-			player_customization.apply_customization(player_customization.active_player_customization["Body_Item"])
-	
+	_set_equipped_item_id(slot, "")
+	_apply_item_to_player(slot, 0)
 	_update_equipment_slots()
 	_refresh_items_list()
+
+
+func _apply_item_to_player(slot: EquipmentSlot, item_id: int) -> void:
+	var player_customization = _get_local_player_customization()
+	if not player_customization:
+		DebugLogger.log("Failed to get player customization")
+		return
+	
+	var part_name = CUSTOMIZATION_PARTS[slot]
+	var part = player_customization.active_player_customization.get(part_name)
+	if part:
+		part.line_type = item_id
+		player_customization.apply_customization(part)
 
 
 func _get_local_player_customization() -> PlayerCustomization:
