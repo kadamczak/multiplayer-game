@@ -32,8 +32,8 @@ func _ready() -> void:
 
 
 func _set_default_customization() -> void:
-	var equipped_head_item_id = _get_equipped_item_id(ClientNetworkGlobals.customization.equipped_head_user_item_id)
-	var equipped_body_item_id = _get_equipped_item_id(ClientNetworkGlobals.customization.equipped_body_user_item_id)
+	var equipped_head_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(ClientNetworkGlobals.customization.equipped_head_user_item_id)
+	var equipped_body_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(ClientNetworkGlobals.customization.equipped_body_user_item_id)
 
 	active_player_customization = {
 		"Head": Part.new("Head", player, ClientNetworkGlobals.customization.head_type, ClientNetworkGlobals.customization.head_color),
@@ -46,13 +46,6 @@ func _set_default_customization() -> void:
 		"Head_Item": Part.new("Head_Item", player, equipped_head_item_id, Color.WHITE),
 		"Body_Item": Part.new("Body_Item", player, equipped_body_item_id, Color.WHITE),
 	}
-
-
-func _get_equipped_item_id(user_item_id: Variant) -> int:
-	var user_item = ClientNetworkGlobals.user_items.filter(func(item: ItemModels.ReadUserItemResponse) -> bool:
-		return item.id == user_item_id).front()
-	
-	return user_item.item.id if user_item != null else 0
 
 
 func apply_all_customization() -> void:

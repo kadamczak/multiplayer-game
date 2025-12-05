@@ -98,3 +98,16 @@ func reset() -> void:
 	player_customizations = {}
 	is_movement_blocking_ui_active = false
 	balance = 0
+
+
+func find_user_item_by_id(user_item_id: String) -> ItemModels.ReadUserItemResponse:
+	if user_item_id.is_empty():
+		return null
+	
+	return ClientNetworkGlobals.user_items.filter(func(item):
+		return item.id == user_item_id).front()
+
+
+func find_item_id_by_user_item_id(user_item_id: String) -> int:
+	var user_item = find_user_item_by_id(user_item_id)
+	return user_item.item.id if user_item != null else 0

@@ -13,17 +13,19 @@ const CUSTOMIZATION_PARTS = {
 
 @onready var items_container = $MarginContainer/VBoxContainer/ContentHBox/ItemsScrollContainer/ItemsContainer
 @onready var back_button = $MarginContainer/VBoxContainer/BackButton
+
 @onready var head_slot = $MarginContainer/VBoxContainer/ContentHBox/EquipmentPanel/HeadSlot
 @onready var head_slot_label = $MarginContainer/VBoxContainer/ContentHBox/EquipmentPanel/HeadSlot/MarginContainer/VBoxContainer/ItemLabel
+
 @onready var body_slot = $MarginContainer/VBoxContainer/ContentHBox/EquipmentPanel/BodySlot
 @onready var body_slot_label = $MarginContainer/VBoxContainer/ContentHBox/EquipmentPanel/BodySlot/MarginContainer/VBoxContainer/ItemLabel
 
 
 func _ready() -> void:
 	back_button.pressed.connect(_on_back_pressed)
-	back_button.focus_mode = Control.FOCUS_ALL
 	head_slot.gui_input.connect(_on_head_slot_gui_input)
 	body_slot.gui_input.connect(_on_body_slot_gui_input)
+	back_button.focus_mode = Control.FOCUS_ALL
 	hide()
 
 
@@ -42,6 +44,11 @@ func _on_back_pressed() -> void:
 func _clear_items() -> void:
 	for child in items_container.get_children():
 		child.queue_free()
+
+
+func _update_equipment_slots() -> void:
+	_update_slot_label(EquipmentSlot.HEAD_ITEM, head_slot_label)
+	_update_slot_label(EquipmentSlot.BODY_ITEM, body_slot_label)
 
 
 func _display_items() -> void:
@@ -65,14 +72,9 @@ func _display_items() -> void:
 			item_display.item_right_clicked.connect(_on_item_right_clicked.bind(user_item))
 
 
-func _update_equipment_slots() -> void:
-	_update_slot_label(EquipmentSlot.HEAD_ITEM, head_slot_label)
-	_update_slot_label(EquipmentSlot.BODY_ITEM, body_slot_label)
-
-
 func _update_slot_label(slot: EquipmentSlot, label: Label) -> void:
 	var equipped_id = _get_equipped_item_id(slot)
-	var user_item = _find_user_item_by_id(equipped_id)
+	var user_item = ClientNetworkGlobals.find_user_item_by_id(equipped_id)
 	
 	if user_item:
 		label.text = user_item.item.name
@@ -96,14 +98,6 @@ func _set_equipped_item_id(slot: EquipmentSlot, item_id: String) -> void:
 			ClientNetworkGlobals.customization.equipped_head_user_item_id = item_id
 		EquipmentSlot.BODY_ITEM:
 			ClientNetworkGlobals.customization.equipped_body_user_item_id = item_id
-
-
-func _find_user_item_by_id(user_item_id: String) -> ItemModels.ReadUserItemResponse:
-	if user_item_id.is_empty():
-		return null
-	
-	return ClientNetworkGlobals.user_items.filter(func(item):
-		return item.id == user_item_id).front()
 
 
 func _on_item_right_clicked(user_item: ItemModels.ReadUserItemResponse) -> void:
@@ -135,7 +129,7 @@ func _on_body_slot_gui_input(event: InputEvent) -> void:
 func _equip_item(user_item_id: String, slot: EquipmentSlot) -> void:
 	# TODO: Call API to equip item
 	
-	var user_item = _find_user_item_by_id(user_item_id)
+	var user_item = ClientNetworkGlobals.find_user_item_by_id(user_item_id)
 	if not user_item:
 		DebugLogger.log("Failed to find user item %s" % user_item_id)
 		return
