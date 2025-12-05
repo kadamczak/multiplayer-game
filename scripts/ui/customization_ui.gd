@@ -81,7 +81,9 @@ func show_ui(player_customization: PlayerCustomization) -> void:
 	for part_name in customization.active_player_customization:
 		var part = customization.active_player_customization[part_name]	
 		_save_original_part(part)
-		_set_color_picker_value(part)
+
+		if part_name in color_pickers:
+			_set_color_picker_value(part)
 		
 	_select_line_type_button("Wings")
 	_select_line_type_button("Horns")
