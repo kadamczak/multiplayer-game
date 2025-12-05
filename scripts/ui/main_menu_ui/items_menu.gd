@@ -76,7 +76,7 @@ func _is_equipped(user_item: ItemModels.ReadUserItemResponse) -> bool:
 
 
 func _update_slot_label(slot: EquipmentSlot, label: Label) -> void:
-	var equipped_user_item_id = _get_equipped_item_id(slot)
+	var equipped_user_item_id = _get_equipped_user_item_id(slot)
 	var user_item = ClientNetworkGlobals.find_user_item_by_id(equipped_user_item_id)
 	
 	if user_item:
@@ -85,7 +85,7 @@ func _update_slot_label(slot: EquipmentSlot, label: Label) -> void:
 		label.text = "Empty"
 
 
-func _get_equipped_item_id(slot: EquipmentSlot) -> Variant:
+func _get_equipped_user_item_id(slot: EquipmentSlot) -> Variant:
 	match slot:
 		EquipmentSlot.HEAD_ITEM:
 			return ClientNetworkGlobals.customization.equipped_head_user_item_id
@@ -95,7 +95,7 @@ func _get_equipped_item_id(slot: EquipmentSlot) -> Variant:
 			return null
 
 
-func _set_equipped_item_id(slot: EquipmentSlot, item_id: Variant) -> void:
+func _set_equipped_user_item_id(slot: EquipmentSlot, item_id: Variant) -> void:
 	match slot:
 		EquipmentSlot.HEAD_ITEM:
 			ClientNetworkGlobals.customization.equipped_head_user_item_id = item_id
@@ -135,7 +135,7 @@ func _equip_item(user_item_id: String, slot: EquipmentSlot) -> void:
 		DebugLogger.log("Failed to find user item %s" % user_item_id)
 		return
 	
-	_set_equipped_item_id(slot, user_item_id)
+	_set_equipped_user_item_id(slot, user_item_id)
 	
 	var request = UserModels.UpdateUserEquippedItemsRequest.new(
 		ClientNetworkGlobals.customization.equipped_head_user_item_id,
@@ -156,7 +156,7 @@ func _equip_item(user_item_id: String, slot: EquipmentSlot) -> void:
 
 
 func _unequip_item(slot: EquipmentSlot) -> void:
-	_set_equipped_item_id(slot, null)
+	_set_equipped_user_item_id(slot, null)
 	
 	var request = UserModels.UpdateUserEquippedItemsRequest.new(
 		ClientNetworkGlobals.customization.equipped_head_user_item_id,
