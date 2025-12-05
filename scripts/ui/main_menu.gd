@@ -3,6 +3,8 @@ extends CanvasLayer
 signal user_details_clicked()
 signal logout_clicked()
 
+const USER_ITEM_DISPLAY = preload("res://scenes/ui/user_item_display.tscn")
+
 @onready var menu_panel = $MenuPanel
 @onready var user_details_button = $MenuPanel/MarginContainer/VBoxContainer/UserDetailsButton
 @onready var items_button = $MenuPanel/MarginContainer/VBoxContainer/ItemsButton
@@ -138,46 +140,9 @@ func show_items() -> void:
 		items_container.add_child(no_items_label)
 	else:
 		for user_item in ClientNetworkGlobals.user_items:
-			var item_panel = Panel.new()
-			item_panel.custom_minimum_size = Vector2(0, 80)
-			
-			var margin = MarginContainer.new()
-			margin.add_theme_constant_override("margin_left", 10)
-			margin.add_theme_constant_override("margin_top", 10)
-			margin.add_theme_constant_override("margin_right", 10)
-			margin.add_theme_constant_override("margin_bottom", 10)
-			item_panel.add_child(margin)
-			
-			var vbox = VBoxContainer.new()
-			margin.add_child(vbox)
-			
-			var name_label = Label.new()
-			name_label.text = user_item.item.name
-			name_label.add_theme_font_size_override("font_size", 20)
-			name_label.add_theme_color_override("font_color", Color(1, 0.84, 0))
-			vbox.add_child(name_label)
-			
-			var type_label = Label.new()
-			type_label.text = ItemModels.type_string_to_display(user_item.item.type)
-			type_label.add_theme_font_size_override("font_size", 16)
-			vbox.add_child(type_label)
-			
-			var desc_label = Label.new()
-			desc_label.text = user_item.item.description
-			desc_label.add_theme_font_size_override("font_size", 14)
-			desc_label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
-			desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			vbox.add_child(desc_label)
-			
-			# Display offer status if item has an active offer
-			if user_item.activeOfferId != null:
-				var offer_label = Label.new()
-				offer_label.text = "Awaiting trade for %d Gems" % user_item.activeOfferPrice
-				offer_label.add_theme_font_size_override("font_size", 16)
-				offer_label.add_theme_color_override("font_color", Color(0.4, 0.8, 1))
-				vbox.add_child(offer_label)
-			
-			items_container.add_child(item_panel)
+			var item_display = USER_ITEM_DISPLAY.instantiate()
+			items_container.add_child(item_display)
+			item_display.setup(user_item)
 	
 	items_back_button.call_deferred("grab_focus")
 
