@@ -117,6 +117,21 @@ class UpdateUserAppearanceRequest:
 
 
 
+class UpdateUserEquippedItemsRequest:
+	var equipped_head_user_item_id: Variant
+	var equipped_body_user_item_id: Variant
+	
+	func _init(head_item_id: Variant, body_item_id: Variant) -> void:
+		equipped_head_user_item_id = head_item_id
+		equipped_body_user_item_id = body_item_id
+	
+	func to_json() -> Dictionary:
+		return {
+			"equippedHeadUserItemId": equipped_head_user_item_id,
+			"equippedBodyUserItemId": equipped_body_user_item_id
+		}
+
+
 class ReadUserCustomizationResponse:
 	var head_color: Color
 	var body_color: Color
@@ -134,8 +149,8 @@ class ReadUserCustomizationResponse:
 	var horn_type: int
 	var markings_type: int
 	
-	var equipped_head_user_item_id: String
-	var equipped_body_user_item_id: String
+	var equipped_head_user_item_id: Variant
+	var equipped_body_user_item_id: Variant
 	
 	func _init(data: Dictionary = {}) -> void:
 		head_color = Color(data.get("headColor"))

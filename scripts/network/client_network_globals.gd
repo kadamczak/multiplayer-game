@@ -122,14 +122,14 @@ func get_local_player(scene_root: Node) -> CharacterBody2D:
 	return local_player as CharacterBody2D
 
 
-func find_user_item_by_id(user_item_id: String) -> ItemModels.ReadUserItemResponse:
-	if user_item_id.is_empty():
+func find_user_item_by_id(user_item_id: Variant) -> ItemModels.ReadUserItemResponse:
+	if user_item_id == null or (user_item_id is String and user_item_id.is_empty()):
 		return null
 	
 	return ClientNetworkGlobals.user_items.filter(func(item):
 		return item.id == user_item_id).front()
 
 
-func find_item_id_by_user_item_id(user_item_id: String) -> int:
+func find_item_id_by_user_item_id(user_item_id: Variant) -> int:
 	var user_item = find_user_item_by_id(user_item_id)
 	return user_item.item.id if user_item != null else 0

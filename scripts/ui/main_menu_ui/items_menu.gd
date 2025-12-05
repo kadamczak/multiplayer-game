@@ -85,17 +85,17 @@ func _update_slot_label(slot: EquipmentSlot, label: Label) -> void:
 		label.text = "Empty"
 
 
-func _get_equipped_item_id(slot: EquipmentSlot) -> String:
+func _get_equipped_item_id(slot: EquipmentSlot) -> Variant:
 	match slot:
 		EquipmentSlot.HEAD_ITEM:
 			return ClientNetworkGlobals.customization.equipped_head_user_item_id
 		EquipmentSlot.BODY_ITEM:
 			return ClientNetworkGlobals.customization.equipped_body_user_item_id
 		_:
-			return ""
+			return null
 
 
-func _set_equipped_item_id(slot: EquipmentSlot, item_id: String) -> void:
+func _set_equipped_item_id(slot: EquipmentSlot, item_id: Variant) -> void:
 	match slot:
 		EquipmentSlot.HEAD_ITEM:
 			ClientNetworkGlobals.customization.equipped_head_user_item_id = item_id
@@ -130,24 +130,44 @@ func _on_body_slot_gui_input(event: InputEvent) -> void:
 
 
 func _equip_item(user_item_id: String, slot: EquipmentSlot) -> void:
-	# TODO: Call API to equip item
-	
 	var user_item = ClientNetworkGlobals.find_user_item_by_id(user_item_id)
 	if not user_item:
 		DebugLogger.log("Failed to find user item %s" % user_item_id)
 		return
 	
-	var item_id = user_item.item.id
 	_set_equipped_item_id(slot, user_item_id)
+	
+	var request = UserModels.UpdateUserEquippedItemsRequest.new(
+		ClientNetworkGlobals.customization.equipped_head_user_item_id,
+		ClientNetworkGlobals.customization.equipped_body_user_item_id
+	)
+	
+	var result = await UserAPI.update_user_equipped_items(request)
+	
+	if not result.success:
+		DebugLogger.log("Failed to equip item: %s" % result.error_message)
+		return
+	
+	var item_id = user_item.item.id
 	_apply_item_to_player(slot, item_id)
 	_update_equipment_slots()
 	_refresh_items_list()
 
 
 func _unequip_item(slot: EquipmentSlot) -> void:
-	# TODO: Call API to unequip item
+	_set_equipped_item_id(slot, null)
 	
-	_set_equipped_item_id(slot, "")
+	var request = UserModels.UpdateUserEquippedItemsRequest.new(
+		ClientNetworkGlobals.customization.equipped_head_user_item_id,
+		ClientNetworkGlobals.customization.equipped_body_user_item_id
+	)
+	
+	var result = await UserAPI.update_user_equipped_items(request)
+	
+	if not result.success:
+		DebugLogger.log("Failed to unequip item: %s" % result.error_message)
+		return
+	
 	_apply_item_to_player(slot, 0)
 	_update_equipment_slots()
 	_refresh_items_list()
