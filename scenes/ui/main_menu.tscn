@@ -1,8 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c8x4w5olwah"]
+[gd_scene load_steps=4 format=3 uid="uid://dbswe84omss6q"]
 
 [ext_resource type="Script" uid="uid://bj0du1u5lxt75" path="res://scripts/ui/main_menu_ui/main_menu.gd" id="1_main_menu"]
-[ext_resource type="PackedScene" uid="uid://dmkql3y7c1hfy" path="res://scenes/ui/main_menu_ui/user_details_menu.tscn" id="2_user_details_menu"]
-[ext_resource type="PackedScene" uid="uid://crx2jc8bwfn6p" path="res://scenes/ui/main_menu_ui/items_menu.tscn" id="3_items_menu"]
+[ext_resource type="PackedScene" uid="uid://dmkql3y7c1hfy" path="res://scenes/ui/main_menu_ui/user_details_menu.tscn" id="2_user_details"]
+[ext_resource type="PackedScene" uid="uid://crx2jc8bwfn6p" path="res://scenes/ui/main_menu_ui/items_menu.tscn" id="3_items"]
 
 [node name="MainMenu" type="CanvasLayer"]
 layer = 101
@@ -73,6 +73,8 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Close"
 
-[node name="UserDetailsPanel" parent="." instance=ExtResource("2_user_details_menu")]
+[node name="UserDetailsPanel" parent="." instance=ExtResource("2_user_details")]
+visible = false
 
-[node name="ItemsPanel" parent="." instance=ExtResource("3_items_menu")]
+[node name="ItemsPanel" parent="." instance=ExtResource("3_items")]
+visible = false
