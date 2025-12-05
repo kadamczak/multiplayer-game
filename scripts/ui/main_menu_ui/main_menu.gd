@@ -3,7 +3,7 @@ extends CanvasLayer
 signal user_details_clicked()
 signal logout_clicked()
 
-const USER_ITEM_DISPLAY = preload("res://scenes/ui/user_item_display.tscn")
+const USER_ITEM_DISPLAY = preload("res://scenes/ui/main_menu_ui/user_item_display.tscn")
 
 enum EquipmentSlot { HEAD_ITEM, BODY_ITEM }
 

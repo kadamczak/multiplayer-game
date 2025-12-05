@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c8x4w5olwah"]
 
-[ext_resource type="Script" uid="uid://bj0du1u5lxt75" path="res://scripts/ui/main_menu.gd" id="1_main_menu"]
+[ext_resource type="Script" uid="uid://bj0du1u5lxt75" path="res://scripts/ui/main_menu_ui/main_menu.gd" id="1_main_menu"]
 
 [node name="MainMenu" type="CanvasLayer"]
 layer = 101

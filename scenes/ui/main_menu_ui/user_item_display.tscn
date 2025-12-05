@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bx8h5lam3pqr1"]
 
-[ext_resource type="Script" uid="uid://1p6qoh88sfhp" path="res://scripts/ui/user_item_display.gd" id="1_user_item"]
+[ext_resource type="Script" uid="uid://1p6qoh88sfhp" path="res://scripts/ui/main_menu_ui/user_item_display.gd" id="1_user_item"]
 
 [node name="UserItemDisplay" type="Panel"]
 custom_minimum_size = Vector2(0, 100)
