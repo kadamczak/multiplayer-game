@@ -90,14 +90,36 @@ func manage_ids(id_assignment: IDAssignment) -> void:
 func reset() -> void:
 	id = -1
 	account_guid = ""
+
 	username = ""
 	player_usernames = {}
+
+	customization = null
+	player_customizations = {}
+
+	user_items = []
+
 	current_scene = ""
 	previous_scene = ""
 	player_scenes = {}
-	player_customizations = {}
+
 	is_movement_blocking_ui_active = false
 	balance = 0
+
+
+func get_local_player(scene_root: Node) -> CharacterBody2D:
+	if not scene_root:
+		return null
+	
+	var player_container = scene_root.find_child("Players", false, false)
+	if not player_container:
+		return null
+	
+	var local_player = player_container.get_node_or_null(str(id))
+	if not local_player:
+		return null
+	
+	return local_player as CharacterBody2D
 
 
 func find_user_item_by_id(user_item_id: String) -> ItemModels.ReadUserItemResponse:

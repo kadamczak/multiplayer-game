@@ -64,17 +64,20 @@ func _display_items() -> void:
 			items_container.add_child(item_display)
 			item_display.setup(user_item)
 			
-			var is_equipped = (
-				user_item.id == ClientNetworkGlobals.customization.equipped_head_user_item_id or
-				user_item.id == ClientNetworkGlobals.customization.equipped_body_user_item_id
-			)
-			item_display.set_equipped(is_equipped)
+			item_display.set_equipped(_is_equipped(user_item))
 			item_display.item_right_clicked.connect(_on_item_right_clicked.bind(user_item))
 
 
+func _is_equipped(user_item: ItemModels.ReadUserItemResponse) -> bool:
+	return (
+		user_item.id == ClientNetworkGlobals.customization.equipped_head_user_item_id or
+		user_item.id == ClientNetworkGlobals.customization.equipped_body_user_item_id
+	)
+
+
 func _update_slot_label(slot: EquipmentSlot, label: Label) -> void:
-	var equipped_id = _get_equipped_item_id(slot)
-	var user_item = ClientNetworkGlobals.find_user_item_by_id(equipped_id)
+	var equipped_user_item_id = _get_equipped_item_id(slot)
+	var user_item = ClientNetworkGlobals.find_user_item_by_id(equipped_user_item_id)
 	
 	if user_item:
 		label.text = user_item.item.name
@@ -164,18 +167,8 @@ func _apply_item_to_player(slot: EquipmentSlot, item_id: int) -> void:
 
 
 func _get_local_player_customization() -> PlayerCustomization:
-	var scene_root = get_tree().current_scene
-	if not scene_root:
-		return null
-	
-	var player_container = scene_root.find_child("Players", false, false)
-	if not player_container:
-		return null
-	
-	var local_player = player_container.get_node_or_null(str(ClientNetworkGlobals.id))
-	if not local_player:
-		return null
-	
+	var local_player = ClientNetworkGlobals.get_local_player(get_tree().current_scene)
+
 	var player_customization = local_player.get_node_or_null("PlayerCustomization")
 	if player_customization:
 		return player_customization as PlayerCustomization
