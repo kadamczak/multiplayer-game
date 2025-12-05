@@ -20,9 +20,5 @@ func show_panel() -> void:
 	back_button.call_deferred("grab_focus")
 
 
-func hide_panel() -> void:
-	hide()
-
-
 func _on_back_pressed() -> void:
 	back_pressed.emit()
