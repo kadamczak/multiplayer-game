@@ -17,8 +17,12 @@ const USER_ITEM_DISPLAY = preload("res://scenes/ui/user_item_display.tscn")
 @onready var back_button = $UserDetailsPanel/MarginContainer/VBoxContainer/BackButton
 
 @onready var items_panel = $ItemsPanel
-@onready var items_container = $ItemsPanel/MarginContainer/VBoxContainer/ItemsScrollContainer/ItemsContainer
+@onready var items_container = $ItemsPanel/MarginContainer/VBoxContainer/ContentHBox/ItemsScrollContainer/ItemsContainer
 @onready var items_back_button = $ItemsPanel/MarginContainer/VBoxContainer/BackButton
+@onready var head_slot = $ItemsPanel/MarginContainer/VBoxContainer/ContentHBox/EquipmentPanel/HeadSlot
+@onready var head_slot_label = $ItemsPanel/MarginContainer/VBoxContainer/ContentHBox/EquipmentPanel/HeadSlot/MarginContainer/VBoxContainer/ItemLabel
+@onready var body_slot = $ItemsPanel/MarginContainer/VBoxContainer/ContentHBox/EquipmentPanel/BodySlot
+@onready var body_slot_label = $ItemsPanel/MarginContainer/VBoxContainer/ContentHBox/EquipmentPanel/BodySlot/MarginContainer/VBoxContainer/ItemLabel
 
 
 func _ready() -> void:
@@ -40,6 +44,10 @@ func _ready() -> void:
 	close_button.focus_mode = Control.FOCUS_ALL
 	back_button.focus_mode = Control.FOCUS_ALL
 	items_back_button.focus_mode = Control.FOCUS_ALL
+	
+	# Set up equipment slot mouse detection
+	head_slot.gui_input.connect(_on_head_slot_gui_input)
+	body_slot.gui_input.connect(_on_body_slot_gui_input)
 
 
 func _input(event: InputEvent) -> void:
@@ -131,6 +139,9 @@ func show_items() -> void:
 	for child in items_container.get_children():
 		child.queue_free()
 	
+	# Update equipment slots
+	_update_equipment_slots()
+	
 	# Display user items
 	if ClientNetworkGlobals.user_items.is_empty():
 		var no_items_label = Label.new()
@@ -143,6 +154,15 @@ func show_items() -> void:
 			var item_display = USER_ITEM_DISPLAY.instantiate()
 			items_container.add_child(item_display)
 			item_display.setup(user_item)
+			
+			# Check if item is equipped
+			var is_equipped = (
+				user_item.id == ClientNetworkGlobals.customization.equipped_head_user_item_id or
+				user_item.id == ClientNetworkGlobals.customization.equipped_body_user_item_id
+			)
+			item_display.set_equipped(is_equipped)
+			
+			item_display.item_right_clicked.connect(_on_item_right_clicked.bind(user_item))
 	
 	items_back_button.call_deferred("grab_focus")
 
@@ -158,3 +178,92 @@ func _on_items_pressed() -> void:
 func _on_items_back_pressed() -> void:
 	hide_items()
 	show_menu()
+
+
+func _update_equipment_slots() -> void:
+	# Update head slot
+	var head_item = ClientNetworkGlobals.user_items.filter(func(item):
+		return item.id == ClientNetworkGlobals.customization.equipped_head_user_item_id).front()
+	
+	if head_item:
+		head_slot_label.text = head_item.item.name
+	else:
+		head_slot_label.text = "Empty"
+	
+	# Update body slot
+	var body_item = ClientNetworkGlobals.user_items.filter(func(item):
+		return item.id == ClientNetworkGlobals.customization.equipped_body_user_item_id).front()
+	
+	if body_item:
+		body_slot_label.text = body_item.item.name
+	else:
+		body_slot_label.text = "Empty"
+
+
+func _on_item_right_clicked(user_item: ItemModels.ReadUserItemResponse) -> void:
+	var item_type = user_item.item.type
+	
+	if item_type == "EquippableOnHead":
+		_equip_item(user_item.id, "head")
+	elif item_type == "EquippableOnBody":
+		_equip_item(user_item.id, "body")
+
+
+func _on_head_slot_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			_unequip_item("head")
+
+
+func _on_body_slot_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			_unequip_item("body")
+
+
+func _equip_item(user_item_id: String, slot: String) -> void:
+	# TODO: Call API to equip item
+	DebugLogger.log("Equipping item %s in %s slot" % [user_item_id, slot])
+	
+	if slot == "head":
+		ClientNetworkGlobals.customization.equipped_head_user_item_id = user_item_id
+	elif slot == "body":
+		ClientNetworkGlobals.customization.equipped_body_user_item_id = user_item_id
+	
+	_update_equipment_slots()
+	_refresh_items_list()
+
+
+func _unequip_item(slot: String) -> void:
+	# TODO: Call API to unequip item
+	DebugLogger.log("Unequipping %s slot" % slot)
+	
+	if slot == "head":
+		ClientNetworkGlobals.customization.equipped_head_user_item_id = ""
+	elif slot == "body":
+		ClientNetworkGlobals.customization.equipped_body_user_item_id = ""
+	
+	_update_equipment_slots()
+	_refresh_items_list()
+
+
+func _refresh_items_list() -> void:
+	# Clear existing items
+	for child in items_container.get_children():
+		child.queue_free()
+	
+	# Redisplay items with updated equipped status
+	if not ClientNetworkGlobals.user_items.is_empty():
+		for user_item in ClientNetworkGlobals.user_items:
+			var item_display = USER_ITEM_DISPLAY.instantiate()
+			items_container.add_child(item_display)
+			item_display.setup(user_item)
+			
+			# Check if item is equipped
+			var is_equipped = (
+				user_item.id == ClientNetworkGlobals.customization.equipped_head_user_item_id or
+				user_item.id == ClientNetworkGlobals.customization.equipped_body_user_item_id
+			)
+			item_display.set_equipped(is_equipped)
+			
+			item_display.item_right_clicked.connect(_on_item_right_clicked.bind(user_item))
