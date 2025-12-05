@@ -12,6 +12,7 @@ func _ready() -> void:
 	ClientNetworkGlobals.handle_player_disconnect.connect(despawn_player)
 	ClientNetworkGlobals.handle_player_scene_change.connect(_on_player_scene_change)
 	ClientNetworkGlobals.handle_player_customization.connect(_on_player_customization)
+	ClientNetworkGlobals.handle_player_equipped_items.connect(_on_player_equipped_items)
 	
 
 # Called when a new scene is loaded - find spawn areas and container
@@ -29,6 +30,7 @@ func on_scene_ready(scene_root: Node) -> void:
 		
 		# Send local player's customization to new players in this scene
 		call_deferred("_send_local_customization")
+		call_deferred("_send_local_equipped_items")
 
 
 func _on_node_added(node: Node) -> void:
@@ -46,6 +48,7 @@ func _on_local_id_assignment(local_id: int) -> void:
 	
 	# Send local customization after player is spawned
 	call_deferred("_send_initial_customization")
+	call_deferred("_send_initial_equipped_items")
 
 
 func _index_spawn_areas(scene_root: Node) -> void:
@@ -188,6 +191,10 @@ func spawn_player(id: int) -> void:
 	# Apply stored customization if available
 	if id in ClientNetworkGlobals.player_customizations:
 		call_deferred("_apply_stored_customization", id)
+	
+	# Apply stored equipped items if available
+	if id in ClientNetworkGlobals.player_equipped_items:
+		call_deferred("_apply_stored_equipped_items", id)
 
 
 func despawn_player(id: int) -> void:
@@ -297,6 +304,24 @@ func _apply_login_customization_to_local_player(player_customization: PlayerCust
 			part.line_type = part_mappings[part_name]["type"]
 			player_customization.apply_customization(part)
 	
+	# Apply equipped items
+	var head_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(
+		customization.equipped_head_user_item_id
+	)
+	var body_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(
+		customization.equipped_body_user_item_id
+	)
+	
+	if "Head_Item" in player_customization.active_player_customization:
+		var head_part = player_customization.active_player_customization["Head_Item"]
+		head_part.line_type = head_item_id
+		player_customization.apply_customization(head_part)
+	
+	if "Body_Item" in player_customization.active_player_customization:
+		var body_part = player_customization.active_player_customization["Body_Item"]
+		body_part.line_type = body_item_id
+		player_customization.apply_customization(body_part)
+	
 	DebugLogger.log("Applied login customization to local player")
 
 
@@ -379,3 +404,112 @@ func _apply_customization_packet_to_player(player_customization: PlayerCustomiza
 			part.color = customization_packet.colors[part_name]
 			part.line_type = customization_packet.types[part_name]
 			player_customization.apply_customization(part)
+
+
+func _send_initial_equipped_items() -> void:
+	# Check if we have customization data from login
+	if ClientNetworkGlobals.customization == null:
+		DebugLogger.log("No customization data available for equipped items send")
+		return
+	
+	var head_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(
+		ClientNetworkGlobals.customization.equipped_head_user_item_id
+	)
+	var body_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(
+		ClientNetworkGlobals.customization.equipped_body_user_item_id
+	)
+	
+	# Create and send equipped items packet
+	var packet = PlayerEquippedItems.create(
+		ClientNetworkGlobals.id,
+		head_item_id,
+		body_item_id
+	)
+	ClientNetworkGlobals.player_equipped_items[ClientNetworkGlobals.id] = packet
+	packet.send(NetworkHandler.server_peer)
+	
+	DebugLogger.log("Sent initial equipped items to other players")
+
+
+func _send_local_equipped_items() -> void:
+	if ClientNetworkGlobals.customization == null:
+		return
+	
+	var head_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(
+		ClientNetworkGlobals.customization.equipped_head_user_item_id
+	)
+	var body_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(
+		ClientNetworkGlobals.customization.equipped_body_user_item_id
+	)
+	
+	# Create and send equipped items packet
+	var packet = PlayerEquippedItems.create(
+		ClientNetworkGlobals.id,
+		head_item_id,
+		body_item_id
+	)
+	packet.send(NetworkHandler.server_peer)
+	
+	# Store in local cache
+	ClientNetworkGlobals.player_equipped_items[ClientNetworkGlobals.id] = packet
+	DebugLogger.log("Sent local equipped items after scene change")
+
+
+func _on_player_equipped_items(equipped_items_packet: PlayerEquippedItems) -> void:
+	var player_id = equipped_items_packet.player_id
+	
+	# Skip if it's the local player (they already see their own changes)
+	if player_id == ClientNetworkGlobals.id:
+		return
+	
+	# Find the player in the current scene
+	if player_container == null:
+		return
+	
+	var player = player_container.get_node_or_null(str(player_id))
+	if not player:
+		DebugLogger.log("Player " + str(player_id) + " not found for equipped items update")
+		return
+	
+	# Get the PlayerCustomization component
+	var player_customization = player.get_node_or_null("PlayerCustomization") as PlayerCustomization
+	if not player_customization:
+		DebugLogger.log("PlayerCustomization component not found for player " + str(player_id))
+		return
+	
+	_apply_equipped_items_to_player(player_customization, equipped_items_packet)
+	DebugLogger.log("Applied equipped items update for player " + str(player_id))
+
+
+func _apply_stored_equipped_items(player_id: int) -> void:
+	if player_container == null:
+		return
+	
+	var player = player_container.get_node_or_null(str(player_id))
+	if not player:
+		return
+	
+	var player_customization = player.get_node_or_null("PlayerCustomization") as PlayerCustomization
+	if not player_customization:
+		return
+	
+	var equipped_items_packet = ClientNetworkGlobals.player_equipped_items.get(player_id)
+	if not equipped_items_packet:
+		return
+	
+	DebugLogger.log("Applying stored equipped items for player " + str(player_id))
+	_apply_equipped_items_to_player(player_customization, equipped_items_packet)
+
+
+func _apply_equipped_items_to_player(player_customization: PlayerCustomization, equipped_items_packet: PlayerEquippedItems) -> void:
+	# Apply head item
+	if "Head_Item" in player_customization.active_player_customization:
+		var head_part = player_customization.active_player_customization["Head_Item"]
+		head_part.line_type = equipped_items_packet.equipped_head_item_id
+		player_customization.apply_customization(head_part)
+	
+	# Apply body item
+	if "Body_Item" in player_customization.active_player_customization:
+		var body_part = player_customization.active_player_customization["Body_Item"]
+		body_part.line_type = equipped_items_packet.equipped_body_item_id
+		player_customization.apply_customization(body_part)

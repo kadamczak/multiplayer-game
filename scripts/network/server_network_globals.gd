@@ -4,6 +4,7 @@ var peer_usernames: Dictionary = {} # peer_id -> username mapping
 var peer_scenes: Dictionary = {} # peer_id -> scene_path mapping
 var peer_guids: Dictionary = {} # peer_id -> guid mapping
 var peer_customizations: Dictionary = {} # peer_id -> customization data
+var peer_equipped_items: Dictionary = {} # peer_id -> equipped items data
 
 func _ready() -> void:
 	NetworkHandler.on_peer_connected.connect(on_peer_connected)
@@ -32,10 +33,17 @@ func on_peer_connected(peer_id: int) -> void:
 		DebugLogger.log("Sending existing customization to new client: ID " + str(existing_peer_id))
 		customization.send(NetworkHandler.client_peers[peer_id])
 	
+	# Send all existing equipped items to the new client
+	for existing_peer_id in peer_equipped_items:
+		var equipped_items = peer_equipped_items[existing_peer_id]
+		DebugLogger.log("Sending existing equipped items to new client: ID " + str(existing_peer_id))
+		equipped_items.send(NetworkHandler.client_peers[peer_id])
+	
 func on_peer_disconnected(peer_id: int) -> void:
 	peer_usernames.erase(peer_id)
 	peer_scenes.erase(peer_id)
 	peer_customizations.erase(peer_id)
+	peer_equipped_items.erase(peer_id)
 	DebugLogger.log("Broadcasting disconnect for peer " + str(peer_id))
 	PlayerDisconnect.create(peer_id).broadcast(NetworkHandler.connection)
 	
@@ -70,6 +78,13 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			peer_customizations[customization.player_id] = customization
 			DebugLogger.log("Broadcasting to all clients")
 			customization.broadcast(NetworkHandler.connection)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_EQUIPPED_ITEMS:
+			var equipped_items = PlayerEquippedItems.create_from_data(data)
+			DebugLogger.log("Server received equipped items from peer " + str(peer_id) + " - ID: " + str(equipped_items.player_id))
+			peer_equipped_items[equipped_items.player_id] = equipped_items
+			DebugLogger.log("Broadcasting to all clients")
+			equipped_items.broadcast(NetworkHandler.connection)
 			
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")

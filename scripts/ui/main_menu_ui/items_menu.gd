@@ -152,6 +152,7 @@ func _equip_item(user_item_id: String, slot: EquipmentSlot) -> void:
 	_apply_item_to_player(slot, item_id)
 	_update_equipment_slots()
 	_refresh_items_list()
+	_send_equipped_items_packet()
 
 
 func _unequip_item(slot: EquipmentSlot) -> void:
@@ -171,6 +172,7 @@ func _unequip_item(slot: EquipmentSlot) -> void:
 	_apply_item_to_player(slot, 0)
 	_update_equipment_slots()
 	_refresh_items_list()
+	_send_equipped_items_packet()
 
 
 func _apply_item_to_player(slot: EquipmentSlot, item_id: int) -> void:
@@ -199,3 +201,23 @@ func _get_local_player_customization() -> PlayerCustomization:
 func _refresh_items_list() -> void:
 	_clear_items()
 	_display_items()
+
+
+func _send_equipped_items_packet() -> void:
+	var head_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(
+		ClientNetworkGlobals.customization.equipped_head_user_item_id
+	)
+	var body_item_id = ClientNetworkGlobals.find_item_id_by_user_item_id(
+		ClientNetworkGlobals.customization.equipped_body_user_item_id
+	)
+	
+	var packet = PlayerEquippedItems.create(
+		ClientNetworkGlobals.id,
+		head_item_id,
+		body_item_id
+	)
+	
+	ClientNetworkGlobals.player_equipped_items[ClientNetworkGlobals.id] = packet
+	packet.send(NetworkHandler.server_peer)
+	
+	DebugLogger.log("Sent equipped items update to other players")

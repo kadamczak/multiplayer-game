@@ -1,9 +1,10 @@
-[gd_scene load_steps=13 format=4 uid="uid://doq81fipgn8m"]
+[gd_scene load_steps=14 format=4 uid="uid://doq81fipgn8m"]
 
 [ext_resource type="Texture2D" uid="uid://4igk8kyp6t35" path="res://assets/tilesets/grass.png" id="1_x6ivy"]
 [ext_resource type="PackedScene" uid="uid://kg1j3uam65wf" path="res://scenes/prefabs/merchant.tscn" id="2_1seuy"]
 [ext_resource type="PackedScene" uid="uid://c8dloubvei7w0" path="res://scenes/systems/player_spawner.tscn" id="2_spawner"]
 [ext_resource type="PackedScene" uid="uid://cj1hcpqp0r03f" path="res://scenes/ui/player_ui.tscn" id="3_ui"]
+[ext_resource type="PackedScene" uid="uid://c8x4w5olwah" path="res://scenes/ui/main_menu_ui/main_menu.tscn" id="4_8a7m2"]
 [ext_resource type="PackedScene" uid="uid://cxjy5n8h4dm3w" path="res://scenes/systems/portal.tscn" id="4_portal"]
 [ext_resource type="PackedScene" uid="uid://bu6wjhx3yjq3v" path="res://scenes/ui/player_list_overlay.tscn" id="5_overlay"]
 [ext_resource type="SpriteFrames" uid="uid://8w5wv7rslbfe" path="res://assets/spriteframes/rat.tres" id="7_2r1tl"]
@@ -74,6 +75,8 @@ shape = SubResource("RectangleShape2D_dywbp")
 mouse_filter = 2
 
 [node name="PlayerListOverlay" parent="UI" instance=ExtResource("5_overlay")]
+
+[node name="MainMenu" parent="UI" instance=ExtResource("4_8a7m2")]
 
 [node name="Portal" parent="." instance=ExtResource("4_portal")]
 position = Vector2(-961, 617)

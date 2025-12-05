@@ -7,6 +7,7 @@ signal handle_player_disconnect(player_id: int)
 signal handle_player_animation(player_animation: PlayerAnimation)
 signal handle_player_scene_change(player_scene_change: PlayerSceneChange)
 signal handle_player_customization(player_customization: PlayerCustomizationPacket)
+signal handle_player_equipped_items(player_equipped_items: PlayerEquippedItems)
 signal balance_changed(new_balance: int)
 
 var id: int = -1
@@ -17,6 +18,7 @@ var player_usernames: Dictionary = {} # id -> username mapping
 
 var customization: UserModels.ReadUserCustomizationResponse
 var player_customizations: Dictionary = {} # id -> PlayerCustomizationPacket mapping
+var player_equipped_items: Dictionary = {} # id -> PlayerEquippedItems mapping
 
 var user_items: Array[ItemModels.ReadUserItemResponse] = []
 
@@ -59,6 +61,7 @@ func on_client_packet(data: PackedByteArray) -> void:
 			player_usernames.erase(disconnected_id)
 			player_scenes.erase(disconnected_id)
 			player_customizations.erase(disconnected_id)
+			player_equipped_items.erase(disconnected_id)
 			handle_player_disconnect.emit(disconnected_id)
 
 		PacketInfo.PACKET_TYPE.PLAYER_ANIMATION:
@@ -72,10 +75,16 @@ func on_client_packet(data: PackedByteArray) -> void:
 			handle_player_scene_change.emit(scene_change)
 			
 		PacketInfo.PACKET_TYPE.PLAYER_CUSTOMIZATION:
-			var customization = PlayerCustomizationPacket.create_from_data(data)
-			DebugLogger.log("ClientNetworkGlobals received customization - ID: " + str(customization.player_id))
-			player_customizations[customization.player_id] = customization
-			handle_player_customization.emit(customization)
+			var customization_packet = PlayerCustomizationPacket.create_from_data(data)
+			DebugLogger.log("ClientNetworkGlobals received customization - ID: " + str(customization_packet.player_id))
+			player_customizations[customization_packet.player_id] = customization_packet
+			handle_player_customization.emit(customization_packet)
+			
+		PacketInfo.PACKET_TYPE.PLAYER_EQUIPPED_ITEMS:
+			var equipped_items = PlayerEquippedItems.create_from_data(data)
+			DebugLogger.log("ClientNetworkGlobals received equipped items - ID: " + str(equipped_items.player_id))
+			player_equipped_items[equipped_items.player_id] = equipped_items
+			handle_player_equipped_items.emit(equipped_items)
 			
 		_:
 			push_error("Packet type with index ", data[0], " unhandled.")
@@ -96,6 +105,7 @@ func reset() -> void:
 
 	customization = null
 	player_customizations = {}
+	player_equipped_items = {}
 
 	user_items = []
 
